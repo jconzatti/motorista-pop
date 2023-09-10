@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{67C49FFE-C5A8-4F05-A5C2-B16F80D0E7C4}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="motorista_pop.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="motorista_pop_teste.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="motorista_pop">
+        <MSBuild Projects="motorista_pop.dproj"/>
+    </Target>
+    <Target Name="motorista_pop:Clean">
+        <MSBuild Projects="motorista_pop.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="motorista_pop:Make">
+        <MSBuild Projects="motorista_pop.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="motorista_pop_teste">
+        <MSBuild Projects="motorista_pop_teste.dproj"/>
+    </Target>
+    <Target Name="motorista_pop_teste:Clean">
+        <MSBuild Projects="motorista_pop_teste.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="motorista_pop_teste:Make">
+        <MSBuild Projects="motorista_pop_teste.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="motorista_pop;motorista_pop_teste"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="motorista_pop:Clean;motorista_pop_teste:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="motorista_pop:Make;motorista_pop_teste:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

@@ -1,0 +1,264 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>Delphi CodeCoverage Coverage Report</title>
+<style type="text/css">
+table {border-spacing:0; border-collapse:collapse;}
+table, td, th {border: 1px solid black;}
+td, th {background: white; margin: 0; padding: 2px 0.5em 2px 0.5em}
+td {border-width: 0 1px 0 0;}
+th {border-width: 1px 1px 1px 0;}
+p, h1, h2, h3, th {font-family: verdana,arial,sans-serif; font-size: 10pt;}
+td {font-family: courier,monospace; font-size: 10pt;}
+th {background: #CCCCCC;}
+table.o tr td:nth-child(1) {font-weight: bold;}
+table.o tr td:nth-child(2) {text-align: right;}
+table.o tr td {border-width: 1px;}
+table.s {width: 100%;}
+table.s tr td {padding: 0 0.25em 0 0.25em;}
+table.s tr td:first-child {text-align: right; font-weight: bold;}
+table.s tr.notcovered td {background: #DDDDFF;}
+table.s tr.nocodegen td {background: #FFFFEE;}
+table.s tr.covered td {background: #CCFFCC;}
+table.s tr.covered td:first-child {color: green;}
+table.s {border-width: 1px 0 1px 1px;}
+table.sum tr td {border-width: 1px;}
+table.sum tr th {text-align:right;}
+table.sum tr th:first-child {text-align:center;}
+table.sum tr td {text-align:right;}
+table.sum tr td:first-child {text-align:left;}
+</style>
+</head>
+<body>
+<p>Coverage report for <strong>Corrida.Servico (C:\Projetos Pessoais\branas.io\motorista-pop\backend\fontes\Corrida.Servico.pas)</strong>.</p>
+<p> Generated at 10/09/2023 17:06:23 by <a href="https://sourceforge.net/projects/delphicodecoverage/" title="Code Coverage for Delphi 5+">DelphiCodeCoverage</a> - an open source tool for Delphi Code Coverage.</p>
+<p> Statistics for C:\Projetos Pessoais\branas.io\motorista-pop\backend\fontes\Corrida.Servico.pas </p>
+<table  class="o"><tr><td>Number of lines covered</td><td>77</td></tr><tr><td>Number of lines with code gen</td><td>77</td></tr><tr><td>Line coverage</td><td>100%</td></tr></table>
+<br /><br />
+<table  class="s">
+<tr class="nocodegen"><td>1</td><td><pre style="display:inline;">unit Corrida.Servico;</pre></td></tr>
+<tr class="nocodegen"><td>2</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>3</td><td><pre style="display:inline;">interface</pre></td></tr>
+<tr class="nocodegen"><td>4</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>5</td><td><pre style="display:inline;">uses</pre></td></tr>
+<tr class="nocodegen"><td>6</td><td><pre style="display:inline;">   System.SysUtils,</pre></td></tr>
+<tr class="nocodegen"><td>7</td><td><pre style="display:inline;">   Data.DB,</pre></td></tr>
+<tr class="nocodegen"><td>8</td><td><pre style="display:inline;">   FireDAC.Comp.Client,</pre></td></tr>
+<tr class="nocodegen"><td>9</td><td><pre style="display:inline;">   FireDAC.DApt,</pre></td></tr>
+<tr class="nocodegen"><td>10</td><td><pre style="display:inline;">   FireDAC.Phys.SQLite,</pre></td></tr>
+<tr class="nocodegen"><td>11</td><td><pre style="display:inline;">   FireDAC.Stan.Async,</pre></td></tr>
+<tr class="nocodegen"><td>12</td><td><pre style="display:inline;">   FireDAC.Stan.Def,</pre></td></tr>
+<tr class="nocodegen"><td>13</td><td><pre style="display:inline;">   ContaUsuario.Servico;</pre></td></tr>
+<tr class="nocodegen"><td>14</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>15</td><td><pre style="display:inline;">type</pre></td></tr>
+<tr class="nocodegen"><td>16</td><td><pre style="display:inline;">   TDadoSolicitacaoCorrida = record</pre></td></tr>
+<tr class="nocodegen"><td>17</td><td><pre style="display:inline;">      IDDoPassageiro: String;</pre></td></tr>
+<tr class="nocodegen"><td>18</td><td><pre style="display:inline;">      DeLatitude: Double;</pre></td></tr>
+<tr class="nocodegen"><td>19</td><td><pre style="display:inline;">      DeLongitude: Double;</pre></td></tr>
+<tr class="nocodegen"><td>20</td><td><pre style="display:inline;">      ParaLatitude: Double;</pre></td></tr>
+<tr class="nocodegen"><td>21</td><td><pre style="display:inline;">      ParaLongitude: Double;</pre></td></tr>
+<tr class="nocodegen"><td>22</td><td><pre style="display:inline;">   end;</pre></td></tr>
+<tr class="nocodegen"><td>23</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>24</td><td><pre style="display:inline;">   TDadoCorrida = record</pre></td></tr>
+<tr class="nocodegen"><td>25</td><td><pre style="display:inline;">      ID: String;</pre></td></tr>
+<tr class="nocodegen"><td>26</td><td><pre style="display:inline;">      IDDoPassageiro: String;</pre></td></tr>
+<tr class="nocodegen"><td>27</td><td><pre style="display:inline;">      IDDoMotorista: String;</pre></td></tr>
+<tr class="nocodegen"><td>28</td><td><pre style="display:inline;">      Status: String;</pre></td></tr>
+<tr class="nocodegen"><td>29</td><td><pre style="display:inline;">      Tarifa: Double;</pre></td></tr>
+<tr class="nocodegen"><td>30</td><td><pre style="display:inline;">      Distancia: Double;</pre></td></tr>
+<tr class="nocodegen"><td>31</td><td><pre style="display:inline;">      DeLatitude: Double;</pre></td></tr>
+<tr class="nocodegen"><td>32</td><td><pre style="display:inline;">      DeLongitude: Double;</pre></td></tr>
+<tr class="nocodegen"><td>33</td><td><pre style="display:inline;">      ParaLatitude: Double;</pre></td></tr>
+<tr class="nocodegen"><td>34</td><td><pre style="display:inline;">      ParaLongitude: Double;</pre></td></tr>
+<tr class="nocodegen"><td>35</td><td><pre style="display:inline;">      Data: TDateTime;</pre></td></tr>
+<tr class="nocodegen"><td>36</td><td><pre style="display:inline;">   end;</pre></td></tr>
+<tr class="nocodegen"><td>37</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>38</td><td><pre style="display:inline;">   TServicoCorrida = class</pre></td></tr>
+<tr class="nocodegen"><td>39</td><td><pre style="display:inline;">   private</pre></td></tr>
+<tr class="nocodegen"><td>40</td><td><pre style="display:inline;">      FConexao: TFDConnection;</pre></td></tr>
+<tr class="nocodegen"><td>41</td><td><pre style="display:inline;">      procedure ValidarContaDeUsuarioEhPassageiro(pIDDoUsuario: String);</pre></td></tr>
+<tr class="nocodegen"><td>42</td><td><pre style="display:inline;">      procedure ValidarContaDeUsuarioEhMotorista(pIDDoUsuario: String);</pre></td></tr>
+<tr class="nocodegen"><td>43</td><td><pre style="display:inline;">      procedure ValidarPassageiroComTodasAsCorridasConcluidas(pIDDoPassageiro: String);</pre></td></tr>
+<tr class="nocodegen"><td>44</td><td><pre style="display:inline;">      procedure ValidarCorridaEstaSolicitada(pIDDaCorrida: String);</pre></td></tr>
+<tr class="nocodegen"><td>45</td><td><pre style="display:inline;">      function ConverterData(pData: String): TDateTime;</pre></td></tr>
+<tr class="nocodegen"><td>46</td><td><pre style="display:inline;">   public</pre></td></tr>
+<tr class="nocodegen"><td>47</td><td><pre style="display:inline;">      constructor Create;</pre></td></tr>
+<tr class="nocodegen"><td>48</td><td><pre style="display:inline;">      destructor Destroy; override;</pre></td></tr>
+<tr class="nocodegen"><td>49</td><td><pre style="display:inline;">      function Solicitar(pEntradaDaSolicitacaoDeCorrida: TDadoSolicitacaoCorrida): String;</pre></td></tr>
+<tr class="nocodegen"><td>50</td><td><pre style="display:inline;">      procedure Aceitar(pIDDaCorrida, pIDDoMotorista: String);</pre></td></tr>
+<tr class="nocodegen"><td>51</td><td><pre style="display:inline;">      function Obter(pID: String): TDadoCorrida;</pre></td></tr>
+<tr class="nocodegen"><td>52</td><td><pre style="display:inline;">   end;</pre></td></tr>
+<tr class="nocodegen"><td>53</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>54</td><td><pre style="display:inline;">implementation</pre></td></tr>
+<tr class="nocodegen"><td>55</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>56</td><td><pre style="display:inline;">{ TServicoCorrida }</pre></td></tr>
+<tr class="nocodegen"><td>57</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>58</td><td><pre style="display:inline;">constructor TServicoCorrida.Create;</pre></td></tr>
+<tr class="covered"><td>59</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>60</td><td><pre style="display:inline;">   FConexao := TFDConnection.Create(nil);</pre></td></tr>
+<tr class="covered"><td>61</td><td><pre style="display:inline;">   FConexao.DriverName := 'SQLite';</pre></td></tr>
+<tr class="covered"><td>62</td><td><pre style="display:inline;">   FConexao.Params.Database := 'C:\Projetos Pessoais\branas.io\motorista-pop\backend\banco-de-dados\motorista-pop.sqlite3';</pre></td></tr>
+<tr class="covered"><td>63</td><td><pre style="display:inline;">   FConexao.Open;</pre></td></tr>
+<tr class="covered"><td>64</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>65</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>66</td><td><pre style="display:inline;">destructor TServicoCorrida.Destroy;</pre></td></tr>
+<tr class="covered"><td>67</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>68</td><td><pre style="display:inline;">   FConexao.Close;</pre></td></tr>
+<tr class="covered"><td>69</td><td><pre style="display:inline;">   FConexao.Destroy;</pre></td></tr>
+<tr class="covered"><td>70</td><td><pre style="display:inline;">   inherited;</pre></td></tr>
+<tr class="covered"><td>71</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>72</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>73</td><td><pre style="display:inline;">function TServicoCorrida.Solicitar(pEntradaDaSolicitacaoDeCorrida: TDadoSolicitacaoCorrida): String;</pre></td></tr>
+<tr class="nocodegen"><td>74</td><td><pre style="display:inline;">var</pre></td></tr>
+<tr class="nocodegen"><td>75</td><td><pre style="display:inline;">   lGUID: TGUID;</pre></td></tr>
+<tr class="nocodegen"><td>76</td><td><pre style="display:inline;">   lIDDaCorrida: String;</pre></td></tr>
+<tr class="covered"><td>77</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>78</td><td><pre style="display:inline;">   ValidarContaDeUsuarioEhPassageiro(pEntradaDaSolicitacaoDeCorrida.IDDoPassageiro);</pre></td></tr>
+<tr class="covered"><td>79</td><td><pre style="display:inline;">   ValidarPassageiroComTodasAsCorridasConcluidas(pEntradaDaSolicitacaoDeCorrida.IDDoPassageiro);</pre></td></tr>
+<tr class="covered"><td>80</td><td><pre style="display:inline;">   CreateGUID(lGUID);</pre></td></tr>
+<tr class="covered"><td>81</td><td><pre style="display:inline;">   lIDDaCorrida := lGUID.ToString;</pre></td></tr>
+<tr class="covered"><td>82</td><td><pre style="display:inline;">   FConexao.ExecSQL('INSERT INTO ride ('+</pre></td></tr>
+<tr class="nocodegen"><td>83</td><td><pre style="display:inline;">                    '    ride_id,'+</pre></td></tr>
+<tr class="nocodegen"><td>84</td><td><pre style="display:inline;">                    '    passenger_id,'+</pre></td></tr>
+<tr class="nocodegen"><td>85</td><td><pre style="display:inline;">                    '    status,'+</pre></td></tr>
+<tr class="nocodegen"><td>86</td><td><pre style="display:inline;">                    '    from_lat,'+</pre></td></tr>
+<tr class="nocodegen"><td>87</td><td><pre style="display:inline;">                    '    from_long,'+</pre></td></tr>
+<tr class="nocodegen"><td>88</td><td><pre style="display:inline;">                    '    to_lat,'+</pre></td></tr>
+<tr class="nocodegen"><td>89</td><td><pre style="display:inline;">                    '    to_long,'+</pre></td></tr>
+<tr class="nocodegen"><td>90</td><td><pre style="display:inline;">                    '    date'+</pre></td></tr>
+<tr class="nocodegen"><td>91</td><td><pre style="display:inline;">                    ') VALUES ('+</pre></td></tr>
+<tr class="nocodegen"><td>92</td><td><pre style="display:inline;">                    '    :ride_id,'+</pre></td></tr>
+<tr class="nocodegen"><td>93</td><td><pre style="display:inline;">                    '    :passenger_id,'+</pre></td></tr>
+<tr class="nocodegen"><td>94</td><td><pre style="display:inline;">                    '    :status,'+</pre></td></tr>
+<tr class="nocodegen"><td>95</td><td><pre style="display:inline;">                    '    :from_lat,'+</pre></td></tr>
+<tr class="nocodegen"><td>96</td><td><pre style="display:inline;">                    '    :from_long,'+</pre></td></tr>
+<tr class="nocodegen"><td>97</td><td><pre style="display:inline;">                    '    :to_lat,'+</pre></td></tr>
+<tr class="nocodegen"><td>98</td><td><pre style="display:inline;">                    '    :to_long,'+</pre></td></tr>
+<tr class="nocodegen"><td>99</td><td><pre style="display:inline;">                    '    :date'+</pre></td></tr>
+<tr class="nocodegen"><td>100</td><td><pre style="display:inline;">                    ')',</pre></td></tr>
+<tr class="nocodegen"><td>101</td><td><pre style="display:inline;">                    [lIDDaCorrida,</pre></td></tr>
+<tr class="nocodegen"><td>102</td><td><pre style="display:inline;">                     pEntradaDaSolicitacaoDeCorrida.IDDoPassageiro,</pre></td></tr>
+<tr class="nocodegen"><td>103</td><td><pre style="display:inline;">                     'requested',</pre></td></tr>
+<tr class="nocodegen"><td>104</td><td><pre style="display:inline;">                     pEntradaDaSolicitacaoDeCorrida.DeLatitude,</pre></td></tr>
+<tr class="nocodegen"><td>105</td><td><pre style="display:inline;">                     pEntradaDaSolicitacaoDeCorrida.DeLongitude,</pre></td></tr>
+<tr class="nocodegen"><td>106</td><td><pre style="display:inline;">                     pEntradaDaSolicitacaoDeCorrida.ParaLatitude,</pre></td></tr>
+<tr class="nocodegen"><td>107</td><td><pre style="display:inline;">                     pEntradaDaSolicitacaoDeCorrida.ParaLongitude,</pre></td></tr>
+<tr class="nocodegen"><td>108</td><td><pre style="display:inline;">                     FormatDateTime('yyyy-mm-dd hh:nn:ss.zzz', Now)],</pre></td></tr>
+<tr class="nocodegen"><td>109</td><td><pre style="display:inline;">                    [ftString,</pre></td></tr>
+<tr class="nocodegen"><td>110</td><td><pre style="display:inline;">                     ftString,</pre></td></tr>
+<tr class="nocodegen"><td>111</td><td><pre style="display:inline;">                     ftString,</pre></td></tr>
+<tr class="nocodegen"><td>112</td><td><pre style="display:inline;">                     ftFloat,</pre></td></tr>
+<tr class="nocodegen"><td>113</td><td><pre style="display:inline;">                     ftFloat,</pre></td></tr>
+<tr class="nocodegen"><td>114</td><td><pre style="display:inline;">                     ftFloat,</pre></td></tr>
+<tr class="nocodegen"><td>115</td><td><pre style="display:inline;">                     ftFloat,</pre></td></tr>
+<tr class="nocodegen"><td>116</td><td><pre style="display:inline;">                     ftString]);</pre></td></tr>
+<tr class="covered"><td>117</td><td><pre style="display:inline;">   Result := lIDDaCorrida;</pre></td></tr>
+<tr class="covered"><td>118</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>119</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>120</td><td><pre style="display:inline;">procedure TServicoCorrida.Aceitar(pIDDaCorrida, pIDDoMotorista: String);</pre></td></tr>
+<tr class="covered"><td>121</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>122</td><td><pre style="display:inline;">   ValidarContaDeUsuarioEhMotorista(pIDDoMotorista);</pre></td></tr>
+<tr class="covered"><td>123</td><td><pre style="display:inline;">   ValidarCorridaEstaSolicitada(pIDDaCorrida);</pre></td></tr>
+<tr class="covered"><td>124</td><td><pre style="display:inline;">   FConexao.ExecSQL('UPDATE ride SET '+</pre></td></tr>
+<tr class="nocodegen"><td>125</td><td><pre style="display:inline;">                    'driver_id = :driver_id, '+</pre></td></tr>
+<tr class="nocodegen"><td>126</td><td><pre style="display:inline;">                    'status = :status '+</pre></td></tr>
+<tr class="nocodegen"><td>127</td><td><pre style="display:inline;">                    'WHERE ride_id = :ride_id',</pre></td></tr>
+<tr class="nocodegen"><td>128</td><td><pre style="display:inline;">                    [pIDDoMotorista, 'accepted', pIDDaCorrida],</pre></td></tr>
+<tr class="nocodegen"><td>129</td><td><pre style="display:inline;">                    [ftString, ftString, ftString]);</pre></td></tr>
+<tr class="covered"><td>130</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>131</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>132</td><td><pre style="display:inline;">function TServicoCorrida.Obter(pID: String): TDadoCorrida;</pre></td></tr>
+<tr class="nocodegen"><td>133</td><td><pre style="display:inline;">var</pre></td></tr>
+<tr class="nocodegen"><td>134</td><td><pre style="display:inline;">   lQueryCorrida: TFDQuery;</pre></td></tr>
+<tr class="covered"><td>135</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>136</td><td><pre style="display:inline;">   lQueryCorrida := TFDQuery.Create(nil);</pre></td></tr>
+<tr class="covered"><td>137</td><td><pre style="display:inline;">   try</pre></td></tr>
+<tr class="covered"><td>138</td><td><pre style="display:inline;">      lQueryCorrida.Connection := FConexao;</pre></td></tr>
+<tr class="covered"><td>139</td><td><pre style="display:inline;">      lQueryCorrida.Open('SELECT ride_id, passenger_id, driver_id, status, '+</pre></td></tr>
+<tr class="nocodegen"><td>140</td><td><pre style="display:inline;">                         'fare, distance, from_lat, from_long, to_lat, to_long, '+</pre></td></tr>
+<tr class="nocodegen"><td>141</td><td><pre style="display:inline;">                         'date FROM ride WHERE ride_id = :ride_id', [pID], [ftString]);</pre></td></tr>
+<tr class="covered"><td>142</td><td><pre style="display:inline;">      Result.ID             := pID;</pre></td></tr>
+<tr class="covered"><td>143</td><td><pre style="display:inline;">      Result.IDDoPassageiro := lQueryCorrida.FieldByName('passenger_id').AsString;</pre></td></tr>
+<tr class="covered"><td>144</td><td><pre style="display:inline;">      Result.IDDoMotorista  := lQueryCorrida.FieldByName('driver_id').AsString;</pre></td></tr>
+<tr class="covered"><td>145</td><td><pre style="display:inline;">      Result.Status         := lQueryCorrida.FieldByName('status').AsString;</pre></td></tr>
+<tr class="covered"><td>146</td><td><pre style="display:inline;">      Result.Tarifa         := lQueryCorrida.FieldByName('fare').AsFloat;</pre></td></tr>
+<tr class="covered"><td>147</td><td><pre style="display:inline;">      Result.Distancia      := lQueryCorrida.FieldByName('distance').AsFloat;</pre></td></tr>
+<tr class="covered"><td>148</td><td><pre style="display:inline;">      Result.DeLatitude     := lQueryCorrida.FieldByName('from_lat').AsFloat;</pre></td></tr>
+<tr class="covered"><td>149</td><td><pre style="display:inline;">      Result.DeLongitude    := lQueryCorrida.FieldByName('from_long').AsFloat;</pre></td></tr>
+<tr class="covered"><td>150</td><td><pre style="display:inline;">      Result.ParaLatitude   := lQueryCorrida.FieldByName('to_lat').AsFloat;</pre></td></tr>
+<tr class="covered"><td>151</td><td><pre style="display:inline;">      Result.ParaLongitude  := lQueryCorrida.FieldByName('to_long').AsFloat;</pre></td></tr>
+<tr class="covered"><td>152</td><td><pre style="display:inline;">      Result.Data           := ConverterData(lQueryCorrida.FieldByName('date').AsString);</pre></td></tr>
+<tr class="nocodegen"><td>153</td><td><pre style="display:inline;">   finally</pre></td></tr>
+<tr class="covered"><td>154</td><td><pre style="display:inline;">      lQueryCorrida.Destroy</pre></td></tr>
+<tr class="nocodegen"><td>155</td><td><pre style="display:inline;">   end;</pre></td></tr>
+<tr class="covered"><td>156</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>157</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>158</td><td><pre style="display:inline;">procedure TServicoCorrida.ValidarContaDeUsuarioEhPassageiro(pIDDoUsuario: String);</pre></td></tr>
+<tr class="nocodegen"><td>159</td><td><pre style="display:inline;">var</pre></td></tr>
+<tr class="nocodegen"><td>160</td><td><pre style="display:inline;">   lContaDeUsuario: TDadoContaUsuario;</pre></td></tr>
+<tr class="nocodegen"><td>161</td><td><pre style="display:inline;">   lServicoDeContaDeUsuario : TServicoContaUsuario;</pre></td></tr>
+<tr class="covered"><td>162</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>163</td><td><pre style="display:inline;">   lServicoDeContaDeUsuario := TServicoContaUsuario.Create;</pre></td></tr>
+<tr class="covered"><td>164</td><td><pre style="display:inline;">   try</pre></td></tr>
+<tr class="covered"><td>165</td><td><pre style="display:inline;">      lContaDeUsuario := lServicoDeContaDeUsuario.Obter(pIDDoUsuario);</pre></td></tr>
+<tr class="covered"><td>166</td><td><pre style="display:inline;">      if not lContaDeUsuario.Passageiro then</pre></td></tr>
+<tr class="covered"><td>167</td><td><pre style="display:inline;">         raise EArgumentException.Create('Conta de usuário não pertence a um passageiro!');</pre></td></tr>
+<tr class="nocodegen"><td>168</td><td><pre style="display:inline;">   finally</pre></td></tr>
+<tr class="covered"><td>169</td><td><pre style="display:inline;">      lServicoDeContaDeUsuario.Destroy;</pre></td></tr>
+<tr class="nocodegen"><td>170</td><td><pre style="display:inline;">   end;</pre></td></tr>
+<tr class="covered"><td>171</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>172</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>173</td><td><pre style="display:inline;">procedure TServicoCorrida.ValidarContaDeUsuarioEhMotorista(pIDDoUsuario: String);</pre></td></tr>
+<tr class="nocodegen"><td>174</td><td><pre style="display:inline;">var</pre></td></tr>
+<tr class="nocodegen"><td>175</td><td><pre style="display:inline;">   lContaDeUsuario: TDadoContaUsuario;</pre></td></tr>
+<tr class="nocodegen"><td>176</td><td><pre style="display:inline;">   lServicoDeContaDeUsuario : TServicoContaUsuario;</pre></td></tr>
+<tr class="covered"><td>177</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>178</td><td><pre style="display:inline;">   lServicoDeContaDeUsuario := TServicoContaUsuario.Create;</pre></td></tr>
+<tr class="covered"><td>179</td><td><pre style="display:inline;">   try</pre></td></tr>
+<tr class="covered"><td>180</td><td><pre style="display:inline;">      lContaDeUsuario := lServicoDeContaDeUsuario.Obter(pIDDoUsuario);</pre></td></tr>
+<tr class="covered"><td>181</td><td><pre style="display:inline;">      if not lContaDeUsuario.Motorista then</pre></td></tr>
+<tr class="covered"><td>182</td><td><pre style="display:inline;">         raise EArgumentException.Create('Conta de usuário não pertence a um motorista!');</pre></td></tr>
+<tr class="nocodegen"><td>183</td><td><pre style="display:inline;">   finally</pre></td></tr>
+<tr class="covered"><td>184</td><td><pre style="display:inline;">      lServicoDeContaDeUsuario.Destroy;</pre></td></tr>
+<tr class="nocodegen"><td>185</td><td><pre style="display:inline;">   end;</pre></td></tr>
+<tr class="covered"><td>186</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>187</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>188</td><td><pre style="display:inline;">procedure TServicoCorrida.ValidarPassageiroComTodasAsCorridasConcluidas(pIDDoPassageiro: String);</pre></td></tr>
+<tr class="nocodegen"><td>189</td><td><pre style="display:inline;">var</pre></td></tr>
+<tr class="nocodegen"><td>190</td><td><pre style="display:inline;">   lQuantidadeDeCorridasNaoConcluidas: Integer;</pre></td></tr>
+<tr class="covered"><td>191</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>192</td><td><pre style="display:inline;">   lQuantidadeDeCorridasNaoConcluidas := FConexao.ExecSQLScalar('SELECT COUNT(*) FROM ride '+</pre></td></tr>
+<tr class="nocodegen"><td>193</td><td><pre style="display:inline;">                                                                'WHERE passenger_id = :passenger_id '+</pre></td></tr>
+<tr class="nocodegen"><td>194</td><td><pre style="display:inline;">                                                                'AND status &lt;&gt; :status',</pre></td></tr>
+<tr class="nocodegen"><td>195</td><td><pre style="display:inline;">                                                                [pIDDoPassageiro, 'completed'],</pre></td></tr>
+<tr class="nocodegen"><td>196</td><td><pre style="display:inline;">                                                                [ftString, ftString]);</pre></td></tr>
+<tr class="covered"><td>197</td><td><pre style="display:inline;">   if lQuantidadeDeCorridasNaoConcluidas &gt; 0 then</pre></td></tr>
+<tr class="covered"><td>198</td><td><pre style="display:inline;">      raise EArgumentException.Create('Passageiro possui corridas não concluídas!');</pre></td></tr>
+<tr class="covered"><td>199</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>200</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>201</td><td><pre style="display:inline;">function TServicoCorrida.ConverterData(pData: String): TDateTime;</pre></td></tr>
+<tr class="nocodegen"><td>202</td><td><pre style="display:inline;">var</pre></td></tr>
+<tr class="nocodegen"><td>203</td><td><pre style="display:inline;">   lFormatacao: TFormatSettings;</pre></td></tr>
+<tr class="covered"><td>204</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>205</td><td><pre style="display:inline;">   lFormatacao := TFormatSettings.Create;</pre></td></tr>
+<tr class="covered"><td>206</td><td><pre style="display:inline;">   lFormatacao.ShortDateFormat := 'yyyy-mm-dd';</pre></td></tr>
+<tr class="covered"><td>207</td><td><pre style="display:inline;">   lFormatacao.ShortTimeFormat := 'hh:nn:ss.zzz';</pre></td></tr>
+<tr class="covered"><td>208</td><td><pre style="display:inline;">   lFormatacao.DateSeparator := '-';</pre></td></tr>
+<tr class="covered"><td>209</td><td><pre style="display:inline;">   lFormatacao.TimeSeparator := ':';</pre></td></tr>
+<tr class="covered"><td>210</td><td><pre style="display:inline;">   Result := StrToDateTime(pData, lFormatacao);</pre></td></tr>
+<tr class="covered"><td>211</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>212</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>213</td><td><pre style="display:inline;">procedure TServicoCorrida.ValidarCorridaEstaSolicitada(pIDDaCorrida: String);</pre></td></tr>
+<tr class="nocodegen"><td>214</td><td><pre style="display:inline;">var</pre></td></tr>
+<tr class="nocodegen"><td>215</td><td><pre style="display:inline;">   lCorrida: TDadoCorrida;</pre></td></tr>
+<tr class="covered"><td>216</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>217</td><td><pre style="display:inline;">   lCorrida := Obter(pIDDaCorrida);</pre></td></tr>
+<tr class="covered"><td>218</td><td><pre style="display:inline;">   if not lCorrida.Status.Equals('requested') then</pre></td></tr>
+<tr class="covered"><td>219</td><td><pre style="display:inline;">      raise EArgumentException.Create('Corrida não solicitada!');</pre></td></tr>
+<tr class="covered"><td>220</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>221</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="covered"><td>222</td><td><pre style="display:inline;">end.</pre></td></tr>
+</table>
+</body>
+</html>
