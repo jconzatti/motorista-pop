@@ -69,4 +69,4 @@ __recovery/
 modules/
 
 win32/
-backend/Win64/
+backend\Win64\*
