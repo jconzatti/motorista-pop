@@ -10,6 +10,7 @@ uses
    FireDAC.Phys.SQLite,
    FireDAC.Stan.Async,
    FireDAC.Stan.Def,
+   FireDAC.Stan.Intf,
    ContaUsuario.Servico;
 
 type
@@ -42,7 +43,6 @@ type
       procedure ValidarContaDeUsuarioEhMotorista(pIDDoUsuario: String);
       procedure ValidarPassageiroComTodasAsCorridasConcluidas(pIDDoPassageiro: String);
       procedure ValidarCorridaEstaSolicitada(pIDDaCorrida: String);
-      function ConverterData(pData: String): TDateTime;
    public
       constructor Create;
       destructor Destroy; override;
@@ -105,7 +105,7 @@ begin
                      pEntradaDaSolicitacaoDeCorrida.DeLongitude,
                      pEntradaDaSolicitacaoDeCorrida.ParaLatitude,
                      pEntradaDaSolicitacaoDeCorrida.ParaLongitude,
-                     FormatDateTime('yyyy-mm-dd hh:nn:ss.zzz', Now)],
+                     Now],
                     [ftString,
                      ftString,
                      ftString,
@@ -113,7 +113,7 @@ begin
                      ftFloat,
                      ftFloat,
                      ftFloat,
-                     ftString]);
+                     ftFloat]);
    Result := lIDDaCorrida;
 end;
 
@@ -149,7 +149,7 @@ begin
       Result.DeLongitude    := lQueryCorrida.FieldByName('from_long').AsFloat;
       Result.ParaLatitude   := lQueryCorrida.FieldByName('to_lat').AsFloat;
       Result.ParaLongitude  := lQueryCorrida.FieldByName('to_long').AsFloat;
-      Result.Data           := ConverterData(lQueryCorrida.FieldByName('date').AsString);
+      Result.Data           := lQueryCorrida.FieldByName('date').AsFloat;
    finally
       lQueryCorrida.Destroy
    end;
@@ -196,18 +196,6 @@ begin
                                                                 [ftString, ftString]);
    if lQuantidadeDeCorridasNaoConcluidas > 0 then
       raise EArgumentException.Create('Passageiro possui corridas não concluídas!');
-end;
-
-function TServicoCorrida.ConverterData(pData: String): TDateTime;
-var
-   lFormatacao: TFormatSettings;
-begin
-   lFormatacao := TFormatSettings.Create;
-   lFormatacao.ShortDateFormat := 'yyyy-mm-dd';
-   lFormatacao.ShortTimeFormat := 'hh:nn:ss.zzz';
-   lFormatacao.DateSeparator := '-';
-   lFormatacao.TimeSeparator := ':';
-   Result := StrToDateTime(pData, lFormatacao);
 end;
 
 procedure TServicoCorrida.ValidarCorridaEstaSolicitada(pIDDaCorrida: String);

@@ -41,7 +41,6 @@ type
       FConexao: TFDConnection;
       FValidadorCPF : TValidadorCPF;
       procedure EnviarEmail(pEmail, pAssunto, pMensagem: String);
-      function ConverterData(pData: String): TDateTime;
    public
       constructor Create;
       destructor Destroy; override;
@@ -122,7 +121,7 @@ begin
                      pEntradaDaContaDeUsuario.PlacaDoCarro,
                      Ord(pEntradaDaContaDeUsuario.Passageiro),
                      Ord(pEntradaDaContaDeUsuario.Motorista),
-                     FormatDateTime('yyyy-mm-dd hh:nn:ss.zzz', Now),
+                     Now,
                      0,
                      lCodigoDeVerificacaoDaConta],
                     [ftString,
@@ -132,7 +131,7 @@ begin
                      ftString,
                      ftInteger,
                      ftInteger,
-                     ftString,
+                     ftFloat,
                      ftInteger,
                      ftString]);
    EnviarEmail(pEntradaDaContaDeUsuario.Email,
@@ -160,7 +159,7 @@ begin
       Result.PlacaDoCarro := lQueryContaDeUsuario.FieldByName('car_plate').AsString;
       Result.Passageiro   := lQueryContaDeUsuario.FieldByName('is_passenger').AsInteger = 1;
       Result.Motorista    := lQueryContaDeUsuario.FieldByName('is_driver').AsInteger = 1;
-      Result.Data         := ConverterData(lQueryContaDeUsuario.FieldByName('date').AsString);
+      Result.Data         := lQueryContaDeUsuario.FieldByName('date').AsFloat;
       Result.Verificada   := lQueryContaDeUsuario.FieldByName('is_verified').AsInteger = 1;
       Result.CodigoDeVerificacao := lQueryContaDeUsuario.FieldByName('verification_code').AsString;
    finally
@@ -168,21 +167,9 @@ begin
    end;
 end;
 
-function TServicoContaUsuario.ConverterData(pData: String): TDateTime;
-var
-   lFormatacao: TFormatSettings;
-begin
-   lFormatacao := TFormatSettings.Create;
-   lFormatacao.ShortDateFormat := 'yyyy-mm-dd';
-   lFormatacao.ShortTimeFormat := 'hh:nn:ss.zzz';
-   lFormatacao.DateSeparator := '-';
-   lFormatacao.TimeSeparator := ':';
-   Result := StrToDateTime(pData, lFormatacao);
-end;
-
 procedure TServicoContaUsuario.EnviarEmail(pEmail, pAssunto, pMensagem: String);
 begin
-   Writeln(pEmail, pAssunto, pMensagem);
+   Writeln(Format('%s %s %s', [pEmail, pAssunto, pMensagem]));
 end;
 
 end.

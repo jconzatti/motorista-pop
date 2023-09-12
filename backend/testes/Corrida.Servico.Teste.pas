@@ -206,7 +206,48 @@ begin
 end;
 
 procedure TServicoCorridaTeste.PassageiroNaoPodeAceitarCorrida;
+var lEntradaDaContaDePassageiro: TDadoInscricaoContaUsuario;
+    lServicoContaUsuario: TServicoContaUsuario;
+    lIDDoPassageiro: string;
+    lEntradaDaSolicitacaoDeCorrida: TDadoSolicitacaoCorrida;
+    lServicoCorrida: TServicoCorrida;
+    lIDDaCorrida: string;
+begin
+   lEntradaDaContaDePassageiro.Nome  := 'John Doe';
+   lEntradaDaContaDePassageiro.Email := Format('john.doe.%d@gmail.com', [Random(100000000)]);
+   lEntradaDaContaDePassageiro.CPF   := '958.187.055-52';
+   lEntradaDaContaDePassageiro.Passageiro := True;
+   lEntradaDaContaDePassageiro.Motorista  := False;
+   lServicoContaUsuario := TServicoContaUsuario.Create;
+   try
+      lIDDoPassageiro := lServicoContaUsuario.Inscrever(lEntradaDaContaDePassageiro);
+   finally
+      lServicoContaUsuario.Destroy;
+   end;
 
+   lEntradaDaSolicitacaoDeCorrida.IDDoPassageiro := lIDDoPassageiro;
+   lEntradaDaSolicitacaoDeCorrida.DeLatitude     := -26.877291364885657;
+   lEntradaDaSolicitacaoDeCorrida.DeLongitude    := -49.08225874081267;
+   lEntradaDaSolicitacaoDeCorrida.ParaLatitude   := -26.863202471813185;
+   lEntradaDaSolicitacaoDeCorrida.ParaLongitude  := -49.072482819584245;
+
+   Assert.WillRaiseWithMessage(
+      procedure
+      begin
+         lServicoCorrida := TServicoCorrida.Create;
+         try
+            lIDDaCorrida := lServicoCorrida.Solicitar(lEntradaDaSolicitacaoDeCorrida);
+            lServicoCorrida.Aceitar(lIDDaCorrida, lIDDoPassageiro);
+         finally
+            lServicoCorrida.Destroy;
+         end;
+      end,
+      EArgumentException,
+      'Conta de usuário não pertence a um motorista!'
+   );
+end;
+
+procedure TServicoCorridaTeste.MotoristaNaoPodeAceitarCorridaNaoSolicitada;
 var lEntradaDaContaDePassageiro, lEntradaDaContaDeMotorista: TDadoInscricaoContaUsuario;
     lServicoContaUsuario: TServicoContaUsuario;
     lIDDoPassageiro, lIDDoMotorista: string;
@@ -254,48 +295,6 @@ begin
       end,
       EArgumentException,
       'Corrida não solicitada!'
-   );
-end;
-
-procedure TServicoCorridaTeste.MotoristaNaoPodeAceitarCorridaNaoSolicitada;
-var lEntradaDaContaDePassageiro: TDadoInscricaoContaUsuario;
-    lServicoContaUsuario: TServicoContaUsuario;
-    lIDDoPassageiro: string;
-    lEntradaDaSolicitacaoDeCorrida: TDadoSolicitacaoCorrida;
-    lServicoCorrida: TServicoCorrida;
-    lIDDaCorrida: string;
-begin
-   lEntradaDaContaDePassageiro.Nome  := 'John Doe';
-   lEntradaDaContaDePassageiro.Email := Format('john.doe.%d@gmail.com', [Random(100000000)]);
-   lEntradaDaContaDePassageiro.CPF   := '958.187.055-52';
-   lEntradaDaContaDePassageiro.Passageiro := True;
-   lEntradaDaContaDePassageiro.Motorista  := False;
-   lServicoContaUsuario := TServicoContaUsuario.Create;
-   try
-      lIDDoPassageiro := lServicoContaUsuario.Inscrever(lEntradaDaContaDePassageiro);
-   finally
-      lServicoContaUsuario.Destroy;
-   end;
-
-   lEntradaDaSolicitacaoDeCorrida.IDDoPassageiro := lIDDoPassageiro;
-   lEntradaDaSolicitacaoDeCorrida.DeLatitude     := -26.877291364885657;
-   lEntradaDaSolicitacaoDeCorrida.DeLongitude    := -49.08225874081267;
-   lEntradaDaSolicitacaoDeCorrida.ParaLatitude   := -26.863202471813185;
-   lEntradaDaSolicitacaoDeCorrida.ParaLongitude  := -49.072482819584245;
-
-   Assert.WillRaiseWithMessage(
-      procedure
-      begin
-         lServicoCorrida := TServicoCorrida.Create;
-         try
-            lIDDaCorrida := lServicoCorrida.Solicitar(lEntradaDaSolicitacaoDeCorrida);
-            lServicoCorrida.Aceitar(lIDDaCorrida, lIDDoPassageiro);
-         finally
-            lServicoCorrida.Destroy;
-         end;
-      end,
-      EArgumentException,
-      'Conta de usuário não pertence a um motorista!'
    );
 end;
 
