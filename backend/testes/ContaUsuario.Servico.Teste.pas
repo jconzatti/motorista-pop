@@ -5,13 +5,21 @@ interface
 uses
    System.Math,
    System.SysUtils,
+   ContaUsuario.DAO,
+   ContaUsuario.DAO.Fake,
    ContaUsuario.Servico,
    DUnitX.TestFramework;
 
 type
    [TestFixture]
    TServicoContaUsuarioTeste = class
+   private
+      FDAOContaUsuario : TDAOContaUsuarioFake;
    public
+      [Setup]
+      procedure Inicializar;
+      [TearDown]
+      procedure Finalizar;
       [Test]
       procedure DeveCriarUmPassageiro;
       [Test]
@@ -21,7 +29,7 @@ type
       [Test]
       procedure NaoDeveCriarUmPassageiroComEmailInvalido;
       [Test]
-      procedure NaoDeveCriarUmPassageiroComContaJaExistente;
+      procedure NaoDeveCriarUmPassageiroComEmailJaExistente;
       [Test]
       procedure DeveCriarUmMotorista;
       [Test]
@@ -32,6 +40,16 @@ implementation
 
 
 { TServicoContaUsuarioTeste }
+
+procedure TServicoContaUsuarioTeste.Inicializar;
+begin
+   FDAOContaUsuario := TDAOContaUsuarioFake.Create;
+end;
+
+procedure TServicoContaUsuarioTeste.Finalizar;
+begin
+   FDAOContaUsuario.Destroy;
+end;
 
 procedure TServicoContaUsuarioTeste.DeveCriarUmPassageiro;
 var lEntradaDaContaDeUsuario: TDadoInscricaoContaUsuario;
@@ -44,7 +62,7 @@ begin
    lEntradaDaContaDeUsuario.CPF   := '958.187.055-52';
    lEntradaDaContaDeUsuario.Passageiro := True;
    lEntradaDaContaDeUsuario.Motorista  := False;
-   lServicoContaUsuario := TServicoContaUsuario.Create;
+   lServicoContaUsuario := TServicoContaUsuario.Create(FDAOContaUsuario);
    try
       IDDaContaDeUsuario := lServicoContaUsuario.Inscrever(lEntradaDaContaDeUsuario);
       lSaidaDaContaDeUsuario := lServicoContaUsuario.Obter(IDDaContaDeUsuario);
@@ -70,7 +88,7 @@ begin
          lEntradaDaContaDeUsuario.CPF   := '958.187.055-00';
          lEntradaDaContaDeUsuario.Passageiro := True;
          lEntradaDaContaDeUsuario.Motorista  := False;
-         lServicoContaUsuario := TServicoContaUsuario.Create;
+         lServicoContaUsuario := TServicoContaUsuario.Create(FDAOContaUsuario);
          try
             lServicoContaUsuario.Inscrever(lEntradaDaContaDeUsuario);
          finally
@@ -94,7 +112,7 @@ begin
          lEntradaDaContaDeUsuario.CPF   := '958.187.055-52';
          lEntradaDaContaDeUsuario.Passageiro := True;
          lEntradaDaContaDeUsuario.Motorista  := False;
-         lServicoContaUsuario := TServicoContaUsuario.Create;
+         lServicoContaUsuario := TServicoContaUsuario.Create(FDAOContaUsuario);
          try
             lServicoContaUsuario.Inscrever(lEntradaDaContaDeUsuario);
          finally
@@ -118,7 +136,7 @@ begin
          lEntradaDaContaDeUsuario.CPF   := '958.187.055-52';
          lEntradaDaContaDeUsuario.Passageiro := True;
          lEntradaDaContaDeUsuario.Motorista  := False;
-         lServicoContaUsuario := TServicoContaUsuario.Create;
+         lServicoContaUsuario := TServicoContaUsuario.Create(FDAOContaUsuario);
          try
             lServicoContaUsuario.Inscrever(lEntradaDaContaDeUsuario);
          finally
@@ -130,7 +148,7 @@ begin
    );
 end;
 
-procedure TServicoContaUsuarioTeste.NaoDeveCriarUmPassageiroComContaJaExistente;
+procedure TServicoContaUsuarioTeste.NaoDeveCriarUmPassageiroComEmailJaExistente;
 var lEntradaDaContaDeUsuario: TDadoInscricaoContaUsuario;
     lServicoContaUsuario: TServicoContaUsuario;
 begin
@@ -142,7 +160,7 @@ begin
          lEntradaDaContaDeUsuario.CPF   := '958.187.055-52';
          lEntradaDaContaDeUsuario.Passageiro := True;
          lEntradaDaContaDeUsuario.Motorista  := False;
-         lServicoContaUsuario := TServicoContaUsuario.Create;
+         lServicoContaUsuario := TServicoContaUsuario.Create(FDAOContaUsuario);
          try
             lServicoContaUsuario.Inscrever(lEntradaDaContaDeUsuario);
             lServicoContaUsuario.Inscrever(lEntradaDaContaDeUsuario);
@@ -167,7 +185,7 @@ begin
    lEntradaDaContaDeUsuario.PlacaDoCarro := 'AAA9999';
    lEntradaDaContaDeUsuario.Passageiro := False;
    lEntradaDaContaDeUsuario.Motorista  := True;
-   lServicoContaUsuario := TServicoContaUsuario.Create;
+   lServicoContaUsuario := TServicoContaUsuario.Create(FDAOContaUsuario);
    try
       IDDaContaDeUsuario := lServicoContaUsuario.Inscrever(lEntradaDaContaDeUsuario);
       lSaidaDaContaDeUsuario := lServicoContaUsuario.Obter(IDDaContaDeUsuario);
@@ -194,7 +212,7 @@ begin
          lEntradaDaContaDeUsuario.PlacaDoCarro := 'AAA999';
          lEntradaDaContaDeUsuario.Passageiro := False;
          lEntradaDaContaDeUsuario.Motorista  := True;
-         lServicoContaUsuario := TServicoContaUsuario.Create;
+         lServicoContaUsuario := TServicoContaUsuario.Create(FDAOContaUsuario);
          try
             lServicoContaUsuario.Inscrever(lEntradaDaContaDeUsuario);
          finally

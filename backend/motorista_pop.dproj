@@ -126,6 +126,11 @@
         <DCCReference Include="fontes\ContaUsuario.Servico.pas"/>
         <DCCReference Include="fontes\Corrida.Servico.pas"/>
         <DCCReference Include="fontes\CPF.Validador.pas"/>
+        <DCCReference Include="fontes\ContaUsuario.DAO.FireDAC.pas"/>
+        <DCCReference Include="fontes\ContaUsuario.DAO.pas"/>
+        <DCCReference Include="fontes\Corrida.DAO.FireDAC.pas"/>
+        <DCCReference Include="fontes\Corrida.DAO.pas"/>
+        <DCCReference Include="fontes\Email.Enviador.Gateway.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

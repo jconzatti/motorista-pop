@@ -66,7 +66,7 @@
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
-        <DCC_UnitSearchPath>$(DUnitX);$(DCC_UnitSearchPath);modules\.dcp;modules\.dcu;modules;modules\horse\src</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>$(DUnitX);modules\.dcp;modules\.dcu;modules;modules\horse\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <SanitizedProjectName>motorista_pop_teste</SanitizedProjectName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
@@ -122,6 +122,22 @@
         <DCCReference Include="fontes\ContaUsuario.Servico.pas"/>
         <DCCReference Include="testes\Corrida.Servico.Teste.pas"/>
         <DCCReference Include="fontes\Corrida.Servico.pas"/>
+        <DCCReference Include="fontes\ContaUsuario.DAO.pas"/>
+        <DCCReference Include="fontes\ContaUsuario.DAO.FireDAC.pas"/>
+        <DCCReference Include="fontes\Email.Enviador.Gateway.pas"/>
+        <DCCReference Include="fontes\Corrida.DAO.pas"/>
+        <DCCReference Include="fontes\Corrida.DAO.FireDAC.pas"/>
+        <DCCReference Include="testes\ContaUsuario.DAO.Fake.pas"/>
+        <DCCReference Include="testes\Corrida.DAO.Fake.pas"/>
+        <DCCReference Include="testes\ContaUsuario.DAO.FireDAC.Teste.pas"/>
+        <DCCReference Include="testes\Corrida.DAO.FireDAC.Teste.pas"/>
+        <DCCReference Include="testes\MotoristaPOP.API.Teste.pas"/>
+        <DCCReference Include="fontes\Posicao.DAO.pas"/>
+        <DCCReference Include="testes\Posicao.DAO.Fake.pas"/>
+        <DCCReference Include="fontes\Posicao.DAO.FireDAC.pas"/>
+        <DCCReference Include="testes\Posicao.DAO.FireDAC.Teste.pas"/>
+        <DCCReference Include="testes\Distancia.Calculador.Teste.pas"/>
+        <DCCReference Include="fontes\Distancia.Calculador.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -148,6 +164,12 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
+                <DeployFile LocalName="Win64\Debug\motorista_pop_teste.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>motorista_pop_teste.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
                     <Platform Name="OSX32">
                         <Overwrite>true</Overwrite>
@@ -166,6 +188,12 @@
                 <DeployFile LocalName="Win32\Debug\motorista_pop_teste.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>motorista_pop_teste.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win64\Debug\motorista_pop_teste.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>motorista_pop_teste.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

@@ -5,44 +5,19 @@ interface
 uses
    System.SysUtils,
    System.RegularExpressions,
-   Data.DB,
-   FireDAC.Comp.Client,
-   FireDAC.DApt,
-   FireDAC.Phys.SQLite,
-   FireDAC.Stan.Async,
-   FireDAC.Stan.Def,
-   CPF.Validador;
+   CPF.Validador,
+   ContaUsuario.DAO,
+   Email.Enviador.Gateway;
 
 type
-   TDadoInscricaoContaUsuario = record
-      Nome: String;
-      Email: String;
-      CPF: String;
-      Passageiro: Boolean;
-      Motorista: Boolean;
-      PlacaDoCarro: String;
-   end;
-
-   TDadoContaUsuario = record
-      ID: String;
-      Nome: String;
-      Email: String;
-      CPF: String;
-      Passageiro: Boolean;
-      Motorista: Boolean;
-      PlacaDoCarro: String;
-      Data: TDateTime;
-      Verificada: Boolean;
-      CodigoDeVerificacao: String;
-   end;
 
    TServicoContaUsuario = class
    private
-      FConexao: TFDConnection;
-      FValidadorCPF : TValidadorCPF;
-      procedure EnviarEmail(pEmail, pAssunto, pMensagem: String);
+      FValidadorCPF: TValidadorCPF;
+      FDAOContaUsuario: TDAOContaUsuario;
+      FGatewayEnviadorEmail: TGatewayEnviadorEmail;
    public
-      constructor Create;
+      constructor Create(pDAOContaUsuario: TDAOContaUsuario); reintroduce;
       destructor Destroy; override;
       function Inscrever(pEntradaDaContaDeUsuario: TDadoInscricaoContaUsuario): String;
       function Obter(pID: String): TDadoContaUsuario;
@@ -52,29 +27,27 @@ implementation
 
 { TServicoContaUsuario }
 
-constructor TServicoContaUsuario.Create;
+constructor TServicoContaUsuario.Create(pDAOContaUsuario: TDAOContaUsuario);
 begin
+   FDAOContaUsuario := pDAOContaUsuario;
    FValidadorCPF := TValidadorCPF.Create;
-   FConexao := TFDConnection.Create(nil);
-   FConexao.DriverName := 'SQLite';
-   FConexao.Params.Database := 'C:\Projetos Pessoais\branas.io\motorista-pop\backend\banco-de-dados\motorista-pop.sqlite3';
-   FConexao.Open;
+   FGatewayEnviadorEmail := TGatewayEnviadorEmail.Create;
 end;
 
 destructor TServicoContaUsuario.Destroy;
 begin
-   FConexao.Close;
-   FConexao.Destroy;
+   FGatewayEnviadorEmail.Destroy;
    FValidadorCPF.Destroy;
    inherited;
 end;
 
 function TServicoContaUsuario.Inscrever(pEntradaDaContaDeUsuario: TDadoInscricaoContaUsuario): String;
-var lIDDaContaDeUsuario: String;
-    lCodigoDeVerificacaoDaConta: String;
-    lGUID: TGUID;
-    lQuantidadeDeContasDeUsuario: Integer;
+var lGUID: TGUID;
+    lContaUsuario: TDadoContaUsuario;
 begin
+   lContaUsuario := FDAOContaUsuario.ObterPorEmail(pEntradaDaContaDeUsuario.Email);
+   if not lContaUsuario.ID.IsEmpty then
+      raise Exception.Create('Conta de usuário já existe!');
    if not TRegEx.IsMatch(pEntradaDaContaDeUsuario.Nome, '[a-zA-Z] [a-zA-Z]+') then
       raise EArgumentException.Create('Nome inválido!');
    if not TRegEx.IsMatch(pEntradaDaContaDeUsuario.Email, '^(.+)@(.+)$') then
@@ -83,93 +56,28 @@ begin
       raise EArgumentException.Create('CPF inválido!');
    if pEntradaDaContaDeUsuario.Motorista and (not TRegEx.IsMatch(pEntradaDaContaDeUsuario.PlacaDoCarro, '[A-Z]{3}[0-9]{4}')) then
       raise EArgumentException.Create('Placa do carro inválida!');
-   lQuantidadeDeContasDeUsuario := FConexao.ExecSQLScalar('SELECT COUNT(*) FROM account WHERE email = :email',
-                                                          [pEntradaDaContaDeUsuario.Email], [ftString]);
-   if lQuantidadeDeContasDeUsuario > 0 then
-      raise Exception.Create('Conta de usuário já existe!');
    CreateGUID(lGUID);
-   lIDDaContaDeUsuario := lGUID.ToString;
+   lContaUsuario.ID := lGUID.ToString;
+   lContaUsuario.Nome         := pEntradaDaContaDeUsuario.Nome;
+   lContaUsuario.Email        := pEntradaDaContaDeUsuario.Email;
+   lContaUsuario.CPF          := pEntradaDaContaDeUsuario.CPF;
+   lContaUsuario.PlacaDoCarro := pEntradaDaContaDeUsuario.PlacaDoCarro;
+   lContaUsuario.Passageiro   := pEntradaDaContaDeUsuario.Passageiro;
+   lContaUsuario.Motorista    := pEntradaDaContaDeUsuario.Motorista;
+   lContaUsuario.Data         := Now;
+   lContaUsuario.Verificada   := False;
    CreateGUID(lGUID);
-   lCodigoDeVerificacaoDaConta := lGUID.ToString;
-   FConexao.ExecSQL('INSERT INTO account ('+
-                    '    account_id,'+
-                    '    name,'+
-                    '    email,'+
-                    '    cpf,'+
-                    '    car_plate,'+
-                    '    is_passenger,'+
-                    '    is_driver,'+
-                    '    date,'+
-                    '    is_verified,'+
-                    '    verification_code'+
-                    ') VALUES ('+
-                    '    :account_id,'+
-                    '    :name,'+
-                    '    :email,'+
-                    '    :cpf,'+
-                    '    :car_plate,'+
-                    '    :is_passenger,'+
-                    '    :is_driver,'+
-                    '    :date,'+
-                    '    :is_verified,'+
-                    '    :verification_code'+
-                    ')',
-                    [lIDDaContaDeUsuario,
-                     pEntradaDaContaDeUsuario.Nome,
-                     pEntradaDaContaDeUsuario.Email,
-                     pEntradaDaContaDeUsuario.CPF,
-                     pEntradaDaContaDeUsuario.PlacaDoCarro,
-                     Ord(pEntradaDaContaDeUsuario.Passageiro),
-                     Ord(pEntradaDaContaDeUsuario.Motorista),
-                     Now,
-                     0,
-                     lCodigoDeVerificacaoDaConta],
-                    [ftString,
-                     ftString,
-                     ftString,
-                     ftString,
-                     ftString,
-                     ftInteger,
-                     ftInteger,
-                     ftFloat,
-                     ftInteger,
-                     ftString]);
-   EnviarEmail(pEntradaDaContaDeUsuario.Email,
-               'Verificação de Conta',
-               Format('Por favor, verifique seu código no primeiro acesso %s', [lCodigoDeVerificacaoDaConta]));
-   Result := lIDDaContaDeUsuario;
+   lContaUsuario.CodigoDeVerificacao := lGUID.ToString;
+   FDAOContaUsuario.Salvar(lContaUsuario);
+   FGatewayEnviadorEmail.Enviar(pEntradaDaContaDeUsuario.Email,
+                                'Verificação de Conta',
+                                Format('Por favor, verifique seu código no primeiro acesso %s', [lContaUsuario.CodigoDeVerificacao]));
+   Result := lContaUsuario.ID;
 end;
 
 function TServicoContaUsuario.Obter(pID: String): TDadoContaUsuario;
-var
-   lQueryContaDeUsuario: TFDQuery;
 begin
-   lQueryContaDeUsuario := TFDQuery.Create(nil);
-   try
-      lQueryContaDeUsuario.Connection := FConexao;
-      lQueryContaDeUsuario.Open('SELECT name, email, cpf, car_plate, '+
-                                'is_passenger, is_driver, date, is_verified, '+
-                                'verification_code FROM account '+
-                                'WHERE account_id = :account_id',
-                                [pID], [ftString]);
-      Result.ID           := pID;
-      Result.Nome         := lQueryContaDeUsuario.FieldByName('name').AsString;
-      Result.Email        := lQueryContaDeUsuario.FieldByName('email').AsString;
-      Result.CPF          := lQueryContaDeUsuario.FieldByName('cpf').AsString;
-      Result.PlacaDoCarro := lQueryContaDeUsuario.FieldByName('car_plate').AsString;
-      Result.Passageiro   := lQueryContaDeUsuario.FieldByName('is_passenger').AsInteger = 1;
-      Result.Motorista    := lQueryContaDeUsuario.FieldByName('is_driver').AsInteger = 1;
-      Result.Data         := lQueryContaDeUsuario.FieldByName('date').AsFloat;
-      Result.Verificada   := lQueryContaDeUsuario.FieldByName('is_verified').AsInteger = 1;
-      Result.CodigoDeVerificacao := lQueryContaDeUsuario.FieldByName('verification_code').AsString;
-   finally
-      lQueryContaDeUsuario.Destroy
-   end;
-end;
-
-procedure TServicoContaUsuario.EnviarEmail(pEmail, pAssunto, pMensagem: String);
-begin
-   Writeln(Format('%s %s %s', [pEmail, pAssunto, pMensagem]));
+   Result := FDAOContaUsuario.ObterPorID(pID);
 end;
 
 end.

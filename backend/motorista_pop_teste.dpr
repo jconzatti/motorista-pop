@@ -16,7 +16,23 @@ uses
   ContaUsuario.Servico.Teste in 'testes\ContaUsuario.Servico.Teste.pas',
   ContaUsuario.Servico in 'fontes\ContaUsuario.Servico.pas',
   Corrida.Servico.Teste in 'testes\Corrida.Servico.Teste.pas',
-  Corrida.Servico in 'fontes\Corrida.Servico.pas';
+  Corrida.Servico in 'fontes\Corrida.Servico.pas',
+  ContaUsuario.DAO in 'fontes\ContaUsuario.DAO.pas',
+  ContaUsuario.DAO.FireDAC in 'fontes\ContaUsuario.DAO.FireDAC.pas',
+  Email.Enviador.Gateway in 'fontes\Email.Enviador.Gateway.pas',
+  Corrida.DAO in 'fontes\Corrida.DAO.pas',
+  Corrida.DAO.FireDAC in 'fontes\Corrida.DAO.FireDAC.pas',
+  ContaUsuario.DAO.Fake in 'testes\ContaUsuario.DAO.Fake.pas',
+  Corrida.DAO.Fake in 'testes\Corrida.DAO.Fake.pas',
+  ContaUsuario.DAO.FireDAC.Teste in 'testes\ContaUsuario.DAO.FireDAC.Teste.pas',
+  Corrida.DAO.FireDAC.Teste in 'testes\Corrida.DAO.FireDAC.Teste.pas',
+  MotoristaPOP.API.Teste in 'testes\MotoristaPOP.API.Teste.pas',
+  Posicao.DAO in 'fontes\Posicao.DAO.pas',
+  Posicao.DAO.Fake in 'testes\Posicao.DAO.Fake.pas',
+  Posicao.DAO.FireDAC in 'fontes\Posicao.DAO.FireDAC.pas',
+  Posicao.DAO.FireDAC.Teste in 'testes\Posicao.DAO.FireDAC.Teste.pas',
+  Distancia.Calculador.Teste in 'testes\Distancia.Calculador.Teste.pas',
+  Distancia.Calculador in 'fontes\Distancia.Calculador.pas';
 
 var
   runner : ITestRunner;

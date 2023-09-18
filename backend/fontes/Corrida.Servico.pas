@@ -4,50 +4,34 @@ interface
 
 uses
    System.SysUtils,
-   Data.DB,
-   FireDAC.Comp.Client,
-   FireDAC.DApt,
-   FireDAC.Phys.SQLite,
-   FireDAC.Stan.Async,
-   FireDAC.Stan.Def,
-   FireDAC.Stan.Intf,
-   ContaUsuario.Servico;
+   System.Math,
+   ContaUsuario.DAO,
+   Corrida.DAO,
+   Posicao.DAO,
+   Distancia.Calculador;
 
 type
-   TDadoSolicitacaoCorrida = record
-      IDDoPassageiro: String;
-      DeLatitude: Double;
-      DeLongitude: Double;
-      ParaLatitude: Double;
-      ParaLongitude: Double;
-   end;
-
-   TDadoCorrida = record
-      ID: String;
-      IDDoPassageiro: String;
-      IDDoMotorista: String;
-      Status: String;
-      Tarifa: Double;
-      Distancia: Double;
-      DeLatitude: Double;
-      DeLongitude: Double;
-      ParaLatitude: Double;
-      ParaLongitude: Double;
-      Data: TDateTime;
-   end;
-
    TServicoCorrida = class
    private
-      FConexao: TFDConnection;
+      FDAOContaUsuario: TDAOContaUsuario;
+      FDAOCorrida: TDAOCorrida;
+      FDAOPosicao: TDAOPosicao;
+      const TARIFA_POR_KM: Double = 2.1;
       procedure ValidarContaDeUsuarioEhPassageiro(pIDDoUsuario: String);
       procedure ValidarContaDeUsuarioEhMotorista(pIDDoUsuario: String);
-      procedure ValidarPassageiroComTodasAsCorridasConcluidas(pIDDoPassageiro: String);
+      procedure ValidarPassageiroComAlgumaCorridaAtiva(pIDDoPassageiro: String);
+      procedure ValidarMotoristaComAlgumaCorridaAtiva(pIDDoMotorista: String);
       procedure ValidarCorridaEstaSolicitada(pIDDaCorrida: String);
+      procedure ValidarCorridaEstaAceita(pIDDaCorrida: String);
+      procedure ValidarCorridaEstaIniciada(pIDDaCorrida: String);
+      function CalcularDistanciaPercorrida(pIDDaCorrida: String): Double;
    public
-      constructor Create;
-      destructor Destroy; override;
+      constructor Create(pDAOContaUsuario: TDAOContaUsuario; pDAOCorrida: TDAOCorrida; pDAOPosicao: TDAOPosicao); reintroduce;
       function Solicitar(pEntradaDaSolicitacaoDeCorrida: TDadoSolicitacaoCorrida): String;
       procedure Aceitar(pIDDaCorrida, pIDDoMotorista: String);
+      procedure Iniciar(pIDDaCorrida: String);
+      procedure AtualizarPosicao(pIDDaCorrida: String; pLatitude, pLongitude: Double; pData: TDateTime);
+      procedure Finalizar(pIDDaCorrida: String);
       function Obter(pID: String): TDadoCorrida;
    end;
 
@@ -55,147 +39,132 @@ implementation
 
 { TServicoCorrida }
 
-constructor TServicoCorrida.Create;
+constructor TServicoCorrida.Create(pDAOContaUsuario: TDAOContaUsuario; pDAOCorrida: TDAOCorrida; pDAOPosicao: TDAOPosicao);
 begin
-   FConexao := TFDConnection.Create(nil);
-   FConexao.DriverName := 'SQLite';
-   FConexao.Params.Database := 'C:\Projetos Pessoais\branas.io\motorista-pop\backend\banco-de-dados\motorista-pop.sqlite3';
-   FConexao.Open;
-end;
-
-destructor TServicoCorrida.Destroy;
-begin
-   FConexao.Close;
-   FConexao.Destroy;
-   inherited;
+   FDAOContaUsuario := pDAOContaUsuario;
+   FDAOCorrida := pDAOCorrida;
+   FDAOPosicao := pDAOPosicao;
 end;
 
 function TServicoCorrida.Solicitar(pEntradaDaSolicitacaoDeCorrida: TDadoSolicitacaoCorrida): String;
 var
    lGUID: TGUID;
-   lIDDaCorrida: String;
+   lCorrida: TDadoCorrida;
 begin
    ValidarContaDeUsuarioEhPassageiro(pEntradaDaSolicitacaoDeCorrida.IDDoPassageiro);
-   ValidarPassageiroComTodasAsCorridasConcluidas(pEntradaDaSolicitacaoDeCorrida.IDDoPassageiro);
+   ValidarPassageiroComAlgumaCorridaAtiva(pEntradaDaSolicitacaoDeCorrida.IDDoPassageiro);
    CreateGUID(lGUID);
-   lIDDaCorrida := lGUID.ToString;
-   FConexao.ExecSQL('INSERT INTO ride ('+
-                    '    ride_id,'+
-                    '    passenger_id,'+
-                    '    status,'+
-                    '    from_lat,'+
-                    '    from_long,'+
-                    '    to_lat,'+
-                    '    to_long,'+
-                    '    date'+
-                    ') VALUES ('+
-                    '    :ride_id,'+
-                    '    :passenger_id,'+
-                    '    :status,'+
-                    '    :from_lat,'+
-                    '    :from_long,'+
-                    '    :to_lat,'+
-                    '    :to_long,'+
-                    '    :date'+
-                    ')',
-                    [lIDDaCorrida,
-                     pEntradaDaSolicitacaoDeCorrida.IDDoPassageiro,
-                     'requested',
-                     pEntradaDaSolicitacaoDeCorrida.DeLatitude,
-                     pEntradaDaSolicitacaoDeCorrida.DeLongitude,
-                     pEntradaDaSolicitacaoDeCorrida.ParaLatitude,
-                     pEntradaDaSolicitacaoDeCorrida.ParaLongitude,
-                     Now],
-                    [ftString,
-                     ftString,
-                     ftString,
-                     ftFloat,
-                     ftFloat,
-                     ftFloat,
-                     ftFloat,
-                     ftFloat]);
-   Result := lIDDaCorrida;
+   lCorrida.ID             := lGUID.ToString;
+   lCorrida.IDDoPassageiro := pEntradaDaSolicitacaoDeCorrida.IDDoPassageiro;
+   lCorrida.Status         := 'requested';
+   lCorrida.DeLatitude     := pEntradaDaSolicitacaoDeCorrida.DeLatitude;
+   lCorrida.DeLongitude    := pEntradaDaSolicitacaoDeCorrida.DeLongitude;
+   lCorrida.ParaLatitude   := pEntradaDaSolicitacaoDeCorrida.ParaLatitude;
+   lCorrida.ParaLongitude  := pEntradaDaSolicitacaoDeCorrida.ParaLongitude;
+   lCorrida.Data           := Now;
+   FDAOCorrida.Salvar(lCorrida);
+   Result := lCorrida.ID;
 end;
 
 procedure TServicoCorrida.Aceitar(pIDDaCorrida, pIDDoMotorista: String);
+var
+   lCorrida: TDadoCorrida;
 begin
    ValidarContaDeUsuarioEhMotorista(pIDDoMotorista);
    ValidarCorridaEstaSolicitada(pIDDaCorrida);
-   FConexao.ExecSQL('UPDATE ride SET '+
-                    'driver_id = :driver_id, '+
-                    'status = :status '+
-                    'WHERE ride_id = :ride_id',
-                    [pIDDoMotorista, 'accepted', pIDDaCorrida],
-                    [ftString, ftString, ftString]);
+   ValidarMotoristaComAlgumaCorridaAtiva(pIDDoMotorista);
+   lCorrida.ID            := pIDDaCorrida;
+   lCorrida.IDDoMotorista := pIDDoMotorista;
+   lCorrida.Status        := 'accepted';
+   FDAOCorrida.Atualizar(lCorrida);
+end;
+
+procedure TServicoCorrida.Iniciar(pIDDaCorrida: String);
+var
+   lCorrida: TDadoCorrida;
+begin
+   ValidarCorridaEstaAceita(pIDDaCorrida);
+   lCorrida := FDAOCorrida.ObterPorID(pIDDaCorrida);
+   lCorrida.ID     := pIDDaCorrida;
+   lCorrida.Status := 'in_progress';
+   FDAOCorrida.Atualizar(lCorrida);
+end;
+
+procedure TServicoCorrida.AtualizarPosicao(pIDDaCorrida: String; pLatitude,
+  pLongitude: Double; pData: TDateTime);
+var
+   lGUID: TGUID;
+   lPosicao: TDadoPosicao;
+begin
+   ValidarCorridaEstaIniciada(pIDDaCorrida);
+   CreateGUID(lGUID);
+   lPosicao.ID          := lGUID.ToString;
+   lPosicao.IDDaCorrida := pIDDaCorrida;
+   lPosicao.Latitude    := pLatitude;
+   lPosicao.Longitude   := pLongitude;
+   lPosicao.Data        := pData;
+   FDAOPosicao.Salvar(lPosicao);
+end;
+
+procedure TServicoCorrida.Finalizar(pIDDaCorrida: String);
+var
+   lCorrida: TDadoCorrida;
+begin
+   ValidarCorridaEstaIniciada(pIDDaCorrida);
+   lCorrida := FDAOCorrida.ObterPorID(pIDDaCorrida);
+   lCorrida.ID        := pIDDaCorrida;
+   lCorrida.Status    := 'completed';
+   lCorrida.Distancia := CalcularDistanciaPercorrida(pIDDaCorrida);
+   lCorrida.Tarifa    := RoundTo(lCorrida.Distancia * TARIFA_POR_KM, -2);
+   FDAOCorrida.Atualizar(lCorrida);
 end;
 
 function TServicoCorrida.Obter(pID: String): TDadoCorrida;
-var
-   lQueryCorrida: TFDQuery;
 begin
-   lQueryCorrida := TFDQuery.Create(nil);
-   try
-      lQueryCorrida.Connection := FConexao;
-      lQueryCorrida.Open('SELECT ride_id, passenger_id, driver_id, status, '+
-                         'fare, distance, from_lat, from_long, to_lat, to_long, '+
-                         'date FROM ride WHERE ride_id = :ride_id', [pID], [ftString]);
-      Result.ID             := pID;
-      Result.IDDoPassageiro := lQueryCorrida.FieldByName('passenger_id').AsString;
-      Result.IDDoMotorista  := lQueryCorrida.FieldByName('driver_id').AsString;
-      Result.Status         := lQueryCorrida.FieldByName('status').AsString;
-      Result.Tarifa         := lQueryCorrida.FieldByName('fare').AsFloat;
-      Result.Distancia      := lQueryCorrida.FieldByName('distance').AsFloat;
-      Result.DeLatitude     := lQueryCorrida.FieldByName('from_lat').AsFloat;
-      Result.DeLongitude    := lQueryCorrida.FieldByName('from_long').AsFloat;
-      Result.ParaLatitude   := lQueryCorrida.FieldByName('to_lat').AsFloat;
-      Result.ParaLongitude  := lQueryCorrida.FieldByName('to_long').AsFloat;
-      Result.Data           := lQueryCorrida.FieldByName('date').AsFloat;
-   finally
-      lQueryCorrida.Destroy
-   end;
+   Result := FDAOCorrida.ObterPorID(pID);
 end;
 
 procedure TServicoCorrida.ValidarContaDeUsuarioEhPassageiro(pIDDoUsuario: String);
 var
    lContaDeUsuario: TDadoContaUsuario;
-   lServicoDeContaDeUsuario : TServicoContaUsuario;
 begin
-   lServicoDeContaDeUsuario := TServicoContaUsuario.Create;
-   try
-      lContaDeUsuario := lServicoDeContaDeUsuario.Obter(pIDDoUsuario);
-      if not lContaDeUsuario.Passageiro then
-         raise EArgumentException.Create('Conta de usuário não pertence a um passageiro!');
-   finally
-      lServicoDeContaDeUsuario.Destroy;
-   end;
+   lContaDeUsuario := FDAOContaUsuario.ObterPorID(pIDDoUsuario);
+   if not lContaDeUsuario.Passageiro then
+      raise EArgumentException.Create('Conta de usuário não pertence a um passageiro!');
 end;
 
 procedure TServicoCorrida.ValidarContaDeUsuarioEhMotorista(pIDDoUsuario: String);
 var
    lContaDeUsuario: TDadoContaUsuario;
-   lServicoDeContaDeUsuario : TServicoContaUsuario;
 begin
-   lServicoDeContaDeUsuario := TServicoContaUsuario.Create;
+   lContaDeUsuario := FDAOContaUsuario.ObterPorID(pIDDoUsuario);
+   if not lContaDeUsuario.Motorista then
+      raise EArgumentException.Create('Conta de usuário não pertence a um motorista!');
+end;
+
+procedure TServicoCorrida.ValidarPassageiroComAlgumaCorridaAtiva(pIDDoPassageiro: String);
+var lListaDeCorridasAtivas: TListaDeCorridas;
+begin
+   lListaDeCorridasAtivas := FDAOCorrida.ObterListaDeCorridasAtivasPeloIDDoPassageiro(pIDDoPassageiro);
    try
-      lContaDeUsuario := lServicoDeContaDeUsuario.Obter(pIDDoUsuario);
-      if not lContaDeUsuario.Motorista then
-         raise EArgumentException.Create('Conta de usuário não pertence a um motorista!');
+      if lListaDeCorridasAtivas.Count > 0 then
+         raise EArgumentException.Create('Passageiro possui corridas ativas!');
    finally
-      lServicoDeContaDeUsuario.Destroy;
+      lListaDeCorridasAtivas.Destroy;
    end;
 end;
 
-procedure TServicoCorrida.ValidarPassageiroComTodasAsCorridasConcluidas(pIDDoPassageiro: String);
-var
-   lQuantidadeDeCorridasNaoConcluidas: Integer;
+procedure TServicoCorrida.ValidarMotoristaComAlgumaCorridaAtiva(
+  pIDDoMotorista: String);
+var lListaDeCorridasAtivas: TListaDeCorridas;
 begin
-   lQuantidadeDeCorridasNaoConcluidas := FConexao.ExecSQLScalar('SELECT COUNT(*) FROM ride '+
-                                                                'WHERE passenger_id = :passenger_id '+
-                                                                'AND status <> :status',
-                                                                [pIDDoPassageiro, 'completed'],
-                                                                [ftString, ftString]);
-   if lQuantidadeDeCorridasNaoConcluidas > 0 then
-      raise EArgumentException.Create('Passageiro possui corridas não concluídas!');
+   lListaDeCorridasAtivas := FDAOCorrida.ObterListaDeCorridasAtivasPeloIDDoMotorista(pIDDoMotorista);
+   try
+      if lListaDeCorridasAtivas.Count > 0 then
+         raise EArgumentException.Create('Motorista possui corridas ativas!');
+   finally
+      lListaDeCorridasAtivas.Destroy;
+   end;
 end;
 
 procedure TServicoCorrida.ValidarCorridaEstaSolicitada(pIDDaCorrida: String);
@@ -205,6 +174,50 @@ begin
    lCorrida := Obter(pIDDaCorrida);
    if not lCorrida.Status.Equals('requested') then
       raise EArgumentException.Create('Corrida não solicitada!');
+end;
+
+procedure TServicoCorrida.ValidarCorridaEstaAceita(pIDDaCorrida: String);
+var
+   lCorrida: TDadoCorrida;
+begin
+   lCorrida := Obter(pIDDaCorrida);
+   if not lCorrida.Status.Equals('accepted') then
+      raise EArgumentException.Create('Corrida não aceita!');
+end;
+
+procedure TServicoCorrida.ValidarCorridaEstaIniciada(pIDDaCorrida: String);
+var
+   lCorrida: TDadoCorrida;
+begin
+   lCorrida := Obter(pIDDaCorrida);
+   if not lCorrida.Status.Equals('in_progress') then
+      raise EArgumentException.Create('Corrida não iniciada!');
+end;
+
+function TServicoCorrida.CalcularDistanciaPercorrida(
+  pIDDaCorrida: String): Double;
+var LListaDePosicoesDaCorrida: TListaDePosicoes;
+  lPosicao, lPosicaoAnterior: TDadoPosicao;
+  lCalculadorDistancia: TCalculadorDistancia;
+begin
+   Result := 0;
+   LListaDePosicoesDaCorrida := FDAOPosicao.ObterListaDePosicoesDaCorrida(pIDDaCorrida);
+   lCalculadorDistancia := TCalculadorDistancia.Create;
+   try
+      for lPosicao in LListaDePosicoesDaCorrida do
+      begin
+         if not lPosicaoAnterior.ID.IsEmpty then
+            Result := Result +
+                      lCalculadorDistancia.Calcular(lPosicaoAnterior.Latitude,
+                                                    lPosicaoAnterior.Longitude,
+                                                    lPosicao.Latitude,
+                                                    lPosicao.Longitude);
+         lPosicaoAnterior := lPosicao;
+      end;
+   finally
+      lCalculadorDistancia.Destroy;
+      LListaDePosicoesDaCorrida.Destroy;
+   end;
 end;
 
 end.
