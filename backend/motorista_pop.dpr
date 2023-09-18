@@ -15,11 +15,15 @@ uses
   ContaUsuario.DAO in 'fontes\ContaUsuario.DAO.pas',
   Corrida.DAO.FireDAC in 'fontes\Corrida.DAO.FireDAC.pas',
   Corrida.DAO in 'fontes\Corrida.DAO.pas',
-  Email.Enviador.Gateway in 'fontes\Email.Enviador.Gateway.pas';
+  Email.Enviador.Gateway in 'fontes\Email.Enviador.Gateway.pas',
+  Distancia.Calculador in 'fontes\Distancia.Calculador.pas',
+  Posicao.DAO.FireDAC in 'fontes\Posicao.DAO.FireDAC.pas',
+  Posicao.DAO in 'fontes\Posicao.DAO.pas';
 
 var
    FDAOContaUsuario: TDAOContaUsuario;
    FDAOCorrida: TDAOCorrida;
+   FDAOPosicao: TDAOPosicao;
    FServicoContaUsuario: TServicoContaUsuario;
    FServicoCorrida: TServicoCorrida;
 
@@ -164,8 +168,9 @@ begin
 
    FDAOContaUsuario     := TDAOContaUsuarioFireDAC.Create;
    FDAOCorrida          := TDAOCorridaFireDAC.Create;
+   FDAOPosicao          := TDAOPosicaoFireDAC.Create;
    FServicoContaUsuario := TServicoContaUsuario.Create(FDAOContaUsuario);
-   FServicoCorrida      := TServicoCorrida.Create(FDAOContaUsuario, FDAOCorrida);
+   FServicoCorrida      := TServicoCorrida.Create(FDAOContaUsuario, FDAOCorrida, FDAOPosicao);
    try
       THorse.Post('/usuario', CriarContaDeUsuario);
       THorse.Get('/usuario/:id', ObterContaDeUsuario);
@@ -175,6 +180,7 @@ begin
    finally
       FServicoCorrida.Destroy;
       FServicoContaUsuario.Destroy;
+      FDAOPosicao.Destroy;
       FDAOCorrida.Destroy;
       FDAOContaUsuario.Destroy;
    end;

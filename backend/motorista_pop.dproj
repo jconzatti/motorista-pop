@@ -131,6 +131,9 @@
         <DCCReference Include="fontes\Corrida.DAO.FireDAC.pas"/>
         <DCCReference Include="fontes\Corrida.DAO.pas"/>
         <DCCReference Include="fontes\Email.Enviador.Gateway.pas"/>
+        <DCCReference Include="fontes\Distancia.Calculador.pas"/>
+        <DCCReference Include="fontes\Posicao.DAO.FireDAC.pas"/>
+        <DCCReference Include="fontes\Posicao.DAO.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
