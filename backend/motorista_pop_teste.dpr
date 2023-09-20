@@ -32,7 +32,15 @@ uses
   Posicao.DAO.FireDAC in 'fontes\Posicao.DAO.FireDAC.pas',
   Posicao.DAO.FireDAC.Teste in 'testes\Posicao.DAO.FireDAC.Teste.pas',
   Distancia.Calculador.Teste in 'testes\Distancia.Calculador.Teste.pas',
-  Distancia.Calculador in 'fontes\Distancia.Calculador.pas';
+  Distancia.Calculador in 'fontes\Distancia.Calculador.pas',
+  InscreverUsuario.Teste in 'testes\integracao\InscreverUsuario.Teste.pas',
+  InscreverUsuario in 'fontes\aplicacao\caso-de-uso\InscreverUsuario.pas',
+  ContaDeUsuario.Teste in 'testes\unidade\ContaDeUsuario.Teste.pas',
+  ContaDeUsuario in 'fontes\dominio\ContaDeUsuario.pas',
+  UUID.Teste in 'testes\unidade\UUID.Teste.pas',
+  UUID in 'fontes\dominio\UUID.pas',
+  Nome.Teste in 'testes\unidade\Nome.Teste.pas',
+  Nome in 'fontes\dominio\Nome.pas';
 
 var
   runner : ITestRunner;
