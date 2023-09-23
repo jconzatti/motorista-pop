@@ -57,7 +57,8 @@ uses
   BancoDeDado.Conexao.FireDAC in 'fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.FireDAC.pas',
   HTTP.Servidor in 'fontes\infraestrutura\http\HTTP.Servidor.pas',
   HTTP.Servidor.Horse in 'fontes\infraestrutura\http\HTTP.Servidor.Horse.pas',
-  MotoristaPOP.Controlador.API.REST in 'fontes\infraestrutura\controlador\MotoristaPOP.Controlador.API.REST.pas';
+  MotoristaPOP.Controlador.API.REST in 'fontes\infraestrutura\controlador\MotoristaPOP.Controlador.API.REST.pas',
+  JSON.Conversor in 'fontes\infraestrutura\json\JSON.Conversor.pas';
 
 var
   runner : ITestRunner;

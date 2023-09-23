@@ -163,6 +163,7 @@
         <DCCReference Include="fontes\infraestrutura\http\HTTP.Servidor.pas"/>
         <DCCReference Include="fontes\infraestrutura\http\HTTP.Servidor.Horse.pas"/>
         <DCCReference Include="fontes\infraestrutura\controlador\MotoristaPOP.Controlador.API.REST.pas"/>
+        <DCCReference Include="fontes\infraestrutura\json\JSON.Conversor.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
