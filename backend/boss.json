@@ -6,6 +6,7 @@
 	"mainsrc": "./fontes",
 	"projects": [],
 	"dependencies": {
-		"github.com/hashload/horse": "^3.1.5"
+		"github.com/hashload/horse": "^3.1.5",
+		"github.com/hashload/jhonson": "^1.1.6"
 	}
 }

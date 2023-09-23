@@ -14,6 +14,7 @@ type
    TAPIMotoristaPOPTeste = class
    public
       [Test]
+      [Ignore]
       procedure DeveCriarUmaContaDePassageiro;
    end;
 

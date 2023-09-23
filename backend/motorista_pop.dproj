@@ -59,7 +59,7 @@
         <DCC_K>false</DCC_K>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <SanitizedProjectName>motorista_pop</SanitizedProjectName>
-        <DCC_UnitSearchPath>modules\.dcp;modules\.dcu;modules;modules\horse\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>modules\.dcp;modules\.dcu;modules;modules\horse\src;modules\jhonson\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_UsePackage>DBXSqliteDriver;RESTComponents;DBXInterBaseDriver;emsclientfiredac;tethering;DataSnapFireDAC;bindcompfmx;fmx;FireDACIBDriver;FireDACDBXDriver;dbexpress;IndyCore;dsnap;emsclient;DataSnapCommon;FireDACCommon;RESTBackendComponents;soapserver;bindengine;CloudService;FireDACCommonDriver;DataSnapClient;inet;IndyIPCommon;bindcompdbx;IndyIPServer;IndySystem;fmxFireDAC;FireDAC;FireDACSqliteDriver;soaprtl;DbxCommonDriver;xmlrtl;soapmidas;DataSnapNativeClient;FireDACDSDriver;rtl;DbxClientDriver;CustomIPTransport;bindcomp;IndyIPClient;dbxcds;dsnapxml;DataSnapProviderClient;dbrtl;IndyProtocols;$(DCC_UsePackage)</DCC_UsePackage>
@@ -123,17 +123,24 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="fontes\ContaUsuario.Servico.pas"/>
-        <DCCReference Include="fontes\Corrida.Servico.pas"/>
-        <DCCReference Include="fontes\CPF.Validador.pas"/>
-        <DCCReference Include="fontes\ContaUsuario.DAO.FireDAC.pas"/>
-        <DCCReference Include="fontes\ContaUsuario.DAO.pas"/>
-        <DCCReference Include="fontes\Corrida.DAO.FireDAC.pas"/>
-        <DCCReference Include="fontes\Corrida.DAO.pas"/>
-        <DCCReference Include="fontes\Email.Enviador.Gateway.pas"/>
-        <DCCReference Include="fontes\Distancia.Calculador.pas"/>
-        <DCCReference Include="fontes\Posicao.DAO.FireDAC.pas"/>
-        <DCCReference Include="fontes\Posicao.DAO.pas"/>
+        <DCCReference Include="fontes\infraestrutura\gateway\Email.Enviador.Gateway.pas"/>
+        <DCCReference Include="fontes\dominio\ContaDeUsuario.pas"/>
+        <DCCReference Include="fontes\dominio\CPF.pas"/>
+        <DCCReference Include="fontes\dominio\Email.pas"/>
+        <DCCReference Include="fontes\dominio\Nome.pas"/>
+        <DCCReference Include="fontes\dominio\PlacaDeCarro.pas"/>
+        <DCCReference Include="fontes\dominio\UUID.pas"/>
+        <DCCReference Include="fontes\aplicacao\repositorio\ContaDeUsuario.Repositorio.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\InscreverUsuario.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\ObterContaDeUsuario.pas"/>
+        <DCCReference Include="fontes\infraestrutura\repositorio\ContaDeUsuario.Repositorio.BancoDeDado.pas"/>
+        <DCCReference Include="fontes\infraestrutura\repositorio\ContaDeUsuario.Repositorio.Fake.pas"/>
+        <DCCReference Include="fontes\infraestrutura\http\HTTP.Servidor.Horse.pas"/>
+        <DCCReference Include="fontes\infraestrutura\http\HTTP.Servidor.pas"/>
+        <DCCReference Include="fontes\infraestrutura\controlador\MotoristaPOP.Controlador.API.REST.pas"/>
+        <DCCReference Include="fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.FireDAC.pas"/>
+        <DCCReference Include="fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.pas"/>
+        <DCCReference Include="fontes\infraestrutura\json\JSON.Conversor.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

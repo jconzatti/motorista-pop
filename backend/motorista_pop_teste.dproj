@@ -66,7 +66,7 @@
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
-        <DCC_UnitSearchPath>$(DUnitX);modules\.dcp;modules\.dcu;modules;modules\horse\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>$(DUnitX);modules\.dcp;modules\.dcu;modules;modules\horse\src;modules\jhonson\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <SanitizedProjectName>motorista_pop_teste</SanitizedProjectName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
@@ -116,28 +116,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="fontes\CPF.Validador.pas"/>
-        <DCCReference Include="testes\CPF.Validador.Teste.pas"/>
-        <DCCReference Include="testes\ContaUsuario.Servico.Teste.pas"/>
-        <DCCReference Include="fontes\ContaUsuario.Servico.pas"/>
-        <DCCReference Include="testes\Corrida.Servico.Teste.pas"/>
-        <DCCReference Include="fontes\Corrida.Servico.pas"/>
-        <DCCReference Include="fontes\ContaUsuario.DAO.pas"/>
-        <DCCReference Include="fontes\ContaUsuario.DAO.FireDAC.pas"/>
-        <DCCReference Include="fontes\Email.Enviador.Gateway.pas"/>
-        <DCCReference Include="fontes\Corrida.DAO.pas"/>
-        <DCCReference Include="fontes\Corrida.DAO.FireDAC.pas"/>
-        <DCCReference Include="testes\ContaUsuario.DAO.Fake.pas"/>
-        <DCCReference Include="testes\Corrida.DAO.Fake.pas"/>
-        <DCCReference Include="testes\ContaUsuario.DAO.FireDAC.Teste.pas"/>
-        <DCCReference Include="testes\Corrida.DAO.FireDAC.Teste.pas"/>
-        <DCCReference Include="testes\MotoristaPOP.API.Teste.pas"/>
-        <DCCReference Include="fontes\Posicao.DAO.pas"/>
-        <DCCReference Include="testes\Posicao.DAO.Fake.pas"/>
-        <DCCReference Include="fontes\Posicao.DAO.FireDAC.pas"/>
-        <DCCReference Include="testes\Posicao.DAO.FireDAC.Teste.pas"/>
-        <DCCReference Include="testes\Distancia.Calculador.Teste.pas"/>
-        <DCCReference Include="fontes\Distancia.Calculador.pas"/>
         <DCCReference Include="testes\integracao\InscreverUsuario.Teste.pas"/>
         <DCCReference Include="fontes\aplicacao\caso-de-uso\InscreverUsuario.pas"/>
         <DCCReference Include="testes\unidade\ContaDeUsuario.Teste.pas"/>
@@ -146,6 +124,45 @@
         <DCCReference Include="fontes\dominio\UUID.pas"/>
         <DCCReference Include="testes\unidade\Nome.Teste.pas"/>
         <DCCReference Include="fontes\dominio\Nome.pas"/>
+        <DCCReference Include="testes\unidade\CPF.Teste.pas"/>
+        <DCCReference Include="fontes\dominio\CPF.pas"/>
+        <DCCReference Include="testes\unidade\Email.Teste.pas"/>
+        <DCCReference Include="fontes\dominio\Email.pas"/>
+        <DCCReference Include="testes\unidade\PlacaDeCarro.Teste.pas"/>
+        <DCCReference Include="fontes\dominio\PlacaDeCarro.pas"/>
+        <DCCReference Include="fontes\aplicacao\repositorio\ContaDeUsuario.Repositorio.pas"/>
+        <DCCReference Include="fontes\infraestrutura\repositorio\ContaDeUsuario.Repositorio.Fake.pas"/>
+        <DCCReference Include="testes\integracao\ObterContaDeUsuario.Teste.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\ObterContaDeUsuario.pas"/>
+        <DCCReference Include="fontes\infraestrutura\gateway\Email.Enviador.Gateway.pas"/>
+        <DCCReference Include="fontes\_old\ContaUsuario.DAO.FireDAC.pas"/>
+        <DCCReference Include="fontes\_old\ContaUsuario.DAO.pas"/>
+        <DCCReference Include="fontes\_old\ContaUsuario.Servico.pas"/>
+        <DCCReference Include="fontes\_old\Corrida.DAO.FireDAC.pas"/>
+        <DCCReference Include="fontes\_old\Corrida.DAO.pas"/>
+        <DCCReference Include="fontes\_old\Corrida.Servico.pas"/>
+        <DCCReference Include="fontes\_old\CPF.Validador.pas"/>
+        <DCCReference Include="fontes\_old\Distancia.Calculador.pas"/>
+        <DCCReference Include="fontes\_old\Posicao.DAO.FireDAC.pas"/>
+        <DCCReference Include="fontes\_old\Posicao.DAO.pas"/>
+        <DCCReference Include="testes\_old\ContaUsuario.DAO.Fake.pas"/>
+        <DCCReference Include="testes\_old\ContaUsuario.DAO.FireDAC.Teste.pas"/>
+        <DCCReference Include="testes\_old\ContaUsuario.Servico.Teste.pas"/>
+        <DCCReference Include="testes\_old\Corrida.DAO.Fake.pas"/>
+        <DCCReference Include="testes\_old\Corrida.DAO.FireDAC.Teste.pas"/>
+        <DCCReference Include="testes\_old\Corrida.Servico.Teste.pas"/>
+        <DCCReference Include="testes\_old\CPF.Validador.Teste.pas"/>
+        <DCCReference Include="testes\_old\Distancia.Calculador.Teste.pas"/>
+        <DCCReference Include="testes\_old\MotoristaPOP.API.Teste.pas"/>
+        <DCCReference Include="testes\_old\Posicao.DAO.Fake.pas"/>
+        <DCCReference Include="testes\_old\Posicao.DAO.FireDAC.Teste.pas"/>
+        <DCCReference Include="testes\integracao\ContaDeUsuario.Repositorio.BancoDeDado.FireDAC.Teste.pas"/>
+        <DCCReference Include="fontes\infraestrutura\repositorio\ContaDeUsuario.Repositorio.BancoDeDado.pas"/>
+        <DCCReference Include="fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.pas"/>
+        <DCCReference Include="fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.FireDAC.pas"/>
+        <DCCReference Include="fontes\infraestrutura\http\HTTP.Servidor.pas"/>
+        <DCCReference Include="fontes\infraestrutura\http\HTTP.Servidor.Horse.pas"/>
+        <DCCReference Include="fontes\infraestrutura\controlador\MotoristaPOP.Controlador.API.REST.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
