@@ -5,10 +5,10 @@ interface
 uses
    System.SysUtils,
    System.DateUtils,
-   InscreverUsuario,
    ContaDeUsuario,
    ContaDeUsuario.Repositorio,
    ContaDeUsuario.Repositorio.Fake,
+   InscreverUsuario,
    UUID,
    DUnitX.TestFramework;
 
@@ -47,23 +47,23 @@ end;
 
 procedure TInscreverUsuarioTeste.DeveInscreverUmPassageiro;
 var lContaDeUsuario : TContaDeUsuario;
-    lIDDoUsuario: String;
-    lInscricaoUsuario: TDadoEntradaInscricaoContaDeUsuario;
+    lEntradaInscricaoUsuario: TDadoEntradaInscricaoContaDeUsuario;
+    lSaidaInscricaoUsuario: TDadoSaidaInscricaoContaDeUsuario;
     lUUID: TUUID;
 begin
-   lInscricaoUsuario.Nome       := 'John Doe';
-   lInscricaoUsuario.Email      := Format('john.doe.%d@gmail.com', [Random(100000000)]);
-   lInscricaoUsuario.CPF        := '958.187.055-52';
-   lInscricaoUsuario.Passageiro := True;
-   lInscricaoUsuario.Motorista  := False;
-   lIDDoUsuario := FInscreverUsuario.Executar(lInscricaoUsuario);
-   lUUID := TUUID.Create(lIDDoUsuario);
+   lEntradaInscricaoUsuario.Nome       := 'John Doe';
+   lEntradaInscricaoUsuario.Email      := Format('john.doe.%d@gmail.com', [Random(100000000)]);
+   lEntradaInscricaoUsuario.CPF        := '958.187.055-52';
+   lEntradaInscricaoUsuario.Passageiro := True;
+   lEntradaInscricaoUsuario.Motorista  := False;
+   lSaidaInscricaoUsuario := FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
+   lUUID := TUUID.Create(lSaidaInscricaoUsuario.IDDoUsuario);
    try
       lContaDeUsuario := FRepositorioContaDeUsuario.ObterPorID(lUUID);
       try
          Assert.AreEqual(lUUID.Valor, lContaDeUsuario.ID);
-         Assert.AreEqual(lInscricaoUsuario.Nome, lContaDeUsuario.Nome);
-         Assert.AreEqual(lInscricaoUsuario.Email, lContaDeUsuario.Email);
+         Assert.AreEqual(lEntradaInscricaoUsuario.Nome, lContaDeUsuario.Nome);
+         Assert.AreEqual(lEntradaInscricaoUsuario.Email, lContaDeUsuario.Email);
          Assert.AreEqual('95818705552', lContaDeUsuario.CPF);
          Assert.IsTrue(lContaDeUsuario.Passageiro);
          Assert.IsFalse(lContaDeUsuario.Motorista);
@@ -81,24 +81,24 @@ end;
 
 procedure TInscreverUsuarioTeste.DeveInscreverUmMotorista;
 var lContaDeUsuario : TContaDeUsuario;
-    lIDDoUsuario: String;
-    lInscricaoUsuario: TDadoEntradaInscricaoContaDeUsuario;
+    lEntradaInscricaoUsuario: TDadoEntradaInscricaoContaDeUsuario;
+    lSaidaInscricaoUsuario: TDadoSaidaInscricaoContaDeUsuario;
     lUUID: TUUID;
 begin
-   lInscricaoUsuario.Nome       := 'John Doe';
-   lInscricaoUsuario.Email      := Format('john.doe.%d@gmail.com', [Random(100000000)]);
-   lInscricaoUsuario.CPF        := '958.187.055-52';
-   lInscricaoUsuario.Passageiro := False;
-   lInscricaoUsuario.Motorista  := True;
-   lInscricaoUsuario.PlacaDoCarro := 'zzz-9999';
-   lIDDoUsuario := FInscreverUsuario.Executar(lInscricaoUsuario);
-   lUUID := TUUID.Create(lIDDoUsuario);
+   lEntradaInscricaoUsuario.Nome       := 'John Doe';
+   lEntradaInscricaoUsuario.Email      := Format('john.doe.%d@gmail.com', [Random(100000000)]);
+   lEntradaInscricaoUsuario.CPF        := '958.187.055-52';
+   lEntradaInscricaoUsuario.Passageiro := False;
+   lEntradaInscricaoUsuario.Motorista  := True;
+   lEntradaInscricaoUsuario.PlacaDoCarro := 'zzz-9999';
+   lSaidaInscricaoUsuario := FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
+   lUUID := TUUID.Create(lSaidaInscricaoUsuario.IDDoUsuario);
    try
       lContaDeUsuario := FRepositorioContaDeUsuario.ObterPorID(lUUID);
       try
          Assert.AreEqual(lUUID.Valor, lContaDeUsuario.ID);
-         Assert.AreEqual(lInscricaoUsuario.Nome, lContaDeUsuario.Nome);
-         Assert.AreEqual(lInscricaoUsuario.Email, lContaDeUsuario.Email);
+         Assert.AreEqual(lEntradaInscricaoUsuario.Nome, lContaDeUsuario.Nome);
+         Assert.AreEqual(lEntradaInscricaoUsuario.Email, lContaDeUsuario.Email);
          Assert.AreEqual('95818705552', lContaDeUsuario.CPF);
          Assert.IsFalse(lContaDeUsuario.Passageiro);
          Assert.IsTrue(lContaDeUsuario.Motorista);
@@ -115,18 +115,18 @@ begin
 end;
 
 procedure TInscreverUsuarioTeste.NaoPodeCriarContaDeUsuarioComEmailJaExistente;
-var lInscricaoUsuario: TDadoEntradaInscricaoContaDeUsuario;
+var lEntradaInscricaoUsuario: TDadoEntradaInscricaoContaDeUsuario;
 begin
-   lInscricaoUsuario.Nome       := 'John Doe';
-   lInscricaoUsuario.Email      := Format('john.doe.%d@gmail.com', [Random(100000000)]);
-   lInscricaoUsuario.CPF        := '958.187.055-52';
-   lInscricaoUsuario.Passageiro := True;
-   lInscricaoUsuario.Motorista  := False;
-   FInscreverUsuario.Executar(lInscricaoUsuario);
+   lEntradaInscricaoUsuario.Nome       := 'John Doe';
+   lEntradaInscricaoUsuario.Email      := Format('john.doe.%d@gmail.com', [Random(100000000)]);
+   lEntradaInscricaoUsuario.CPF        := '958.187.055-52';
+   lEntradaInscricaoUsuario.Passageiro := True;
+   lEntradaInscricaoUsuario.Motorista  := False;
+   FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
    Assert.WillRaise(
       procedure
       begin
-         FInscreverUsuario.Executar(lInscricaoUsuario);
+         FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
       end,
       EContaDeUsuarioJaExiste
    );

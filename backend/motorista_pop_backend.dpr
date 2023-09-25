@@ -1,4 +1,4 @@
-program motorista_pop;
+program motorista_pop_backend;
 
 {$APPTYPE CONSOLE}
 
@@ -22,12 +22,14 @@ uses
   MotoristaPOP.Controlador.API.REST in 'fontes\infraestrutura\controlador\MotoristaPOP.Controlador.API.REST.pas',
   BancoDeDado.Conexao.FireDAC in 'fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.FireDAC.pas',
   BancoDeDado.Conexao in 'fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.pas',
-  JSON.Conversor in 'fontes\infraestrutura\json\JSON.Conversor.pas';
+  JSON.Conversor in 'fontes\infraestrutura\json\JSON.Conversor.pas',
+  RealizarLogin in 'fontes\aplicacao\caso-de-uso\RealizarLogin.pas';
 
 var
    lServidorHTTP: TServidorHTTP;
    lInscreverUsuario: TInscreverUsuario;
    lObterContaDeUsuario: TObterContaDeUsuario;
+   lRealizarLogin: TRealizarLogin;
    lRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
    lConexaoBancoDeDado: TConexaoBancoDeDado;
 begin
@@ -36,11 +38,13 @@ begin
    lRepositorioContaDeUsuario := TRepositorioContaDeUsuarioBancoDeDado.Create(lConexaoBancoDeDado);
    lInscreverUsuario          := TInscreverUsuario.Create(lRepositorioContaDeUsuario);
    lObterContaDeUsuario       := TObterContaDeUsuario.Create(lRepositorioContaDeUsuario);
+   lRealizarLogin             := TRealizarLogin.Create(lRepositorioContaDeUsuario);
    lServidorHTTP              := TServidorHTTPHorse.Create;
    try
-      TControladorMotoristaPOPAPIREST.Create(lServidorHTTP, lInscreverUsuario, lObterContaDeUsuario);
+      TControladorMotoristaPOPAPIREST.Create(lServidorHTTP, lInscreverUsuario, lObterContaDeUsuario, lRealizarLogin);
    finally
       lServidorHTTP.Destroy;
+      lRealizarLogin.Destroy;
       lObterContaDeUsuario.Destroy;
       lInscreverUsuario.Destroy;
       lRepositorioContaDeUsuario.Destroy;

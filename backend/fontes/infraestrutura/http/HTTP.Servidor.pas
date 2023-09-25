@@ -41,7 +41,7 @@ implementation
 
 constructor TResultadoHTTP.Create;
 begin
-   Create(TJSONNull.Create);
+   Create(TJSONString.Create);
 end;
 
 constructor TResultadoHTTP.Create(pCodigoDeRespostaHTTP: Integer);
@@ -71,7 +71,7 @@ constructor TResultadoHTTP.Create(pJSON: TJSONValue; pCodigoDeRespostaHTTP: Inte
 begin
    FJSON := pJSON;
    if not Assigned(FJSON) then
-      FJSON := TJSONNull.Create;
+      FJSON := TJSONString.Create;
 
    FCodigoDeRespostaHTTP := pCodigoDeRespostaHTTP;
 end;

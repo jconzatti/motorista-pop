@@ -3,7 +3,7 @@
         <ProjectGuid>{B18CB406-1D47-4C18-AFE3-8E2C92BC52F6}</ProjectGuid>
         <ProjectVersion>18.7</ProjectVersion>
         <FrameworkType>None</FrameworkType>
-        <MainSource>motorista_pop.dpr</MainSource>
+        <MainSource>motorista_pop_backend.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
@@ -58,7 +58,7 @@
         <DCC_F>false</DCC_F>
         <DCC_K>false</DCC_K>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
-        <SanitizedProjectName>motorista_pop</SanitizedProjectName>
+        <SanitizedProjectName>motorista_pop_backend</SanitizedProjectName>
         <DCC_UnitSearchPath>modules\.dcp;modules\.dcu;modules;modules\horse\src;modules\jhonson\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
@@ -141,6 +141,7 @@
         <DCCReference Include="fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.FireDAC.pas"/>
         <DCCReference Include="fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.pas"/>
         <DCCReference Include="fontes\infraestrutura\json\JSON.Conversor.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\RealizarLogin.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -159,7 +160,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">motorista_pop.dpr</Source>
+                    <Source Name="MainSource">motorista_pop_backend.dpr</Source>
                 </Source>
             </Delphi.Personality>
             <Deployment Version="3">
@@ -178,15 +179,15 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\motorista_pop.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\motorista_pop_backend.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>motorista_pop.exe</RemoteName>
+                        <RemoteName>motorista_pop_backend.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win64\Release\motorista_pop.exe" Configuration="Release" Class="ProjectOutput">
+                <DeployFile LocalName="Win64\Release\motorista_pop_backend.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win64">
-                        <RemoteName>motorista_pop.exe</RemoteName>
+                        <RemoteName>motorista_pop_backend.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

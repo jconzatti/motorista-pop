@@ -4,6 +4,7 @@ interface
 
 uses
    System.JSON,
+   System.JSON.Types,
    System.JSON.Serializers;
 
 type
@@ -17,7 +18,8 @@ type
       destructor Destroy; override;
    public
       function ConverterParaJSON<T>(pObjeto: T): TJSONValue;
-      function ConverterParaObjeto<T>(pJSON: String): T;
+      function ConverterParaObjeto<T>(pJSON: String): T; overload;
+      function ConverterParaObjeto<T>(pJSON: TJSONValue): T; overload;
    end;
 
 implementation
@@ -27,6 +29,7 @@ implementation
 constructor TConversorJSON.Create;
 begin
    FJsonSerializer := TJsonSerializer.Create;
+   FJsonSerializer.DateTimeZoneHandling := TJsonDateTimeZoneHandling.Utc;
 end;
 
 destructor TConversorJSON.Destroy;
@@ -45,6 +48,11 @@ begin
       on E: EJsonSerializationException do
          raise EConversaoJSONComErro.Create('Erro ao converter objeto para json: '+E.Message);
    end;
+end;
+
+function TConversorJSON.ConverterParaObjeto<T>(pJSON: TJSONValue): T;
+begin
+   Result := ConverterParaObjeto<T>(pJSON.ToString);
 end;
 
 function TConversorJSON.ConverterParaObjeto<T>(pJSON: String): T;

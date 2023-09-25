@@ -21,6 +21,10 @@ type
       PlacaDoCarro: String;
    end;
 
+   TDadoSaidaInscricaoContaDeUsuario = record
+      IDDoUsuario: String;
+   end;
+
    TInscreverUsuario = class
    private
       FGatewayEnviadorEmail: TGatewayEnviadorEmail;
@@ -29,7 +33,7 @@ type
    public
       constructor Create(pRepositorioContaUsuario: TRepositorioContaDEUsuario); reintroduce;
       destructor Destroy; override;
-      function Executar(pEntrada: TDadoEntradaInscricaoContaDeUsuario): String;
+      function Executar(pEntrada: TDadoEntradaInscricaoContaDeUsuario): TDadoSaidaInscricaoContaDeUsuario;
    end;
 
 implementation
@@ -48,7 +52,7 @@ begin
    inherited;
 end;
 
-function TInscreverUsuario.Executar(pEntrada: TDadoEntradaInscricaoContaDeUsuario): String;
+function TInscreverUsuario.Executar(pEntrada: TDadoEntradaInscricaoContaDeUsuario): TDadoSaidaInscricaoContaDeUsuario;
 var lContaDeUsuario : TContaDeUsuario;
 begin
    ValidarContaDeUsuarioJaExistenteParaOEMailInformado(pEntrada.Email);
@@ -63,7 +67,7 @@ begin
       FGatewayEnviadorEmail.Enviar(lContaDeUsuario.Email,
                                    'Verificação de Conta',
                                    Format('Por favor, verifique seu código no primeiro acesso %s', [lContaDeUsuario.CodigoDeVerificacao]));
-      Result := lContaDeUsuario.ID;
+      Result.IDDoUsuario := lContaDeUsuario.ID;
    finally
       lContaDeUsuario.Destroy;
    end;

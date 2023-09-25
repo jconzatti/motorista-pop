@@ -1,4 +1,4 @@
-program motorista_pop_teste;
+program motorista_pop_backend_teste;
 
 {$IFNDEF TESTINSIGHT}
 {$APPTYPE CONSOLE}
@@ -58,7 +58,12 @@ uses
   HTTP.Servidor in 'fontes\infraestrutura\http\HTTP.Servidor.pas',
   HTTP.Servidor.Horse in 'fontes\infraestrutura\http\HTTP.Servidor.Horse.pas',
   MotoristaPOP.Controlador.API.REST in 'fontes\infraestrutura\controlador\MotoristaPOP.Controlador.API.REST.pas',
-  JSON.Conversor in 'fontes\infraestrutura\json\JSON.Conversor.pas';
+  JSON.Conversor in 'fontes\infraestrutura\json\JSON.Conversor.pas',
+  HTTP.Resultado.Teste in 'testes\unidade\HTTP.Resultado.Teste.pas',
+  JSON.Conversor.Teste in 'testes\unidade\JSON.Conversor.Teste.pas',
+  MotoristaPOP.Controlador.API.REST.Teste in 'testes\integracao\MotoristaPOP.Controlador.API.REST.Teste.pas',
+  RealizarLogin.Teste in 'testes\integracao\RealizarLogin.Teste.pas',
+  RealizarLogin in 'fontes\aplicacao\caso-de-uso\RealizarLogin.pas';
 
 var
   runner : ITestRunner;

@@ -46,7 +46,7 @@ end;
 procedure TObterContaDeUsuarioTeste.DeveObterUmaContaDeUsuario;
 var lContaDeUsuario: TContaDeUsuario;
     lIDDaContaDeUsuario: String;
-    lObtencaoUsuario: TDadoSaidaObtencaoContaDeUsuario;
+    lSaidaObtencaoUsuario: TDadoSaidaObtencaoContaDeUsuario;
 begin
    lContaDeUsuario := TContaDeUsuario.Criar('John Doe',
                                             'john.doe@mail.com',
@@ -61,15 +61,15 @@ begin
       lContaDeUsuario.Destroy;
    end;
 
-   lObtencaoUsuario := FObterContaDeUsuario.Executar(lIDDaContaDeUsuario);
-   Assert.AreEqual(lIDDaContaDeUsuario, lObtencaoUsuario.ID);
-   Assert.AreEqual('John Doe', lObtencaoUsuario.Nome);
-   Assert.AreEqual('john.doe@mail.com', lObtencaoUsuario.Email);
-   Assert.AreEqual('95818705552', lObtencaoUsuario.CPF);
-   Assert.IsFalse(lObtencaoUsuario.Passageiro);
-   Assert.IsTrue(lObtencaoUsuario.Motorista);
-   Assert.AreEqual('ZZZ9A88', lObtencaoUsuario.PlacaDoCarro);
-   Assert.AreEqual(Date, DateOf(lObtencaoUsuario.Data));
+   lSaidaObtencaoUsuario := FObterContaDeUsuario.Executar(lIDDaContaDeUsuario);
+   Assert.AreEqual(lIDDaContaDeUsuario, lSaidaObtencaoUsuario.ID);
+   Assert.AreEqual('John Doe', lSaidaObtencaoUsuario.Nome);
+   Assert.AreEqual('john.doe@mail.com', lSaidaObtencaoUsuario.Email);
+   Assert.AreEqual('95818705552', lSaidaObtencaoUsuario.CPF);
+   Assert.IsFalse(lSaidaObtencaoUsuario.Passageiro);
+   Assert.IsTrue(lSaidaObtencaoUsuario.Motorista);
+   Assert.AreEqual('ZZZ9A88', lSaidaObtencaoUsuario.PlacaDoCarro);
+   Assert.AreEqual(Date, DateOf(lSaidaObtencaoUsuario.Data));
 end;
 
 initialization
