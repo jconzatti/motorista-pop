@@ -5,7 +5,7 @@
         <FrameworkType>None</FrameworkType>
         <MainSource>motorista_pop_backend.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Console</AppType>
@@ -134,7 +134,6 @@
         <DCCReference Include="fontes\aplicacao\caso-de-uso\InscreverUsuario.pas"/>
         <DCCReference Include="fontes\aplicacao\caso-de-uso\ObterContaDeUsuario.pas"/>
         <DCCReference Include="fontes\infraestrutura\repositorio\ContaDeUsuario.Repositorio.BancoDeDado.pas"/>
-        <DCCReference Include="fontes\infraestrutura\repositorio\ContaDeUsuario.Repositorio.Fake.pas"/>
         <DCCReference Include="fontes\infraestrutura\http\HTTP.Servidor.Horse.pas"/>
         <DCCReference Include="fontes\infraestrutura\http\HTTP.Servidor.pas"/>
         <DCCReference Include="fontes\infraestrutura\controlador\MotoristaPOP.Controlador.API.REST.pas"/>
@@ -142,6 +141,12 @@
         <DCCReference Include="fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.pas"/>
         <DCCReference Include="fontes\infraestrutura\json\JSON.Conversor.pas"/>
         <DCCReference Include="fontes\aplicacao\caso-de-uso\RealizarLogin.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\SolicitarCorrida.pas"/>
+        <DCCReference Include="fontes\dominio\Coordenada.pas"/>
+        <DCCReference Include="fontes\dominio\Corrida.pas"/>
+        <DCCReference Include="fontes\dominio\Corrida.Status.pas"/>
+        <DCCReference Include="fontes\aplicacao\repositorio\Corrida.Repositorio.pas"/>
+        <DCCReference Include="fontes\infraestrutura\repositorio\Corrida.Repositorio.BancoDeDado.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

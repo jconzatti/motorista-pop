@@ -28,7 +28,7 @@ end;
 
 procedure TConexaoBancoDeDado.Executar(const pComandoSQL: String);
 begin
-   Executar(pComandoSQL, [], []);
+   Executar(pComandoSQL, []);
 end;
 
 function TConexaoBancoDeDado.TentaExecutar(const pComandoSQL: String; const pListaParametro: array of Variant; const pListaTipo: array of TFieldType): Boolean;
@@ -48,7 +48,7 @@ end;
 
 function TConexaoBancoDeDado.TentaExecutar(const pComandoSQL: String): Boolean;
 begin
-   Result := TentaExecutar(pComandoSQL, [], []);
+   Result := TentaExecutar(pComandoSQL, []);
 end;
 
 end.

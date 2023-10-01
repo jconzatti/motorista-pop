@@ -3,9 +3,9 @@ unit RealizarLogin.Teste;
 interface
 
 uses
-   ContaDeUsuario,
    ContaDeUsuario.Repositorio,
    ContaDeUsuario.Repositorio.Fake,
+   InscreverUsuario,
    RealizarLogin,
    DUnitX.TestFramework;
 
@@ -14,6 +14,7 @@ type
    RealizarLoginTeste = class
    private
       FRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
+      FInscreverUsuario: TInscreverUsuario;
       FRealizarLogin: TRealizarLogin;
    public
       [Setup]
@@ -32,35 +33,32 @@ implementation
 procedure RealizarLoginTeste.Inicializar;
 begin
    FRepositorioContaDeUsuario := TRepositorioContaDeUsuarioFake.Create;
+   FInscreverUsuario := TInscreverUsuario.Create(FRepositorioContaDeUsuario);
    FRealizarLogin := TRealizarLogin.Create(FRepositorioContaDeUsuario);
 end;
 
 procedure RealizarLoginTeste.Finalizar;
 begin
    FRealizarLogin.Destroy;
+   FInscreverUsuario.Destroy;
    FRepositorioContaDeUsuario.Destroy;
 end;
 
 procedure RealizarLoginTeste.DeverRealizarLoginComEmailDoUsuario;
-var lContaDeUsuario: TContaDeUsuario;
-    lIDDaContaDeUsuario: String;
+var lEntradaInscricaoUsuario: TDadoEntradaInscricaoContaDeUsuario;
+    lSaidaInscricaoUsuario: TDadoSaidaInscricaoContaDeUsuario;
     lSaidaRealizacaoLogin: TDadoSaidaRealizacaoLogin;
 begin
-   lContaDeUsuario := TContaDeUsuario.Criar('John Doe',
-                                            'john.doe.forlogin@mail.com',
-                                            '958.187.055-52',
-                                            False,
-                                            True,
-                                            'ZZZ9A88');
-   try
-      FRepositorioContaDeUsuario.Salvar(lContaDeUsuario);
-      lIDDaContaDeUsuario := lContaDeUsuario.ID;
-   finally
-      lContaDeUsuario.Destroy;
-   end;
+   lEntradaInscricaoUsuario.Nome         := 'John Doe';
+   lEntradaInscricaoUsuario.Email        := 'john.doe.forlogin@mail.com';
+   lEntradaInscricaoUsuario.CPF          := '958.187.055-52';
+   lEntradaInscricaoUsuario.Passageiro   := False;
+   lEntradaInscricaoUsuario.Motorista    := True;
+   lEntradaInscricaoUsuario.PlacaDoCarro := 'ZZZ9A88';
+   lSaidaInscricaoUsuario := FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
 
    lSaidaRealizacaoLogin := FRealizarLogin.Executar('john.doe.forlogin@mail.com');
-   Assert.AreEqual(lIDDaContaDeUsuario, lSaidaRealizacaoLogin.IDDoUsuario);
+   Assert.AreEqual(lSaidaInscricaoUsuario.IDDoUsuario, lSaidaRealizacaoLogin.IDDoUsuario);
 end;
 
 initialization

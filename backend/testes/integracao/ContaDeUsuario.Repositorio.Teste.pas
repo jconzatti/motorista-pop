@@ -1,4 +1,4 @@
-unit ContaDeUsuario.Repositorio.BancoDeDado.FireDAC.Teste;
+unit ContaDeUsuario.Repositorio.Teste;
 
 interface
 
@@ -6,24 +6,19 @@ uses
    System.SysUtils,
    ContaDeUsuario,
    ContaDeUsuario.Repositorio,
-   ContaDeUsuario.Repositorio.BancoDeDado,
-   BancoDeDado.Conexao,
-   BancoDeDado.Conexao.FireDAC,
    Email,
    UUID,
    DUnitX.TestFramework;
 
 type
-   [TestFixture]
-   TRepositorioContaDeUsuarioBancoDeDadoFireDACTeste = class
-   private
-      FConexaoBancoDeDado: TConexaoBancoDeDado;
+   TRepositorioContaDeUsuarioTeste = class abstract
+   protected
       FRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
    public
       [Setup]
-      procedure Inicializar;
+      procedure Inicializar; virtual; abstract;
       [TearDown]
-      procedure Finalizar;
+      procedure Finalizar; virtual; abstract;
       [Test]
       procedure DeveSalvarUmaContaDeUsuarioEObterPorID;
       [Test]
@@ -36,21 +31,9 @@ type
 
 implementation
 
-{ TRepositorioContaDeUsuarioBancoDeDadoFireDACTeste }
+{ TRepositorioContaDeUsuarioTeste }
 
-procedure TRepositorioContaDeUsuarioBancoDeDadoFireDACTeste.Inicializar;
-begin
-   FConexaoBancoDeDado := TConexaoBancoDeDadoFireDAC.Create;
-   FRepositorioContaDeUsuario := TRepositorioContaDeUsuarioBancoDeDado.Create(FConexaoBancoDeDado);
-end;
-
-procedure TRepositorioContaDeUsuarioBancoDeDadoFireDACTeste.Finalizar;
-begin
-   FRepositorioContaDeUsuario.Destroy;
-   FConexaoBancoDeDado.Destroy;
-end;
-
-procedure TRepositorioContaDeUsuarioBancoDeDadoFireDACTeste.DeveSalvarUmaContaDeUsuarioEObterPorEmail;
+procedure TRepositorioContaDeUsuarioTeste.DeveSalvarUmaContaDeUsuarioEObterPorEmail;
 var lContaDeUsuario: TContaDeUsuario;
     lEmail: TEMail;
 begin
@@ -77,7 +60,7 @@ begin
    end;
 end;
 
-procedure TRepositorioContaDeUsuarioBancoDeDadoFireDACTeste.DeveSalvarUmaContaDeUsuarioEObterPorID;
+procedure TRepositorioContaDeUsuarioTeste.DeveSalvarUmaContaDeUsuarioEObterPorID;
 var lContaDeUsuario: TContaDeUsuario;
     lIDDoUsuario: String;
     lID: TUUID;
@@ -105,7 +88,7 @@ begin
    end;
 end;
 
-procedure TRepositorioContaDeUsuarioBancoDeDadoFireDACTeste.DeveDispararErroSeTentarObterUmaContaDeUsuarioPorEmailNaoCadastrado;
+procedure TRepositorioContaDeUsuarioTeste.DeveDispararErroSeTentarObterUmaContaDeUsuarioPorEmailNaoCadastrado;
 var lEmail: TEMail;
 begin
    lEmail := TEmail.Create('usuario.nao.cadastrado@mail.com');
@@ -122,7 +105,7 @@ begin
    end;
 end;
 
-procedure TRepositorioContaDeUsuarioBancoDeDadoFireDACTeste.DeveDispararErroSeTentarObterUmaContaDeUsuarioPorIDNaoCadastrado;
+procedure TRepositorioContaDeUsuarioTeste.DeveDispararErroSeTentarObterUmaContaDeUsuarioPorIDNaoCadastrado;
 var lID: TUUID;
 begin
    lID := TUUID.Create('630d48cf6a02442e922bfe16440b36a5');
@@ -139,6 +122,4 @@ begin
    end;
 end;
 
-initialization
-   TDUnitX.RegisterTestFixture(TRepositorioContaDeUsuarioBancoDeDadoFireDACTeste);
 end.

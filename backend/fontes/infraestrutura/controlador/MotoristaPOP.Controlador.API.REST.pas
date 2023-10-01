@@ -9,7 +9,8 @@ uses
    HTTP.Servidor,
    InscreverUsuario,
    ObterContaDeUsuario,
-   RealizarLogin;
+   RealizarLogin,
+   SolicitarCorrida;
 
 type
    TControladorMotoristaPOPAPIREST = class
@@ -19,15 +20,18 @@ type
       FInscreverUsuario: TInscreverUsuario;
       FObterContaDeUsuario: TObterContaDeUsuario;
       FRealizarLogin: TRealizarLogin;
+      FSolicitarCorrida: TSolicitarCorrida;
       function ExecutarObterContaDeUsuario(pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
       function ExecutarInscreverUsuario(pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
       function ExecutarRealizarLogin(pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
+      function ExecutarSolicitarCorrida(pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
       procedure RegistrarRotasDaAPI;
    public
       constructor Create(pServidorHTTP: TServidorHTTP;
                          pInscreverUsuario: TInscreverUsuario;
                          pObterContaDeUsuario: TObterContaDeUsuario;
-                         pRealizarLogin: TRealizarLogin); reintroduce;
+                         pRealizarLogin: TRealizarLogin;
+                         pSolicitarCorrida: TSolicitarCorrida); reintroduce;
       destructor Destroy; override;
    end;
 
@@ -38,7 +42,8 @@ implementation
 constructor TControladorMotoristaPOPAPIREST.Create(pServidorHTTP: TServidorHTTP;
                                                    pInscreverUsuario: TInscreverUsuario;
                                                    pObterContaDeUsuario: TObterContaDeUsuario;
-                                                   pRealizarLogin: TRealizarLogin);
+                                                   pRealizarLogin: TRealizarLogin;
+                                                   pSolicitarCorrida: TSolicitarCorrida);
 begin
    FConversorJSON := TConversorJSON.Create;
 
@@ -46,6 +51,7 @@ begin
    FInscreverUsuario    := pInscreverUsuario;
    FObterContaDeUsuario := pObterContaDeUsuario;
    FRealizarLogin       := pRealizarLogin;
+   FSolicitarCorrida    := pSolicitarCorrida;
    RegistrarRotasDaAPI;
    FServidorHTTP.Iniciar(9000);
 end;
@@ -61,6 +67,7 @@ begin
    FServidorHTTP.Executar(mPOST, '/usuario', ExecutarInscreverUsuario);
    FServidorHTTP.Executar(mGET, '/usuario/:id', ExecutarObterContaDeUsuario);
    FServidorHTTP.Executar(mPOST, '/login/:email', ExecutarRealizarLogin);
+   FServidorHTTP.Executar(mPOST, '/corrida/solicitar', ExecutarSolicitarCorrida);
 end;
 
 function TControladorMotoristaPOPAPIREST.ExecutarInscreverUsuario(
@@ -107,6 +114,24 @@ begin
       lSaidaRealizacaoLogin     := FRealizarLogin.Executar(pParametros.Items['email']);
       lJSONSaidaRealizacaoLogin := FConversorJSON.ConverterParaJSON<TDadoSaidaRealizacaoLogin>(lSaidaRealizacaoLogin);
       Result := TResultadoHTTP.Create(lJSONSaidaRealizacaoLogin);
+   except
+      on E: Exception do
+         Result := TResultadoHTTP.Create(E);
+   end;
+end;
+
+function TControladorMotoristaPOPAPIREST.ExecutarSolicitarCorrida(
+  pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
+var
+   lEntradaSolicitacaoCorrida: TDadoEntradaSolicitacaoCorrida;
+   lSaidaSolicitacaoCorrida: TDadoSaidaSolicitacaoCorrida;
+   lJSONSaidaSolicitacaoCorrida: TJSONValue;
+begin
+   try
+      lEntradaSolicitacaoCorrida := FConversorJSON.ConverterParaObjeto<TDadoEntradaSolicitacaoCorrida>(pConteudo);
+      lSaidaSolicitacaoCorrida   := FSolicitarCorrida.Executar(lEntradaSolicitacaoCorrida);
+      lJSONSaidaSolicitacaoCorrida := FConversorJSON.ConverterParaJSON<TDadoSaidaSolicitacaoCorrida>(lSaidaSolicitacaoCorrida);
+      Result := TResultadoHTTP.Create(lJSONSaidaSolicitacaoCorrida);
    except
       on E: Exception do
          Result := TResultadoHTTP.Create(E);

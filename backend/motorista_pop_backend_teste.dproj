@@ -105,6 +105,7 @@
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>(None)</Manifest_File>
+        <Debugger_RunParams>-r:Corrida.Repositorio.BancoDeDado.Conexao.FireDAC.Teste</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -156,7 +157,7 @@
         <DCCReference Include="testes\_old\MotoristaPOP.API.Teste.pas"/>
         <DCCReference Include="testes\_old\Posicao.DAO.Fake.pas"/>
         <DCCReference Include="testes\_old\Posicao.DAO.FireDAC.Teste.pas"/>
-        <DCCReference Include="testes\integracao\ContaDeUsuario.Repositorio.BancoDeDado.FireDAC.Teste.pas"/>
+        <DCCReference Include="testes\integracao\ContaDeUsuario.Repositorio.BancoDeDado.Conexao.FireDAC.Teste.pas"/>
         <DCCReference Include="fontes\infraestrutura\repositorio\ContaDeUsuario.Repositorio.BancoDeDado.pas"/>
         <DCCReference Include="fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.pas"/>
         <DCCReference Include="fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.FireDAC.pas"/>
@@ -165,10 +166,27 @@
         <DCCReference Include="fontes\infraestrutura\controlador\MotoristaPOP.Controlador.API.REST.pas"/>
         <DCCReference Include="fontes\infraestrutura\json\JSON.Conversor.pas"/>
         <DCCReference Include="testes\unidade\HTTP.Resultado.Teste.pas"/>
-        <DCCReference Include="testes\unidade\JSON.Conversor.Teste.pas"/>
         <DCCReference Include="testes\integracao\MotoristaPOP.Controlador.API.REST.Teste.pas"/>
         <DCCReference Include="testes\integracao\RealizarLogin.Teste.pas"/>
         <DCCReference Include="fontes\aplicacao\caso-de-uso\RealizarLogin.pas"/>
+        <DCCReference Include="testes\integracao\SolicitarCorrida.Teste.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\SolicitarCorrida.pas"/>
+        <DCCReference Include="fontes\aplicacao\repositorio\Corrida.Repositorio.pas"/>
+        <DCCReference Include="fontes\dominio\Corrida.pas"/>
+        <DCCReference Include="fontes\dominio\Corrida.Status.pas"/>
+        <DCCReference Include="fontes\dominio\Coordenada.pas"/>
+        <DCCReference Include="fontes\infraestrutura\repositorio\Corrida.Repositorio.Fake.pas"/>
+        <DCCReference Include="testes\unidade\Corrida.Status.Teste.pas"/>
+        <DCCReference Include="testes\unidade\Coordenada.Teste.pas"/>
+        <DCCReference Include="testes\unidade\Corrida.Teste.pas"/>
+        <DCCReference Include="testes\unidade\JSON.Conversor.Teste.pas"/>
+        <DCCReference Include="testes\integracao\ContaDeUsuario.Repositorio.Fake.Teste.pas"/>
+        <DCCReference Include="testes\integracao\BancoDeDado.Conexao.Teste.pas"/>
+        <DCCReference Include="testes\integracao\Corrida.Repositorio.Fake.Teste.pas"/>
+        <DCCReference Include="testes\integracao\Corrida.Repositorio.Teste.pas"/>
+        <DCCReference Include="testes\integracao\ContaDeUsuario.Repositorio.Teste.pas"/>
+        <DCCReference Include="fontes\infraestrutura\repositorio\Corrida.Repositorio.BancoDeDado.pas"/>
+        <DCCReference Include="testes\integracao\Corrida.Repositorio.BancoDeDado.Conexao.FireDAC.Teste.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -195,12 +213,6 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="Win64\Debug\motorista_pop_backend_teste.exe" Configuration="Debug" Class="ProjectOutput">
-                    <Platform Name="Win64">
-                        <RemoteName>motorista_pop_backend_teste.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
                     <Platform Name="OSX32">
                         <Overwrite>true</Overwrite>
@@ -208,6 +220,12 @@
                 </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libcgunwind.1.0.dylib" Class="DependencyModule">
                     <Platform Name="iOSSimulator">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win64\Debug\motorista_pop_backend_teste.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>motorista_pop_backend_teste.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

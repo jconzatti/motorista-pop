@@ -51,7 +51,7 @@ uses
   MotoristaPOP.API.Teste in 'testes\_old\MotoristaPOP.API.Teste.pas',
   Posicao.DAO.Fake in 'testes\_old\Posicao.DAO.Fake.pas',
   Posicao.DAO.FireDAC.Teste in 'testes\_old\Posicao.DAO.FireDAC.Teste.pas',
-  ContaDeUsuario.Repositorio.BancoDeDado.FireDAC.Teste in 'testes\integracao\ContaDeUsuario.Repositorio.BancoDeDado.FireDAC.Teste.pas',
+  ContaDeUsuario.Repositorio.BancoDeDado.Conexao.FireDAC.Teste in 'testes\integracao\ContaDeUsuario.Repositorio.BancoDeDado.Conexao.FireDAC.Teste.pas',
   ContaDeUsuario.Repositorio.BancoDeDado in 'fontes\infraestrutura\repositorio\ContaDeUsuario.Repositorio.BancoDeDado.pas',
   BancoDeDado.Conexao in 'fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.pas',
   BancoDeDado.Conexao.FireDAC in 'fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.FireDAC.pas',
@@ -60,10 +60,27 @@ uses
   MotoristaPOP.Controlador.API.REST in 'fontes\infraestrutura\controlador\MotoristaPOP.Controlador.API.REST.pas',
   JSON.Conversor in 'fontes\infraestrutura\json\JSON.Conversor.pas',
   HTTP.Resultado.Teste in 'testes\unidade\HTTP.Resultado.Teste.pas',
-  JSON.Conversor.Teste in 'testes\unidade\JSON.Conversor.Teste.pas',
   MotoristaPOP.Controlador.API.REST.Teste in 'testes\integracao\MotoristaPOP.Controlador.API.REST.Teste.pas',
   RealizarLogin.Teste in 'testes\integracao\RealizarLogin.Teste.pas',
-  RealizarLogin in 'fontes\aplicacao\caso-de-uso\RealizarLogin.pas';
+  RealizarLogin in 'fontes\aplicacao\caso-de-uso\RealizarLogin.pas',
+  SolicitarCorrida.Teste in 'testes\integracao\SolicitarCorrida.Teste.pas',
+  SolicitarCorrida in 'fontes\aplicacao\caso-de-uso\SolicitarCorrida.pas',
+  Corrida.Repositorio in 'fontes\aplicacao\repositorio\Corrida.Repositorio.pas',
+  Corrida in 'fontes\dominio\Corrida.pas',
+  Corrida.Status in 'fontes\dominio\Corrida.Status.pas',
+  Coordenada in 'fontes\dominio\Coordenada.pas',
+  Corrida.Repositorio.Fake in 'fontes\infraestrutura\repositorio\Corrida.Repositorio.Fake.pas',
+  Corrida.Status.Teste in 'testes\unidade\Corrida.Status.Teste.pas',
+  Coordenada.Teste in 'testes\unidade\Coordenada.Teste.pas',
+  Corrida.Teste in 'testes\unidade\Corrida.Teste.pas',
+  JSON.Conversor.Teste in 'testes\unidade\JSON.Conversor.Teste.pas',
+  ContaDeUsuario.Repositorio.Fake.Teste in 'testes\integracao\ContaDeUsuario.Repositorio.Fake.Teste.pas',
+  BancoDeDado.Conexao.Teste in 'testes\integracao\BancoDeDado.Conexao.Teste.pas',
+  Corrida.Repositorio.Fake.Teste in 'testes\integracao\Corrida.Repositorio.Fake.Teste.pas',
+  Corrida.Repositorio.Teste in 'testes\integracao\Corrida.Repositorio.Teste.pas',
+  ContaDeUsuario.Repositorio.Teste in 'testes\integracao\ContaDeUsuario.Repositorio.Teste.pas',
+  Corrida.Repositorio.BancoDeDado in 'fontes\infraestrutura\repositorio\Corrida.Repositorio.BancoDeDado.pas',
+  Corrida.Repositorio.BancoDeDado.Conexao.FireDAC.Teste in 'testes\integracao\Corrida.Repositorio.BancoDeDado.Conexao.FireDAC.Teste.pas';
 
 var
   runner : ITestRunner;

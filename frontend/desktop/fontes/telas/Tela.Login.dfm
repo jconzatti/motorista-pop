@@ -11,6 +11,7 @@ object TelaLogin: TTelaLogin
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   DesignSize = (
     434
     201)
@@ -63,6 +64,7 @@ object TelaLogin: TTelaLogin
     ParentCtl3D = False
     ParentFont = False
     TabOrder = 0
+    OnKeyDown = EdEmailKeyDown
   end
   object BtnEntrar: TButton
     Left = 335
@@ -93,5 +95,6 @@ object TelaLogin: TTelaLogin
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 2
+    OnClick = BtnCriarContaClick
   end
 end

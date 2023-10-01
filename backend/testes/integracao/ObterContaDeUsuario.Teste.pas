@@ -5,9 +5,9 @@ interface
 uses
    System.SysUtils,
    System.DateUtils,
-   ContaDeUsuario,
    ContaDeUsuario.Repositorio,
    ContaDeUsuario.Repositorio.Fake,
+   InscreverUsuario,
    ObterContaDeUsuario,
    DUnitX.TestFramework;
 
@@ -16,6 +16,7 @@ type
    TObterContaDeUsuarioTeste = class
    private
       FRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
+      FInscreverUsuario: TInscreverUsuario;
       FObterContaDeUsuario: TObterContaDeUsuario;
    public
       [Setup]
@@ -34,37 +35,34 @@ implementation
 procedure TObterContaDeUsuarioTeste.Inicializar;
 begin
    FRepositorioContaDeUsuario := TRepositorioContaDeUsuarioFake.Create;
+   FInscreverUsuario := TInscreverUsuario.Create(FRepositorioContaDeUsuario);
    FObterContaDeUsuario := TObterContaDeUsuario.Create(FRepositorioContaDeUsuario);
 end;
 
 procedure TObterContaDeUsuarioTeste.Finalizar;
 begin
    FObterContaDeUsuario.Destroy;
+   FInscreverUsuario.Destroy;
    FRepositorioContaDeUsuario.Destroy;
 end;
 
 procedure TObterContaDeUsuarioTeste.DeveObterUmaContaDeUsuario;
-var lContaDeUsuario: TContaDeUsuario;
-    lIDDaContaDeUsuario: String;
+var lEntradaInscricaoUsuario: TDadoEntradaInscricaoContaDeUsuario;
+    lSaidaInscricaoUsuario: TDadoSaidaInscricaoContaDeUsuario;
     lSaidaObtencaoUsuario: TDadoSaidaObtencaoContaDeUsuario;
 begin
-   lContaDeUsuario := TContaDeUsuario.Criar('John Doe',
-                                            'john.doe@mail.com',
-                                            '958.187.055-52',
-                                            False,
-                                            True,
-                                            'ZZZ9A88');
-   try
-      FRepositorioContaDeUsuario.Salvar(lContaDeUsuario);
-      lIDDaContaDeUsuario := lContaDeUsuario.ID;
-   finally
-      lContaDeUsuario.Destroy;
-   end;
+   lEntradaInscricaoUsuario.Nome         := 'John Doe';
+   lEntradaInscricaoUsuario.Email        := Format('john.doe.%d@gmail.com', [Random(100000000)]);
+   lEntradaInscricaoUsuario.CPF          := '958.187.055-52';
+   lEntradaInscricaoUsuario.Passageiro   := False;
+   lEntradaInscricaoUsuario.Motorista    := True;
+   lEntradaInscricaoUsuario.PlacaDoCarro := 'ZZZ9A88';
+   lSaidaInscricaoUsuario := FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
 
-   lSaidaObtencaoUsuario := FObterContaDeUsuario.Executar(lIDDaContaDeUsuario);
-   Assert.AreEqual(lIDDaContaDeUsuario, lSaidaObtencaoUsuario.ID);
+   lSaidaObtencaoUsuario := FObterContaDeUsuario.Executar(lSaidaInscricaoUsuario.IDDoUsuario);
+   Assert.AreEqual(lSaidaInscricaoUsuario.IDDoUsuario, lSaidaObtencaoUsuario.ID);
    Assert.AreEqual('John Doe', lSaidaObtencaoUsuario.Nome);
-   Assert.AreEqual('john.doe@mail.com', lSaidaObtencaoUsuario.Email);
+   Assert.AreEqual(lEntradaInscricaoUsuario.Email, lSaidaObtencaoUsuario.Email);
    Assert.AreEqual('95818705552', lSaidaObtencaoUsuario.CPF);
    Assert.IsFalse(lSaidaObtencaoUsuario.Passageiro);
    Assert.IsTrue(lSaidaObtencaoUsuario.Motorista);

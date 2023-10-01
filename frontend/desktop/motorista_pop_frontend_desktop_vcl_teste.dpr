@@ -11,7 +11,17 @@ uses
   DUnitX.Loggers.Console,
   DUnitX.Loggers.Xml.NUnit,
   DUnitX.TestFramework,
-  Usuario.Teste in 'Usuario.Teste.pas';
+  Tela.Login in 'fontes\telas\Tela.Login.pas' {TelaLogin},
+  Sessao.Usuario.Logado in 'fontes\infraestrutura\Sessao.Usuario.Logado.pas',
+  HTTP.Cliente.Padrao in 'fontes\infraestrutura\http\HTTP.Cliente.Padrao.pas',
+  HTTP.Cliente in 'fontes\infraestrutura\http\HTTP.Cliente.pas',
+  ContaDeUsuario.Gateway in 'fontes\infraestrutura\gateway\ContaDeUsuario.Gateway.pas',
+  ContaDeUsuario.Gateway.HTTP in 'fontes\infraestrutura\gateway\ContaDeUsuario.Gateway.HTTP.pas',
+  JSON.Conversor in 'fontes\infraestrutura\json\JSON.Conversor.pas',
+  Tela.Usuario.Inscricao in 'fontes\telas\Tela.Usuario.Inscricao.pas' {TelaInscricaoUsuario},
+  Tela.Login.Teste in 'testes\ponta-a-ponta\Tela.Login.Teste.pas',
+  ContaDeUsuario.Gateway.HTTP.Teste in 'testes\integracao\ContaDeUsuario.Gateway.HTTP.Teste.pas',
+  Tela.Usuario.Inscricao.Teste in 'testes\ponta-a-ponta\Tela.Usuario.Inscricao.Teste.pas';
 
 var
   runner : ITestRunner;

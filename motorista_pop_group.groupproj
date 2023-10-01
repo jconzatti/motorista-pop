@@ -12,7 +12,7 @@
         <Projects Include="frontend\desktop\motorista_pop_frontend_desktop_vcl.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="frontend\desktop\testes\motorista_pop_frontend_desktop_vcl_teste.dproj">
+        <Projects Include="frontend\desktop\motorista_pop_frontend_desktop_vcl_teste.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -51,13 +51,13 @@
         <MSBuild Projects="frontend\desktop\motorista_pop_frontend_desktop_vcl.dproj" Targets="Make"/>
     </Target>
     <Target Name="motorista_pop_frontend_desktop_vcl_teste">
-        <MSBuild Projects="frontend\desktop\testes\motorista_pop_frontend_desktop_vcl_teste.dproj"/>
+        <MSBuild Projects="frontend\desktop\motorista_pop_frontend_desktop_vcl_teste.dproj"/>
     </Target>
     <Target Name="motorista_pop_frontend_desktop_vcl_teste:Clean">
-        <MSBuild Projects="frontend\desktop\testes\motorista_pop_frontend_desktop_vcl_teste.dproj" Targets="Clean"/>
+        <MSBuild Projects="frontend\desktop\motorista_pop_frontend_desktop_vcl_teste.dproj" Targets="Clean"/>
     </Target>
     <Target Name="motorista_pop_frontend_desktop_vcl_teste:Make">
-        <MSBuild Projects="frontend\desktop\testes\motorista_pop_frontend_desktop_vcl_teste.dproj" Targets="Make"/>
+        <MSBuild Projects="frontend\desktop\motorista_pop_frontend_desktop_vcl_teste.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
         <CallTarget Targets="motorista_pop_backend;motorista_pop_backend_teste;motorista_pop_frontend_desktop_vcl;motorista_pop_frontend_desktop_vcl_teste"/>
