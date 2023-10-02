@@ -80,6 +80,8 @@ begin
    try
       for lParametro in Req.Params.ToArray do
          lParametros.Add(lParametro.Key, lParametro.Value);
+      for lParametro in Req.Query.ToArray do
+         lParametros.Add(lParametro.Key, lParametro.Value);
       lResultadoHTTP := pCallback(lParametros, Req.Body);
       try
          Res.Status(lResultadoHTTP.CodigoDeRespostaHTTP);

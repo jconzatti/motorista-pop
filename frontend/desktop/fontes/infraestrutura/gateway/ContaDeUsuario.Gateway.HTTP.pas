@@ -6,17 +6,14 @@ uses
    System.SysUtils,
    System.JSON,
    HTTP.Cliente,
-   JSON.Conversor,
    ContaDeUsuario.Gateway;
 
 type
    TGatewayContaDeUsuarioHTTP = class(TGatewayContaDeUsuario)
    private
       FClienteHTTP : TClienteHTTP;
-      FConversorJSON : TConversorJSON;
    public
       constructor Create(pClienteHTTP: TClienteHTTP); reintroduce;
-      destructor Destroy; override;
       function RealizarLogin(pEmail: String): String; override;
       function ObterPorID(pID: String): TDadoSaidaObtencaoPorIDContaDeUsuario; override;
       function InscreverUsuario(pDadoUsuario: TDadoEntradaInscricaoContaDeUsuario): String; override;
@@ -29,13 +26,6 @@ implementation
 constructor TGatewayContaDeUsuarioHTTP.Create(pClienteHTTP: TClienteHTTP);
 begin
    FClienteHTTP := pClienteHTTP;
-   FConversorJSON := TConversorJSON.Create;
-end;
-
-destructor TGatewayContaDeUsuarioHTTP.Destroy;
-begin
-   FConversorJSON.Destroy;
-   inherited;
 end;
 
 function TGatewayContaDeUsuarioHTTP.RealizarLogin(pEmail: String): String;
@@ -83,8 +73,14 @@ function TGatewayContaDeUsuarioHTTP.InscreverUsuario(pDadoUsuario: TDadoEntradaI
 var lJSONUsuario: TJSONValue;
     lRespostaHTTP: TRespostaHTTP;
 begin
-   lJSONUsuario := FConversorJSON.ConverterParaJSON<TDadoEntradaInscricaoContaDeUsuario>(pDadoUsuario);
+   lJSONUsuario := TJSONObject.Create;
    try
+      TJSONObject(lJSONUsuario).AddPair('Nome', pDadoUsuario.Nome);
+      TJSONObject(lJSONUsuario).AddPair('Email', pDadoUsuario.Email);
+      TJSONObject(lJSONUsuario).AddPair('CPF', pDadoUsuario.CPF);
+      TJSONObject(lJSONUsuario).AddPair('Passageiro', TJSONBool.Create(pDadoUsuario.Passageiro));
+      TJSONObject(lJSONUsuario).AddPair('Motorista', TJSONBool.Create(pDadoUsuario.Motorista));
+      TJSONObject(lJSONUsuario).AddPair('PlacaDoCarro', pDadoUsuario.PlacaDoCarro);
       lRespostaHTTP := FClienteHTTP.Post('http://localhost:9000/usuario', lJSONUsuario.ToJSON);
    finally
       lJSONUsuario.Destroy;

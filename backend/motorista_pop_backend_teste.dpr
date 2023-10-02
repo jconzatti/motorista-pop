@@ -80,7 +80,9 @@ uses
   Corrida.Repositorio.Teste in 'testes\integracao\Corrida.Repositorio.Teste.pas',
   ContaDeUsuario.Repositorio.Teste in 'testes\integracao\ContaDeUsuario.Repositorio.Teste.pas',
   Corrida.Repositorio.BancoDeDado in 'fontes\infraestrutura\repositorio\Corrida.Repositorio.BancoDeDado.pas',
-  Corrida.Repositorio.BancoDeDado.Conexao.FireDAC.Teste in 'testes\integracao\Corrida.Repositorio.BancoDeDado.Conexao.FireDAC.Teste.pas';
+  Corrida.Repositorio.BancoDeDado.Conexao.FireDAC.Teste in 'testes\integracao\Corrida.Repositorio.BancoDeDado.Conexao.FireDAC.Teste.pas',
+  ObterCorridaAtivaDoUsuario.Teste in 'testes\integracao\ObterCorridaAtivaDoUsuario.Teste.pas',
+  ObterCorridaAtivaDoUsuario in 'fontes\aplicacao\caso-de-uso\ObterCorridaAtivaDoUsuario.pas';
 
 var
   runner : ITestRunner;

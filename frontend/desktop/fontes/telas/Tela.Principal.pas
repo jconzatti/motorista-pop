@@ -16,6 +16,8 @@ uses
   Vcl.StdCtrls,
   Vcl.ExtCtrls,
   Tela.Login,
+  Frame.SolicitarCorrida,
+  Frame.Dado.Corrida,
   Sessao.Usuario.Logado,
   HTTP.Cliente,
   HTTP.Cliente.Padrao,
@@ -26,23 +28,22 @@ uses
 
 type
   TTelaPrincipal = class(TForm)
+    GridPanelCabecalho: TGridPanel;
+    BtnHistoricoCorrida: TButton;
     LbBoasVindas: TLabel;
-    GridPanel: TGridPanel;
-    PanelMenu: TPanel;
-    GridPanelMenu: TGridPanel;
-    BtnSolicitarCorrida: TButton;
+    Panel: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure BtnSolicitarCorridaClick(Sender: TObject);
   private
     { Private declarations }
     FClienteHTTP: TClienteHTTP;
     FGatewayContaDeUsuario: TGatewayContaDeUsuario;
     FGatewayCorrida: TGatewayCorrida;
+    FFrameSolicitarCorrida: TFrameSolicitarCorrida;
+    FFrameDadoCorrida: TFrameDadoCorrida;
     function RealizarLogin: Boolean;
     procedure CarregarBoasVindas;
-    procedure SolicitarCorrida;
   public
     { Public declarations }
   end;
@@ -73,6 +74,11 @@ begin
    if RealizarLogin then
    begin
       CarregarBoasVindas;
+      try
+         FFrameDadoCorrida := TFrameDadoCorrida.Create(Panel, FGatewayCorrida);
+      except
+         FFrameSolicitarCorrida := TFrameSolicitarCorrida.Create(Panel, FGatewayCorrida);
+      end;
    end else
    begin
       Application.Terminate;
@@ -89,24 +95,6 @@ begin
       lTelaLogin.Destroy;
    end;
    Result := not TSessaoUsuarioLogado.ID.IsEmpty;
-end;
-
-procedure TTelaPrincipal.SolicitarCorrida;
-var
-   lEntradaSolicitacaoCorrida: TDadoEntradaSolicitacaoCorrida;
-begin
-   lEntradaSolicitacaoCorrida.IDDoPassageiro := TSessaoUsuarioLogado.ID;
-   lEntradaSolicitacaoCorrida.De.Latitude     := -26.877291364885657;
-   lEntradaSolicitacaoCorrida.De.Longitude    := -49.08225874081267;
-   lEntradaSolicitacaoCorrida.Para.Latitude   := -26.863202471813185;
-   lEntradaSolicitacaoCorrida.Para.Longitude  := -49.072482819584245;
-   FGatewayCorrida.SolicitarCorrida(lEntradaSolicitacaoCorrida);
-   MessageDlg('Corrida solicitada com sucesso!',mtInformation,[mbOk], 0);
-end;
-
-procedure TTelaPrincipal.BtnSolicitarCorridaClick(Sender: TObject);
-begin
-   SolicitarCorrida;
 end;
 
 procedure TTelaPrincipal.CarregarBoasVindas;

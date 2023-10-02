@@ -10,9 +10,11 @@ uses
   HTTP.Cliente.Padrao in 'fontes\infraestrutura\http\HTTP.Cliente.Padrao.pas',
   HTTP.Cliente in 'fontes\infraestrutura\http\HTTP.Cliente.pas',
   Tela.Usuario.Inscricao in 'fontes\telas\Tela.Usuario.Inscricao.pas' {TelaInscricaoUsuario},
-  JSON.Conversor in 'fontes\infraestrutura\json\JSON.Conversor.pas',
   Corrida.Gateway in 'fontes\infraestrutura\gateway\Corrida.Gateway.pas',
-  Corrida.Gateway.HTTP in 'fontes\infraestrutura\gateway\Corrida.Gateway.HTTP.pas';
+  Corrida.Gateway.HTTP in 'fontes\infraestrutura\gateway\Corrida.Gateway.HTTP.pas',
+  Frame.Coordenada in 'fontes\telas\frames\Frame.Coordenada.pas' {FrameCoordenada: TFrame},
+  Frame.SolicitarCorrida in 'fontes\telas\frames\Frame.SolicitarCorrida.pas' {FrameSolicitarCorrida: TFrame},
+  Frame.Dado.Corrida in 'fontes\telas\frames\Frame.Dado.Corrida.pas' {FrameDadoCorrida: TFrame};
 
 {$R *.res}
 

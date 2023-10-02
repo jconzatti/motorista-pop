@@ -105,7 +105,7 @@
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>(None)</Manifest_File>
-        <Debugger_RunParams>-r:Corrida.Repositorio.BancoDeDado.Conexao.FireDAC.Teste</Debugger_RunParams>
+        <Debugger_RunParams>-r:ObterCorridaAtivaDoUsuario.Teste</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -187,6 +187,8 @@
         <DCCReference Include="testes\integracao\ContaDeUsuario.Repositorio.Teste.pas"/>
         <DCCReference Include="fontes\infraestrutura\repositorio\Corrida.Repositorio.BancoDeDado.pas"/>
         <DCCReference Include="testes\integracao\Corrida.Repositorio.BancoDeDado.Conexao.FireDAC.Teste.pas"/>
+        <DCCReference Include="testes\integracao\ObterCorridaAtivaDoUsuario.Teste.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\ObterCorridaAtivaDoUsuario.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
