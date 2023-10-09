@@ -60,7 +60,6 @@ uses
   MotoristaPOP.Controlador.API.REST in 'fontes\infraestrutura\controlador\MotoristaPOP.Controlador.API.REST.pas',
   JSON.Conversor in 'fontes\infraestrutura\json\JSON.Conversor.pas',
   HTTP.Resultado.Teste in 'testes\unidade\HTTP.Resultado.Teste.pas',
-  MotoristaPOP.Controlador.API.REST.Teste in 'testes\integracao\MotoristaPOP.Controlador.API.REST.Teste.pas',
   RealizarLogin.Teste in 'testes\integracao\RealizarLogin.Teste.pas',
   RealizarLogin in 'fontes\aplicacao\caso-de-uso\RealizarLogin.pas',
   SolicitarCorrida.Teste in 'testes\integracao\SolicitarCorrida.Teste.pas',
@@ -81,8 +80,13 @@ uses
   ContaDeUsuario.Repositorio.Teste in 'testes\integracao\ContaDeUsuario.Repositorio.Teste.pas',
   Corrida.Repositorio.BancoDeDado in 'fontes\infraestrutura\repositorio\Corrida.Repositorio.BancoDeDado.pas',
   Corrida.Repositorio.BancoDeDado.Conexao.FireDAC.Teste in 'testes\integracao\Corrida.Repositorio.BancoDeDado.Conexao.FireDAC.Teste.pas',
-  ObterCorridaAtivaDoUsuario.Teste in 'testes\integracao\ObterCorridaAtivaDoUsuario.Teste.pas',
-  ObterCorridaAtivaDoUsuario in 'fontes\aplicacao\caso-de-uso\ObterCorridaAtivaDoUsuario.pas';
+  ObterCorridas.Teste in 'testes\integracao\ObterCorridas.Teste.pas',
+  ObterCorridas in 'fontes\aplicacao\caso-de-uso\ObterCorridas.pas',
+  AceitarCorrida.Teste in 'testes\integracao\AceitarCorrida.Teste.pas',
+  AceitarCorrida in 'fontes\aplicacao\caso-de-uso\AceitarCorrida.pas',
+  HTTP.Servidor.Fake in 'fontes\infraestrutura\http\HTTP.Servidor.Fake.pas',
+  MotoristaPOP.Controlador.API.REST.Teste in 'testes\integracao\MotoristaPOP.Controlador.API.REST.Teste.pas',
+  MotoristaPOP.Invocador.Cliente.API.REST.Teste in 'testes\ponta-a-ponta\MotoristaPOP.Invocador.Cliente.API.REST.Teste.pas';
 
 var
   runner : ITestRunner;

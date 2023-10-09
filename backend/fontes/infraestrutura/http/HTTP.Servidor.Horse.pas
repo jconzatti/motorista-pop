@@ -15,13 +15,13 @@ type
    TServidorHTTPHorse = class(TServidorHTTP)
    private
       procedure AoIniciarServidor;
-      procedure ExecutarPost(pURL : String; pCallback: TCallbackServidorHTTP);
-      procedure ExecutarGet(pURL : String; pCallback: TCallbackServidorHTTP);
-      procedure ExecutarCallback(Req: THorseRequest; Res: THorseResponse; pCallback: TCallbackServidorHTTP);
+      procedure RegistrarPost(pURL : String; pCallback: TCallbackServidorHTTP);
+      procedure RegistrarGet(pURL : String; pCallback: TCallbackServidorHTTP);
+      procedure InvocarCallback(Req: THorseRequest; Res: THorseResponse; pCallback: TCallbackServidorHTTP);
    public
       constructor Create;
       procedure Iniciar(pPorta: Integer); override;
-      procedure Executar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP); override;
+      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP); override;
    end;
 
 implementation
@@ -33,17 +33,17 @@ begin
    THorse.Use(Jhonson);
 end;
 
-procedure TServidorHTTPHorse.Executar(pMetodo: TMetodoHTTP; pURL: String;
+procedure TServidorHTTPHorse.Registrar(pMetodo: TMetodoHTTP; pURL: String;
   pCallback: TCallbackServidorHTTP);
 begin
    inherited;
    case pMetodo of
-      mGET:  ExecutarGet(pURL, pCallback);
-      mPOST: ExecutarPost(pURL, pCallback);
+      mGET:  RegistrarGet(pURL, pCallback);
+      mPOST: RegistrarPost(pURL, pCallback);
    end;
 end;
 
-procedure TServidorHTTPHorse.ExecutarGet(pURL: String;
+procedure TServidorHTTPHorse.RegistrarGet(pURL: String;
   pCallback: TCallbackServidorHTTP);
 begin
    inherited;
@@ -51,12 +51,12 @@ begin
       pURL,
       procedure (Req: THorseRequest; Res: THorseResponse)
       begin
-         ExecutarCallback(Req, Res, pCallback);
+         InvocarCallback(Req, Res, pCallback);
       end
    );
 end;
 
-procedure TServidorHTTPHorse.ExecutarPost(pURL: String;
+procedure TServidorHTTPHorse.RegistrarPost(pURL: String;
   pCallback: TCallbackServidorHTTP);
 begin
    inherited;
@@ -64,12 +64,12 @@ begin
       pURL,
       procedure (Req: THorseRequest; Res: THorseResponse)
       begin
-         ExecutarCallback(Req, Res, pCallback);
+         InvocarCallback(Req, Res, pCallback);
       end
    );
 end;
 
-procedure TServidorHTTPHorse.ExecutarCallback(Req: THorseRequest;
+procedure TServidorHTTPHorse.InvocarCallback(Req: THorseRequest;
   Res: THorseResponse; pCallback: TCallbackServidorHTTP);
 var lParametros: TParametroHTTP;
     lParametro: TPair<String,String>;

@@ -105,7 +105,7 @@
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>(None)</Manifest_File>
-        <Debugger_RunParams>-r:ObterCorridaAtivaDoUsuario.Teste</Debugger_RunParams>
+        <Debugger_RunParams>-r:JSON.Conversor.Teste</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -166,7 +166,6 @@
         <DCCReference Include="fontes\infraestrutura\controlador\MotoristaPOP.Controlador.API.REST.pas"/>
         <DCCReference Include="fontes\infraestrutura\json\JSON.Conversor.pas"/>
         <DCCReference Include="testes\unidade\HTTP.Resultado.Teste.pas"/>
-        <DCCReference Include="testes\integracao\MotoristaPOP.Controlador.API.REST.Teste.pas"/>
         <DCCReference Include="testes\integracao\RealizarLogin.Teste.pas"/>
         <DCCReference Include="fontes\aplicacao\caso-de-uso\RealizarLogin.pas"/>
         <DCCReference Include="testes\integracao\SolicitarCorrida.Teste.pas"/>
@@ -187,8 +186,13 @@
         <DCCReference Include="testes\integracao\ContaDeUsuario.Repositorio.Teste.pas"/>
         <DCCReference Include="fontes\infraestrutura\repositorio\Corrida.Repositorio.BancoDeDado.pas"/>
         <DCCReference Include="testes\integracao\Corrida.Repositorio.BancoDeDado.Conexao.FireDAC.Teste.pas"/>
-        <DCCReference Include="testes\integracao\ObterCorridaAtivaDoUsuario.Teste.pas"/>
-        <DCCReference Include="fontes\aplicacao\caso-de-uso\ObterCorridaAtivaDoUsuario.pas"/>
+        <DCCReference Include="testes\integracao\ObterCorridas.Teste.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\ObterCorridas.pas"/>
+        <DCCReference Include="testes\integracao\AceitarCorrida.Teste.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\AceitarCorrida.pas"/>
+        <DCCReference Include="fontes\infraestrutura\http\HTTP.Servidor.Fake.pas"/>
+        <DCCReference Include="testes\integracao\MotoristaPOP.Controlador.API.REST.Teste.pas"/>
+        <DCCReference Include="testes\ponta-a-ponta\MotoristaPOP.Invocador.Cliente.API.REST.Teste.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -32,7 +32,7 @@ type
    TServidorHTTP = class abstract
    public
       procedure Iniciar(pPorta: Integer); virtual; abstract;
-      procedure Executar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP); virtual; abstract;
+      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP); virtual; abstract;
    end;
 
 implementation

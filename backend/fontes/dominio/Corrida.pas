@@ -53,6 +53,7 @@ type
                                pParaLongitude: Double;
                                pData: TDateTime): TCorrida;
       destructor Destroy; override;
+      procedure Aceitar(pIDDoMotorista: string);
       property ID: String read ObterID;
       property IDDoPassageiro: String read ObterIDDoPassageiro;
       property IDDoMotorista: String read ObterIDDoMotorista;
@@ -123,6 +124,14 @@ begin
                              pDeLatitude, pDeLongitude,
                              pParaLatitude, pParaLongitude,
                              pData);
+end;
+
+procedure TCorrida.Aceitar(pIDDoMotorista: string);
+begin
+   FStatus := FStatus.TransicaoPara(TStatusCorrida.Aceita);
+   if Assigned(FIDDoMotorista) then
+      FIDDoMotorista.Destroy;
+   FIDDoMotorista := TUUID.Create(pIDDoMotorista);
 end;
 
 function TCorrida.ObterID: String;

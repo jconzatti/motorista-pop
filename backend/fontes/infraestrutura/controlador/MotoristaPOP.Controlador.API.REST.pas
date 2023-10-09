@@ -11,7 +11,7 @@ uses
    ObterContaDeUsuario,
    RealizarLogin,
    SolicitarCorrida,
-   ObterCorridaAtivaDoUsuario;
+   ObterCorridas;
 
 type
    TControladorMotoristaPOPAPIREST = class
@@ -22,9 +22,9 @@ type
       FObterContaDeUsuario: TObterContaDeUsuario;
       FRealizarLogin: TRealizarLogin;
       FSolicitarCorrida: TSolicitarCorrida;
-      FObterCorridaAtivaDoUsuario: TObterCorridaAtivaDoUsuario;
+      FObterCorridas: TObterCorridas;
       function ExecutarObterContaDeUsuario(pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
-      function ExecutarObterCorridaAtivaDoUsuario(pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
+      function ExecutarObterCorridasDoUsuario(pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
       function ExecutarInscreverUsuario(pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
       function ExecutarRealizarLogin(pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
       function ExecutarSolicitarCorrida(pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
@@ -35,7 +35,7 @@ type
                          pObterContaDeUsuario: TObterContaDeUsuario;
                          pRealizarLogin: TRealizarLogin;
                          pSolicitarCorrida: TSolicitarCorrida;
-                         pObterCorridaAtivaDoUsuario: TObterCorridaAtivaDoUsuario); reintroduce;
+                         pObterCorridas: TObterCorridas); reintroduce;
       destructor Destroy; override;
    end;
 
@@ -48,7 +48,7 @@ constructor TControladorMotoristaPOPAPIREST.Create(pServidorHTTP: TServidorHTTP;
                                                    pObterContaDeUsuario: TObterContaDeUsuario;
                                                    pRealizarLogin: TRealizarLogin;
                                                    pSolicitarCorrida: TSolicitarCorrida;
-                                                   pObterCorridaAtivaDoUsuario: TObterCorridaAtivaDoUsuario);
+                                                   pObterCorridas: TObterCorridas);
 begin
    FConversorJSON := TConversorJSON.Create;
 
@@ -57,7 +57,7 @@ begin
    FObterContaDeUsuario := pObterContaDeUsuario;
    FRealizarLogin       := pRealizarLogin;
    FSolicitarCorrida    := pSolicitarCorrida;
-   FObterCorridaAtivaDoUsuario := pObterCorridaAtivaDoUsuario;
+   FObterCorridas       := pObterCorridas;
    RegistrarRotasDaAPI;
    FServidorHTTP.Iniciar(9000);
 end;
@@ -70,11 +70,11 @@ end;
 
 procedure TControladorMotoristaPOPAPIREST.RegistrarRotasDaAPI;
 begin
-   FServidorHTTP.Executar(mPOST, '/usuario', ExecutarInscreverUsuario);
-   FServidorHTTP.Executar(mGET, '/usuario/:id', ExecutarObterContaDeUsuario);
-   FServidorHTTP.Executar(mGET, '/usuario/:id/corrida_ativa', ExecutarObterCorridaAtivaDoUsuario);
-   FServidorHTTP.Executar(mPOST, '/login/:email', ExecutarRealizarLogin);
-   FServidorHTTP.Executar(mPOST, '/corrida/solicitar', ExecutarSolicitarCorrida);
+   FServidorHTTP.Registrar(mPOST, '/usuario', ExecutarInscreverUsuario);
+   FServidorHTTP.Registrar(mGET, '/usuario/:id', ExecutarObterContaDeUsuario);
+   FServidorHTTP.Registrar(mGET, '/usuario/:id/corrida', ExecutarObterCorridasDoUsuario);
+   FServidorHTTP.Registrar(mPOST, '/login/:email', ExecutarRealizarLogin);
+   FServidorHTTP.Registrar(mPOST, '/corrida/solicitar', ExecutarSolicitarCorrida);
 end;
 
 function TControladorMotoristaPOPAPIREST.ExecutarInscreverUsuario(
@@ -111,16 +111,20 @@ begin
    end;
 end;
 
-function TControladorMotoristaPOPAPIREST.ExecutarObterCorridaAtivaDoUsuario(
+function TControladorMotoristaPOPAPIREST.ExecutarObterCorridasDoUsuario(
   pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
 var
-   lSaidaObtencaoCorridaAtiva : TDadoSaidaObtencaoCorridaAtiva;
-   lJSONSaidaObtencaoCorridaAtiva: TJSONValue;
+   lEntradaObtencaoCorridas : TDadoEntradaObtencaoCorridas;
+   lSaidaObtencaoCorridas : TDadoSaidaObtencaoCorridas;
+   lJSONSaidaObtencaoCorridas: TJSONValue;
 begin
    try
-      lSaidaObtencaoCorridaAtiva     := FObterCorridaAtivaDoUsuario.Executar(pParametros.Items['id']);
-      lJSONSaidaObtencaoCorridaAtiva := FConversorJSON.ConverterParaJSON<TDadoSaidaObtencaoCorridaAtiva>(lSaidaObtencaoCorridaAtiva);
-      Result := TResultadoHTTP.Create(lJSONSaidaObtencaoCorridaAtiva);
+      lEntradaObtencaoCorridas.IDDoUsuario := pParametros.Items['id'];
+      if pParametros.ContainsKey('status') then
+         lEntradaObtencaoCorridas.ListaDeStatus := pParametros.Items['status'].Split([',']);
+      lSaidaObtencaoCorridas     := FObterCorridas.Executar(lEntradaObtencaoCorridas);
+      lJSONSaidaObtencaoCorridas := FConversorJSON.ConverterParaJSON<TDadoSaidaObtencaoCorridas>(lSaidaObtencaoCorridas);
+      Result := TResultadoHTTP.Create(lJSONSaidaObtencaoCorridas);
    except
       on E: Exception do
          Result := TResultadoHTTP.Create(E);

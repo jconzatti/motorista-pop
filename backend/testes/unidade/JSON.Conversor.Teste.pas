@@ -11,6 +11,7 @@ uses
    DUnitX.TestFramework;
 
 type
+   TStatusSimples = (ssIniciado, ssEmProgresso, ssFinalizado, ssCancelado);
    TSimples = record
       Codigo: Integer;
       Descricao: string;
@@ -18,6 +19,9 @@ type
       Data: TDate;
       Hora: TTime;
       DataEHora: TDateTime;
+      Ativo: Boolean;
+      Status: TStatusSimples;
+      Tarefas: TArray<String>;
    end;
 
    TComplexo = record
@@ -35,9 +39,13 @@ type
       [Test]
       procedure DeveConverterObjetoComplexoParaJSON;
       [Test]
+      procedure DeveConverterObjetoComplexoParaJSONComSimplesNulo;
+      [Test]
       procedure DeveConverterJSONParaObjetoSimples;
       [Test]
       procedure DeveConverterJSONParaObjetoComplexo;
+      [Test]
+      procedure DeveConverterJSONParaObjetoComplexoComSimplesNulo;
    end;
 
 implementation
@@ -88,6 +96,12 @@ begin
    lComplexo.Simples.Hora      := Time;
    lComplexo.Simples.DataEHora := Now;
 
+   SetLength(lComplexo.Simples.Tarefas, 4);
+   lComplexo.Simples.Tarefas[0] := 'Tarefa 1';
+   lComplexo.Simples.Tarefas[1] := 'Tarefa 2';
+   lComplexo.Simples.Tarefas[2] := 'Tarefa 3';
+   lComplexo.Simples.Tarefas[3] := 'Tarefa 4';
+
    SetLength(lComplexo.ListaDeSimples, 3);
 
    lComplexo.ListaDeSimples[0].Codigo    := 6;
@@ -132,6 +146,67 @@ begin
          Assert.AreEqual(lComplexo.Simples.Data, lJSONSimples.GetValue<TDate>('Data'));
          Assert.AreEqual(lComplexo.Simples.Hora, lJSONSimples.GetValue<TTime>('Hora'));
          Assert.AreEqual(lComplexo.Simples.DataEHora, lJSONSimples.GetValue<TDateTime>('DataEHora'));
+
+         lJSONArrayDeSimples := lJSONComplexo.GetValue<TJSONArray>('ListaDeSimples');
+         Assert.AreEqual(3, lJSONArrayDeSimples.Count);
+
+         lJSONArrayDeInteiros := lJSONComplexo.GetValue<TJSONArray>('ListaDeInteiros');
+         Assert.AreEqual(6, lJSONArrayDeInteiros.Count);
+      finally
+         lJSONComplexo.Destroy;
+      end;
+   finally
+      lConversorJSON.Destroy;
+   end;
+end;
+
+procedure TConversorJSONTeste.DeveConverterObjetoComplexoParaJSONComSimplesNulo;
+var lComplexo: TComplexo;
+    lJSONComplexo: TJSONValue;
+    lJSONArrayDeSimples, lJSONArrayDeInteiros: TJSONArray;
+    lConversorJSON: TConversorJSON;
+begin
+   lComplexo.Codigo := 10;
+   lComplexo.Simples := Default(TSimples);
+
+   SetLength(lComplexo.ListaDeSimples, 3);
+
+   lComplexo.ListaDeSimples[0].Codigo    := 6;
+   lComplexo.ListaDeSimples[0].Descricao := 'Teste de descrição 1';
+   lComplexo.ListaDeSimples[0].Valor     := 50.51;
+   lComplexo.ListaDeSimples[0].Data      := Date;
+   lComplexo.ListaDeSimples[0].Hora      := Time;
+   lComplexo.ListaDeSimples[0].DataEHora := Now;
+
+   lComplexo.ListaDeSimples[1].Codigo    := 7;
+   lComplexo.ListaDeSimples[1].Descricao := 'Teste de descrição 2';
+   lComplexo.ListaDeSimples[1].Valor     := 50.52;
+   lComplexo.ListaDeSimples[1].Data      := Date;
+   lComplexo.ListaDeSimples[1].Hora      := Time;
+   lComplexo.ListaDeSimples[1].DataEHora := Now;
+
+   lComplexo.ListaDeSimples[2].Codigo    := 8;
+   lComplexo.ListaDeSimples[2].Descricao := 'Teste de descrição 3';
+   lComplexo.ListaDeSimples[2].Valor     := 50.53;
+   lComplexo.ListaDeSimples[2].Data      := Date;
+   lComplexo.ListaDeSimples[2].Hora      := Time;
+   lComplexo.ListaDeSimples[2].DataEHora := Now;
+
+   SetLength(lComplexo.ListaDeInteiros, 6);
+   lComplexo.ListaDeInteiros[0] := 828;
+   lComplexo.ListaDeInteiros[1] := 309;
+   lComplexo.ListaDeInteiros[2] := 910;
+   lComplexo.ListaDeInteiros[3] := 777;
+   lComplexo.ListaDeInteiros[4] := 869;
+   lComplexo.ListaDeInteiros[5] := 210;
+
+   lConversorJSON := TConversorJSON.Create;
+   try
+      lJSONComplexo := lConversorJSON.ConverterParaJSON<TComplexo>(lComplexo);
+      try
+         Assert.AreEqual(lComplexo.Codigo, lJSONComplexo.GetValue<Integer>('Codigo'));
+
+         Assert.AreEqual('null', lJSONComplexo.GetValue<TJSONValue>('Simples').ToJSON);
 
          lJSONArrayDeSimples := lJSONComplexo.GetValue<TJSONArray>('ListaDeSimples');
          Assert.AreEqual(3, lJSONArrayDeSimples.Count);
@@ -222,6 +297,61 @@ begin
          Assert.AreEqual('24/09/2023', FormatDateTime('dd/mm/yyyy', lComplexo.Simples.Data));
          Assert.AreEqual('10:15:30', FormatDateTime('hh:nn:ss', lComplexo.Simples.Hora));
          Assert.AreEqual('24/09/2023 10:15:30', FormatDateTime('dd/mm/yyyy hh:nn:ss', lComplexo.Simples.DataEHora));
+         Assert.AreEqual<Integer>(3, Length(lComplexo.ListaDeSimples));
+         Assert.AreEqual(78, lComplexo.ListaDeSimples[0].Codigo);
+         Assert.AreEqual(79, lComplexo.ListaDeSimples[1].Codigo);
+         Assert.AreEqual(80, lComplexo.ListaDeSimples[2].Codigo);
+         Assert.AreEqual<Integer>(5, Length(lComplexo.ListaDeInteiros));
+         Assert.AreEqual(1, lComplexo.ListaDeInteiros[0]);
+         Assert.AreEqual(2, lComplexo.ListaDeInteiros[1]);
+         Assert.AreEqual(3, lComplexo.ListaDeInteiros[2]);
+         Assert.AreEqual(4, lComplexo.ListaDeInteiros[3]);
+         Assert.AreEqual(5, lComplexo.ListaDeInteiros[4]);
+      finally
+         lConversorJSON.Destroy;
+      end;
+   finally
+      lJSONComplexo.Destroy;
+   end;
+end;
+
+procedure TConversorJSONTeste.DeveConverterJSONParaObjetoComplexoComSimplesNulo;
+var lComplexo: TComplexo;
+    lJSONComplexo: TJSONObject;
+    lJSONArrayDeSimples, lJSONArrayDeInteiros: TJSONArray;
+    lConversorJSON: TConversorJSON;
+begin
+   lJSONComplexo := TJSONObject.Create;
+   try
+      lJSONComplexo.AddPair('Codigo', TJSONNumber.Create(300));
+      lJSONComplexo.AddPair('Simples', TJSONNull.Create);
+      lJSONArrayDeSimples := TJSONArray.Create;
+      lJSONArrayDeSimples.AddElement(TJSONObject.Create);
+      TJSONObject(lJSONArrayDeSimples.Items[0]).AddPair('Codigo', TJSONNumber.Create(78));
+      lJSONArrayDeSimples.AddElement(TJSONObject.Create);
+      TJSONObject(lJSONArrayDeSimples.Items[1]).AddPair('Codigo', TJSONNumber.Create(79));
+      lJSONArrayDeSimples.AddElement(TJSONObject.Create);
+      TJSONObject(lJSONArrayDeSimples.Items[2]).AddPair('Codigo', TJSONNumber.Create(80));
+      lJSONComplexo.AddPair('ListaDeSimples', lJSONArrayDeSimples);
+
+      lJSONArrayDeInteiros := TJSONArray.Create;
+      lJSONArrayDeInteiros.AddElement(TJSONNumber.Create(1));
+      lJSONArrayDeInteiros.AddElement(TJSONNumber.Create(2));
+      lJSONArrayDeInteiros.AddElement(TJSONNumber.Create(3));
+      lJSONArrayDeInteiros.AddElement(TJSONNumber.Create(4));
+      lJSONArrayDeInteiros.AddElement(TJSONNumber.Create(5));
+      lJSONComplexo.AddPair('ListaDeInteiros', lJSONArrayDeInteiros);
+
+      lConversorJSON := TConversorJSON.Create;
+      try
+         lComplexo := lConversorJSON.ConverterParaObjeto<TComplexo>(lJSONComplexo);
+         Assert.AreEqual(300, lComplexo.Codigo);
+         Assert.AreEqual<Integer>(0, lComplexo.Simples.Codigo);
+         Assert.AreEqual<String>('', lComplexo.Simples.Descricao);
+         Assert.AreEqual<Double>(0.00, lComplexo.Simples.Valor);
+         Assert.AreEqual<TDate>(0, lComplexo.Simples.Data);
+         Assert.AreEqual<TTime>(0, lComplexo.Simples.Hora);
+         Assert.AreEqual<TDateTime>(0, lComplexo.Simples.DataEHora);
          Assert.AreEqual<Integer>(3, Length(lComplexo.ListaDeSimples));
          Assert.AreEqual(78, lComplexo.ListaDeSimples[0].Codigo);
          Assert.AreEqual(79, lComplexo.ListaDeSimples[1].Codigo);

@@ -147,7 +147,7 @@
         <DCCReference Include="fontes\dominio\Corrida.Status.pas"/>
         <DCCReference Include="fontes\aplicacao\repositorio\Corrida.Repositorio.pas"/>
         <DCCReference Include="fontes\infraestrutura\repositorio\Corrida.Repositorio.BancoDeDado.pas"/>
-        <DCCReference Include="fontes\aplicacao\caso-de-uso\ObterCorridaAtivaDoUsuario.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\ObterCorridas.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

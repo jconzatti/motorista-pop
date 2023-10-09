@@ -29,13 +29,13 @@ uses
   Corrida.Status in 'fontes\dominio\Corrida.Status.pas',
   Corrida.Repositorio in 'fontes\aplicacao\repositorio\Corrida.Repositorio.pas',
   Corrida.Repositorio.BancoDeDado in 'fontes\infraestrutura\repositorio\Corrida.Repositorio.BancoDeDado.pas',
-  ObterCorridaAtivaDoUsuario in 'fontes\aplicacao\caso-de-uso\ObterCorridaAtivaDoUsuario.pas';
+  ObterCorridas in 'fontes\aplicacao\caso-de-uso\ObterCorridas.pas';
 
 var
    lServidorHTTP: TServidorHTTP;
    lInscreverUsuario: TInscreverUsuario;
    lObterContaDeUsuario: TObterContaDeUsuario;
-   lObterCorridaAtivaDoUsuario: TObterCorridaAtivaDoUsuario;
+   lObterCorridas: TObterCorridas;
    lRealizarLogin: TRealizarLogin;
    lSolicitarCorrida: TSolicitarCorrida;
    lRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
@@ -50,7 +50,7 @@ begin
    lObterContaDeUsuario       := TObterContaDeUsuario.Create(lRepositorioContaDeUsuario);
    lRealizarLogin             := TRealizarLogin.Create(lRepositorioContaDeUsuario);
    lSolicitarCorrida          := TSolicitarCorrida.Create(lRepositorioCorrida, lRepositorioContaDeUsuario);
-   lObterCorridaAtivaDoUsuario:= TObterCorridaAtivaDoUsuario.Create(lRepositorioCorrida, lRepositorioContaDeUsuario);
+   lObterCorridas             := TObterCorridas.Create(lRepositorioCorrida, lRepositorioContaDeUsuario);
    lServidorHTTP              := TServidorHTTPHorse.Create;
    try
       TControladorMotoristaPOPAPIREST.Create(lServidorHTTP,
@@ -58,11 +58,11 @@ begin
                                              lObterContaDeUsuario,
                                              lRealizarLogin,
                                              lSolicitarCorrida,
-                                             lObterCorridaAtivaDoUsuario);
+                                             lObterCorridas);
    finally
       lServidorHTTP.Destroy;
       lRealizarLogin.Destroy;
-      lObterCorridaAtivaDoUsuario.Destroy;
+      lObterCorridas.Destroy;
       lObterContaDeUsuario.Destroy;
       lInscreverUsuario.Destroy;
       lRepositorioCorrida.Destroy;

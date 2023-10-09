@@ -21,8 +21,7 @@ type
       procedure Salvar(pCorrida: TCorrida); override;
       procedure Atualizar(pCorrida: TCorrida); override;
       function ObterPorID(pID: TUUID): TCorrida; override;
-      function ObterListaDeCorridasAtivasDoPassageiro(pIDDoPassageiro: TUUID): TListaDeCorridas; override;
-      function ObterListaDeCorridasAtivasDoMotorista(pIDDoMotorista: TUUID): TListaDeCorridas; override;
+      function ObterListaDeCorridasDoUsuario(pIDDoUsuario: TUUID; pConjuntoDeStatus: TConjuntoDeStatusCorrida): TListaDeCorridas; override;
    end;
 
 implementation
@@ -120,32 +119,39 @@ begin
                                 FConexaoBancoDeDado.DataSet.FieldByName('date').AsFloat);
 end;
 
-function TRepositorioCorridaBancoDeDado.ObterListaDeCorridasAtivasDoPassageiro(
-  pIDDoPassageiro: TUUID): TListaDeCorridas;
-begin
-   Result := ObterListaDeCorridas('SELECT ride_id, passenger_id, driver_id, status, '+
-                                  'fare, distance, from_lat, from_long, to_lat, to_long, '+
-                                  'date FROM ride '+
-                                  'WHERE passenger_id = :passenger_id '+
-                                  'AND status not in (:statusFinalizado, :statusCancelado)',
-                                  [pIDDoPassageiro.Valor,
-                                   TStatusCorrida.Finalizada.Valor,
-                                   TStatusCorrida.Cancelada.Valor],
-                                  [ftString, ftString, ftString]);
-end;
+function TRepositorioCorridaBancoDeDado.ObterListaDeCorridasDoUsuario(
+  pIDDoUsuario: TUUID;
+  pConjuntoDeStatus: TConjuntoDeStatusCorrida): TListaDeCorridas;
+var
+   lListaDeStatusDeCorrida: String;
 
-function TRepositorioCorridaBancoDeDado.ObterListaDeCorridasAtivasDoMotorista(
-  pIDDoMotorista: TUUID): TListaDeCorridas;
+   procedure AdicionarStatusDeCorrida(pStatusDeCorrida: TStatusCorrida);
+   begin
+      if pStatusDeCorrida in pConjuntoDeStatus then
+      begin
+         if not lListaDeStatusDeCorrida.IsEmpty then
+            lListaDeStatusDeCorrida := lListaDeStatusDeCorrida+',';
+         lListaDeStatusDeCorrida := lListaDeStatusDeCorrida + pStatusDeCorrida.Valor.QuotedString;
+      end;
+   end;
+
 begin
+   lListaDeStatusDeCorrida := '';
+   if pConjuntoDeStatus <> [] then
+   begin
+      AdicionarStatusDeCorrida(TStatusCorrida.Solicitada);
+      AdicionarStatusDeCorrida(TStatusCorrida.Aceita);
+      AdicionarStatusDeCorrida(TStatusCorrida.Iniciada);
+      AdicionarStatusDeCorrida(TStatusCorrida.Finalizada);
+      AdicionarStatusDeCorrida(TStatusCorrida.Cancelada);
+      lListaDeStatusDeCorrida := Format('AND status in (%s)', [lListaDeStatusDeCorrida]);
+   end;
    Result := ObterListaDeCorridas('SELECT ride_id, passenger_id, driver_id, status, '+
                                   'fare, distance, from_lat, from_long, to_lat, to_long, '+
                                   'date FROM ride '+
-                                  'WHERE driver_id = :driver_id '+
-                                  'AND status in (:statusAceito, :statusIniciada)',
-                                  [pIDDoMotorista.Valor,
-                                   TStatusCorrida.Aceita.Valor,
-                                   TStatusCorrida.Iniciada.Valor],
-                                  [ftString, ftString, ftString]);
+                                  'WHERE (passenger_id = :passenger_id or driver_id = :driver_id) '+
+                                  lListaDeStatusDeCorrida,
+                                  [pIDDoUsuario.Valor, pIDDoUsuario.Valor], [ftString, ftString]);
 end;
 
 function TRepositorioCorridaBancoDeDado.ObterListaDeCorridas(pSQLSelect: String;

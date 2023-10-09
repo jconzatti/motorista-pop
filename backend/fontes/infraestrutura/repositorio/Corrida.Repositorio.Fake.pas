@@ -19,8 +19,7 @@ type
       procedure Salvar(pCorrida: TCorrida); override;
       procedure Atualizar(pCorrida: TCorrida); override;
       function ObterPorID(pID: TUUID): TCorrida; override;
-      function ObterListaDeCorridasAtivasDoPassageiro(pIDDoPassageiro: TUUID): TListaDeCorridas; override;
-      function ObterListaDeCorridasAtivasDoMotorista(pIDDoMotorista: TUUID): TListaDeCorridas; override;
+      function ObterListaDeCorridasDoUsuario(pIDDoUsuario: TUUID; pConjuntoDeStatus: TConjuntoDeStatusCorrida): TListaDeCorridas; override;
       constructor Create;
    end;
 
@@ -58,32 +57,22 @@ begin
       raise ECorridaNaoEncontrada.Create(Format('Corrida com ID %s não encontada!', [pID.Valor]));
 end;
 
-function TRepositorioCorridaFake.ObterListaDeCorridasAtivasDoPassageiro(pIDDoPassageiro: TUUID): TListaDeCorridas;
+function TRepositorioCorridaFake.ObterListaDeCorridasDoUsuario(
+  pIDDoUsuario: TUUID;
+  pConjuntoDeStatus: TConjuntoDeStatusCorrida): TListaDeCorridas;
 var
    lCorrida: TCorrida;
 begin
    Result := TListaDeCorridas.Create;
    try
       for lCorrida in FTabelaDeCorridas.Values.ToArray do
-         if  (lCorrida.IDDoPassageiro.Equals(pIDDoPassageiro.Valor))
-         and (not (lCorrida.Status in [TStatusCorrida.Finalizada, TStatusCorrida.Cancelada])) then
+      begin
+         if  ((lCorrida.IDDoPassageiro.Equals(pIDDoUsuario.Valor))
+         or   (lCorrida.IDDoMotorista.Equals(pIDDoUsuario.Valor)))
+         and ((pConjuntoDeStatus = [])
+         or   (lCorrida.Status in pConjuntoDeStatus)) then
             Result.Add(lCorrida);
-   except
-      Result.Destroy;
-      raise;
-   end;
-end;
-
-function TRepositorioCorridaFake.ObterListaDeCorridasAtivasDoMotorista(pIDDoMotorista: TUUID): TListaDeCorridas;
-var
-   lCorrida: TCorrida;
-begin
-   Result := TListaDeCorridas.Create;
-   try
-      for lCorrida in FTabelaDeCorridas.Values.ToArray do
-         if  (lCorrida.IDDoMotorista.Equals(pIDDoMotorista.Valor))
-         and (lCorrida.Status in [TStatusCorrida.Aceita, TStatusCorrida.Iniciada]) then
-            Result.Add(lCorrida);
+      end;
    except
       Result.Destroy;
       raise;

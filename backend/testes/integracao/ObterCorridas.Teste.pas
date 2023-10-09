@@ -1,4 +1,4 @@
-unit ObterCorridaAtivaDoUsuario.Teste;
+unit ObterCorridas.Teste;
 
 interface
 
@@ -10,8 +10,7 @@ uses
    Corrida.Repositorio,
    Corrida.Repositorio.Fake,
    SolicitarCorrida,
-   Corrida,
-   ObterCorridaAtivaDoUsuario,
+   ObterCorridas,
    DUnitX.TestFramework;
 
 type
@@ -22,7 +21,7 @@ type
       FSolicitarCorrida: TSolicitarCorrida;
       FRepositorioContaDeUsuario: TRepositorioContaDEUsuario;
       FInscreverUsuario: TInscreverUsuario;
-      FObterCorridaAtivaDoUsuario: TObterCorridaAtivaDoUsuario;
+      FObterCorridas: TObterCorridas;
    public
       [Setup]
       procedure Inicializar;
@@ -43,7 +42,7 @@ begin
    FRepositorioContaDeUsuario := TRepositorioContaDeUsuarioFake.Create;
    FSolicitarCorrida := TSolicitarCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
    FInscreverUsuario := TInscreverUsuario.Create(FRepositorioContaDeUsuario);
-   FObterCorridaAtivaDoUsuario := TObterCorridaAtivaDoUsuario.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
+   FObterCorridas := TObterCorridas.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
 end;
 
 procedure TObterCorridasTeste.Finalizar;
@@ -52,7 +51,7 @@ begin
    FSolicitarCorrida.Destroy;
    FRepositorioContaDeUsuario.Destroy;
    FRepositorioCorrida.Destroy;
-   FObterCorridaAtivaDoUsuario.Destroy;
+   FObterCorridas.Destroy;
 end;
 
 procedure TObterCorridasTeste.DeveObterCorridaAtivaDoPassageiro;
@@ -60,11 +59,12 @@ var lEntradaInscricaoUsuario: TDadoEntradaInscricaoContaDeUsuario;
     lSaidaInscricaoUsuario: TDadoSaidaInscricaoContaDeUsuario;
     lEntradaSolicitacaoCorrida: TDadoEntradaSolicitacaoCorrida;
     lSaidaSolicitacaoCorrida: TDadoSaidaSolicitacaoCorrida;
-    lSaidaObtencaoCorridaAtiva: TDadoSaidaObtencaoCorridaAtiva;
+    lEntradaObtencaoCorridas: TDadoEntradaObtencaoCorridas;
+    lSaidaObtencaoCorridas: TDadoSaidaObtencaoCorridas;
 begin
    lEntradaInscricaoUsuario.Nome       := 'John Doe';
    lEntradaInscricaoUsuario.Email      := Format('john.doe.%d@gmail.com', [Random(100000000)]);
-   lEntradaInscricaoUsuario.CPF        := '958.187.055-52';
+   lEntradaInscricaoUsuario.CPF        := '95818705552';
    lEntradaInscricaoUsuario.Passageiro := True;
    lEntradaInscricaoUsuario.Motorista  := False;
    lSaidaInscricaoUsuario := FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
@@ -76,12 +76,20 @@ begin
    lEntradaSolicitacaoCorrida.Para.Longitude  := -49.072482819584245;
    lSaidaSolicitacaoCorrida := FSolicitarCorrida.Executar(lEntradaSolicitacaoCorrida);
 
-   lSaidaObtencaoCorridaAtiva := FObterCorridaAtivaDoUsuario.Executar(lEntradaSolicitacaoCorrida.IDDoPassageiro);
-   Assert.AreEqual(lEntradaInscricaoUsuario.Nome, lSaidaObtencaoCorridaAtiva.Passageiro);
-   Assert.IsEmpty(lSaidaObtencaoCorridaAtiva.Motorista);
-   Assert.AreEqual('requested', lSaidaObtencaoCorridaAtiva.Status);
-   Assert.AreEqual(lEntradaSolicitacaoCorrida.Para.Latitude, lSaidaObtencaoCorridaAtiva.Destino.Latitude);
-   Assert.AreEqual(lEntradaSolicitacaoCorrida.Para.Longitude, lSaidaObtencaoCorridaAtiva.Destino.Longitude);
+   lEntradaObtencaoCorridas.IDDoUsuario := lEntradaSolicitacaoCorrida.IDDoPassageiro;
+   lEntradaObtencaoCorridas.ListaDeStatus := ['requested'];
+   lSaidaObtencaoCorridas := FObterCorridas.Executar(lEntradaObtencaoCorridas);
+   Assert.AreEqual<Integer>(1, Length(lSaidaObtencaoCorridas));
+   Assert.AreEqual(lEntradaObtencaoCorridas.IDDoUsuario, lSaidaObtencaoCorridas[0].Passageiro.ID);
+   Assert.AreEqual(lEntradaInscricaoUsuario.Nome, lSaidaObtencaoCorridas[0].Passageiro.Nome);
+   Assert.AreEqual(lEntradaInscricaoUsuario.CPF, lSaidaObtencaoCorridas[0].Passageiro.CPF);
+   Assert.AreEqual(lEntradaInscricaoUsuario.Email, lSaidaObtencaoCorridas[0].Passageiro.Email);
+   Assert.IsEmpty(lSaidaObtencaoCorridas[0].Motorista.ID);
+   Assert.AreEqual('requested', lSaidaObtencaoCorridas[0].Status);
+   Assert.AreEqual(lEntradaSolicitacaoCorrida.De.Latitude, lSaidaObtencaoCorridas[0].Origem.Latitude);
+   Assert.AreEqual(lEntradaSolicitacaoCorrida.De.Longitude, lSaidaObtencaoCorridas[0].Origem.Longitude);
+   Assert.AreEqual(lEntradaSolicitacaoCorrida.Para.Latitude, lSaidaObtencaoCorridas[0].Destino.Latitude);
+   Assert.AreEqual(lEntradaSolicitacaoCorrida.Para.Longitude, lSaidaObtencaoCorridas[0].Destino.Longitude);
 end;
 
 initialization
