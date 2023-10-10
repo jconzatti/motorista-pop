@@ -63,7 +63,9 @@ begin
       mPOST: FRegistoRotaPost.TryGetValue(pURL.ToLower, lCallback);
    end;
    if Assigned(lCallback) then
-      Result := lCallback(pParametros, pConteudo);
+      Result := lCallback(pParametros, pConteudo)
+   else
+      Result := TResultadoHTTP.Create(404);
 end;
 
 end.

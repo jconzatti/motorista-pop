@@ -4,12 +4,14 @@ interface
 
 uses
    System.SysUtils,
+   System.Classes,
    Corrida,
    Corrida.Status,
    UUID;
 
 type
-   ECorridaNaoEncontrada = class(EArgumentException);
+   ECorridaNaoEncontrada = class(EResNotFound);
+   ENehumaCorridaEncontrada = class(EResNotFound);
 
    TRepositorioCorrida = class abstract
    public

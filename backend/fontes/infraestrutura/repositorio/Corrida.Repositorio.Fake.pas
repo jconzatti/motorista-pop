@@ -73,6 +73,8 @@ begin
          or   (lCorrida.Status in pConjuntoDeStatus)) then
             Result.Add(lCorrida);
       end;
+      if Result.Count = 0 then
+         raise ENehumaCorridaEncontrada.Create('Nenhuma corrida encontrada!');
    except
       Result.Destroy;
       raise;

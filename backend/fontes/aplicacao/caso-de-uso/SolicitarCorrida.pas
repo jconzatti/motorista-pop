@@ -93,12 +93,20 @@ var lListaDeCorridasAtivas: TListaDeCorridas;
 begin
    lUUID := TUUID.Create(pIDDoPassageiro);
    try
-      lListaDeCorridasAtivas := FRepositorioCorrida.ObterListaDeCorridasAtivasDoPassageiro(lUUID);
       try
-         if lListaDeCorridasAtivas.Count > 0 then
-            raise EPassageiroJaPossuiCorridaAtiva.Create('Passageiro possui corridas ativas!');
-      finally
-         lListaDeCorridasAtivas.Destroy;
+         lListaDeCorridasAtivas := FRepositorioCorrida.ObterListaDeCorridasAtivasDoPassageiro(lUUID);
+         try
+            if lListaDeCorridasAtivas.Count > 0 then
+               raise EPassageiroJaPossuiCorridaAtiva.Create('Passageiro possui corridas ativas!');
+         finally
+            lListaDeCorridasAtivas.Destroy;
+         end;
+      except
+         on E: Exception do
+         begin
+            if not (E is ENehumaCorridaEncontrada) then
+               raise;
+         end;
       end;
    finally
       lUUID.Destroy;

@@ -108,7 +108,7 @@ end;
 procedure TRepositorioContaDeUsuarioTeste.DeveDispararErroSeTentarObterUmaContaDeUsuarioPorIDNaoCadastrado;
 var lID: TUUID;
 begin
-   lID := TUUID.Create('630d48cf6a02442e922bfe16440b36a5');
+   lID := TUUID.Create(TUUID.Gerar);
    try
       Assert.WillRaise(
          procedure

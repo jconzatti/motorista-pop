@@ -10,6 +10,8 @@ uses
    UUID;
 
 type
+   EOutroMotorista = class(EArgumentException);
+
    TCorrida = class
    private
       FID: TUUID;
@@ -54,6 +56,7 @@ type
                                pData: TDateTime): TCorrida;
       destructor Destroy; override;
       procedure Aceitar(pIDDoMotorista: string);
+      procedure Iniciar(pIDDoMotorista: string);
       property ID: String read ObterID;
       property IDDoPassageiro: String read ObterIDDoPassageiro;
       property IDDoMotorista: String read ObterIDDoMotorista;
@@ -132,6 +135,19 @@ begin
    if Assigned(FIDDoMotorista) then
       FIDDoMotorista.Destroy;
    FIDDoMotorista := TUUID.Create(pIDDoMotorista);
+end;
+
+procedure TCorrida.Iniciar(pIDDoMotorista: string);
+var lID: TUUID;
+begin
+   lID := TUUID.Create(pIDDoMotorista);
+   try
+      FStatus := FStatus.TransicaoPara(TStatusCorrida.Iniciada);
+      if not FIDDoMotorista.Valor.Equals(lID.Valor) then
+         raise EOutroMotorista.Create('Corrida já aceita por outro motorista!');
+   finally
+      lID.Destroy;
+   end;
 end;
 
 function TCorrida.ObterID: String;

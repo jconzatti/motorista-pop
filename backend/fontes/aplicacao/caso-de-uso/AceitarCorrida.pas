@@ -70,7 +70,7 @@ begin
       lContaDeUsuario := FRepositorioContaUsuario.ObterPorID(lUUID);
       try
          if not lContaDeUsuario.Motorista then
-            raise EContaDeUsuarioNaoEhMotorista.Create('Conta de usuário não pertence a um motorista!');
+            raise EContaDeUsuarioNaoEhMotorista.Create('Conta de usuário não pertence a um motorista! Somente motoristas podem aceitar corridas!');
       finally
          lContaDeUsuario.Destroy;
       end;
@@ -85,12 +85,20 @@ var lListaDeCorridasAtivas: TListaDeCorridas;
 begin
    lUUID := TUUID.Create(pIDDoMotorista);
    try
-      lListaDeCorridasAtivas := FRepositorioCorrida.ObterListaDeCorridasAtivasDoMotorista(lUUID);
       try
-         if lListaDeCorridasAtivas.Count > 0 then
-            raise EMotoristaJaPossuiCorridaAtiva.Create('Motorista possui corridas ativas!');
-      finally
-         lListaDeCorridasAtivas.Destroy;
+         lListaDeCorridasAtivas := FRepositorioCorrida.ObterListaDeCorridasAtivasDoMotorista(lUUID);
+         try
+            if lListaDeCorridasAtivas.Count > 0 then
+               raise EMotoristaJaPossuiCorridaAtiva.Create('Motorista possui corridas ativas! Não pode aceitar corridas!');
+         finally
+            lListaDeCorridasAtivas.Destroy;
+         end;
+      except
+         on E: Exception do
+         begin
+            if not (E is ENehumaCorridaEncontrada) then
+               raise;
+         end;
       end;
    finally
       lUUID.Destroy;

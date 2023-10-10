@@ -152,6 +152,13 @@ begin
                                   'WHERE (passenger_id = :passenger_id or driver_id = :driver_id) '+
                                   lListaDeStatusDeCorrida,
                                   [pIDDoUsuario.Valor, pIDDoUsuario.Valor], [ftString, ftString]);
+   try
+      if Result.Count = 0 then
+         raise ENehumaCorridaEncontrada.Create('Nenhuma corrida encontrada!');
+   except
+      Result.Destroy;
+      raise;
+   end;
 end;
 
 function TRepositorioCorridaBancoDeDado.ObterListaDeCorridas(pSQLSelect: String;

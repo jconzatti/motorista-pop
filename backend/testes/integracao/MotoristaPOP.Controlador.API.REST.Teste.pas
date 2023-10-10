@@ -13,10 +13,13 @@ uses
    ContaDeUsuario.Repositorio,
    ContaDeUsuario.Repositorio.Fake,
    SolicitarCorrida,
+   AceitarCorrida,
+   IniciarCorrida,
    InscreverUsuario,
    ObterContaDeUsuario,
    RealizarLogin,
    ObterCorridas,
+   ObterCorrida,
    MotoristaPOP.Controlador.API.REST,
    DUnitX.TestFramework;
 
@@ -27,23 +30,32 @@ type
       FServidorHTTP: TServidorHTTPFake;
       FInscreverUsuario: TInscreverUsuario;
       FObterContaDeUsuario: TObterContaDeUsuario;
+      FObterCorrida: TObterCorrida;
       FObterCorridas: TObterCorridas;
       FRealizarLogin: TRealizarLogin;
       FSolicitarCorrida: TSolicitarCorrida;
+      FAceitarCorrida: TAceitarCorrida;
+      FIniciarCorrida: TIniciarCorrida;
       FRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
       FRepositorioCorrida: TRepositorioCorrida;
       FControladorMotoristaPOPAPIREST: TControladorMotoristaPOPAPIREST;
       function CriarContaDePassageiro(pEmail: String): TResultadoHTTP;
+      function CriarContaDeMotorista(pEmail: String): TResultadoHTTP;
       function SolicitarUmaCorrida(pIDDoPassageiro: String): TResultadoHTTP;
+      function AceitarUmaCorrida(pIDDoMotorista, pIDDaCorrida: String): TResultadoHTTP;
+      function IniciarUmaCorrida(pIDDoMotorista, pIDDaCorrida: String): TResultadoHTTP;
       function ObterCooredenadasEmJSON(pLatitude, pLongitude: Double): TJSONObject;
       function ObterContaDeUsuario(pIDDoUsuario: String): TResultadoHTTP;
       function RealizarLogin(pEmail: String): TResultadoHTTP;
       function ObterCorridasDoUsuario(pIDDoUsuario, pListaStatus: String): TResultadoHTTP;
+      function ObterCorrida(pIDDaCorrida: String): TResultadoHTTP;
    public
       [Setup]
       procedure Inicializar;
       [TearDown]
       procedure Finalizar;
+      [Test]
+      procedure DeveRetornar404ParaRotaInexistente;
       [Test]
       procedure NaoPodeCriarUmaContaDeUsuarioComCorpoEmFormatoJSONInvalido;
       [Test]
@@ -70,6 +82,18 @@ type
       procedure PassageiroDeveSolicitarUmaCorrida;
       [Test]
       procedure NaoPodeSolicitarUmaCorridaSemIDDoPassageiro;
+      [Test]
+      procedure DeveObterUmaCorrida;
+      [Test]
+      procedure NaoPodeObterCorridaComIDInexistente;
+      [Test]
+      procedure MotoristaDeveAceitarUmaCorrida;
+      [Test]
+      procedure NaoPodeAceitarUmaCorridaSemIDDoMotorista;
+      [Test]
+      procedure MotoristaDeveIniciarUmaCorrida;
+      [Test]
+      procedure NaoPodeIniciarUmaCorridaSemIDDaCorrida;
    end;
 
 implementation
@@ -85,26 +109,54 @@ begin
    FObterContaDeUsuario       := TObterContaDeUsuario.Create(FRepositorioContaDeUsuario);
    FRealizarLogin             := TRealizarLogin.Create(FRepositorioContaDeUsuario);
    FSolicitarCorrida          := TSolicitarCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
+   FAceitarCorrida            := TAceitarCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
+   FIniciarCorrida            := TIniciarCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
    FObterCorridas             := TObterCorridas.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
+   FObterCorrida              := TObterCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
    FServidorHTTP              := TServidorHTTPFake.Create;
    FControladorMotoristaPOPAPIREST := TControladorMotoristaPOPAPIREST.Create(FServidorHTTP,
                                                                              FInscreverUsuario,
                                                                              FObterContaDeUsuario,
                                                                              FRealizarLogin,
                                                                              FSolicitarCorrida,
-                                                                             FObterCorridas);
+                                                                             FAceitarCorrida,
+                                                                             FIniciarCorrida,
+                                                                             FObterCorridas,
+                                                                             FObterCorrida);
 end;
 
 procedure TControladorMotoristaPOPAPIRESTTeste.Finalizar;
 begin
    FControladorMotoristaPOPAPIREST.Destroy;
    FServidorHTTP.Destroy;
+   FSolicitarCorrida.Destroy;
+   FAceitarCorrida.Destroy;
+   FIniciarCorrida.Destroy;
    FRealizarLogin.Destroy;
+   FObterCorrida.Destroy;
    FObterCorridas.Destroy;
    FObterContaDeUsuario.Destroy;
    FInscreverUsuario.Destroy;
    FRepositorioCorrida.Destroy;
    FRepositorioContaDeUsuario.Destroy;
+end;
+
+procedure TControladorMotoristaPOPAPIRESTTeste.DeveRetornar404ParaRotaInexistente;
+var lResultado: TResultadoHTTP;
+    lParametros: TParametroHTTP;
+begin
+   lParametros := TParametroHTTP.Create;
+   try
+      lResultado := FServidorHTTP.Invocar(mGET, '/notfound', lParametros, '');
+      try
+         Assert.IsTrue(Assigned(lResultado));
+         Assert.AreEqual<Integer>(404, lResultado.CodigoDeRespostaHTTP);
+      finally
+         lResultado.Destroy;
+      end;
+   finally
+      lParametros.Destroy;
+   end;
 end;
 
 procedure TControladorMotoristaPOPAPIRESTTeste.NaoPodeCriarUmaContaDeUsuarioComCorpoEmFormatoJSONInvalido;
@@ -367,6 +419,175 @@ begin
    end;
 end;
 
+procedure TControladorMotoristaPOPAPIRESTTeste.MotoristaDeveAceitarUmaCorrida;
+var lResultado: TResultadoHTTP;
+    lIDDoPassageiro, lIDDoMotorista, lIDDaCorrida: String;
+begin
+   lResultado := CriarContaDePassageiro(Format('john.doe.%d@gmail.com', [Random(100000000)]));
+   try
+      lIDDoPassageiro := lResultado.JSON.GetValue<string>('IDDoUsuario');
+   finally
+      lResultado.Destroy;
+   end;
+
+   lResultado := SolicitarUmaCorrida(lIDDoPassageiro);
+   try
+      lIDDaCorrida := lResultado.JSON.GetValue<string>('IDDaCorrida');
+   finally
+      lResultado.Destroy;
+   end;
+
+   lResultado := CriarContaDeMotorista(Format('vera.root.%d@gmail.com', [Random(100000000)]));
+   try
+      lIDDoMotorista := lResultado.JSON.GetValue<string>('IDDoUsuario');
+   finally
+      lResultado.Destroy;
+   end;
+
+   lResultado := AceitarUmaCorrida(lIDDoMotorista, lIDDaCorrida);
+   try
+      Assert.IsTrue(Assigned(lResultado));
+      Assert.AreEqual<Integer>(200, lResultado.CodigoDeRespostaHTTP);
+      Assert.IsEmpty(lResultado.JSON.Value);
+   finally
+      lResultado.Destroy;
+   end;
+end;
+
+procedure TControladorMotoristaPOPAPIRESTTeste.NaoPodeAceitarUmaCorridaSemIDDoMotorista;
+var lResultado: TResultadoHTTP;
+begin
+   lResultado := AceitarUmaCorrida('', '123456789012345678901234567890aa');
+   try
+      Assert.IsTrue(Assigned(lResultado));
+      Assert.AreEqual<Integer>(400, lResultado.CodigoDeRespostaHTTP);
+      Assert.Contains(lResultado.JSON.ToJSON, '"Tipo":"EUUIDInvalido"');
+   finally
+      lResultado.Destroy;
+   end;
+end;
+
+procedure TControladorMotoristaPOPAPIRESTTeste.MotoristaDeveIniciarUmaCorrida;
+var lResultado: TResultadoHTTP;
+    lIDDoPassageiro, lIDDoMotorista, lIDDaCorrida: String;
+begin
+   lResultado := CriarContaDePassageiro(Format('john.doe.%d@gmail.com', [Random(100000000)]));
+   try
+      lIDDoPassageiro := lResultado.JSON.GetValue<string>('IDDoUsuario');
+   finally
+      lResultado.Destroy;
+   end;
+
+   lResultado := SolicitarUmaCorrida(lIDDoPassageiro);
+   try
+      lIDDaCorrida := lResultado.JSON.GetValue<string>('IDDaCorrida');
+   finally
+      lResultado.Destroy;
+   end;
+
+   lResultado := CriarContaDeMotorista(Format('vera.root.%d@gmail.com', [Random(100000000)]));
+   try
+      lIDDoMotorista := lResultado.JSON.GetValue<string>('IDDoUsuario');
+   finally
+      lResultado.Destroy;
+   end;
+
+   lResultado := AceitarUmaCorrida(lIDDoMotorista, lIDDaCorrida);
+   lResultado.Destroy;
+
+   lResultado := IniciarUmaCorrida(lIDDoMotorista, lIDDaCorrida);
+   try
+      Assert.IsTrue(Assigned(lResultado));
+      Assert.AreEqual<Integer>(200, lResultado.CodigoDeRespostaHTTP);
+      Assert.IsEmpty(lResultado.JSON.Value);
+   finally
+      lResultado.Destroy;
+   end;
+end;
+
+procedure TControladorMotoristaPOPAPIRESTTeste.NaoPodeIniciarUmaCorridaSemIDDaCorrida;
+var lResultado: TResultadoHTTP;
+    lIDDoPassageiro, lIDDoMotorista, lIDDaCorrida: String;
+begin
+   lResultado := CriarContaDePassageiro(Format('john.doe.%d@gmail.com', [Random(100000000)]));
+   try
+      lIDDoPassageiro := lResultado.JSON.GetValue<string>('IDDoUsuario');
+   finally
+      lResultado.Destroy;
+   end;
+
+   lResultado := SolicitarUmaCorrida(lIDDoPassageiro);
+   try
+      lIDDaCorrida := lResultado.JSON.GetValue<string>('IDDaCorrida');
+   finally
+      lResultado.Destroy;
+   end;
+
+   lResultado := CriarContaDeMotorista(Format('vera.root.%d@gmail.com', [Random(100000000)]));
+   try
+      lIDDoMotorista := lResultado.JSON.GetValue<string>('IDDoUsuario');
+   finally
+      lResultado.Destroy;
+   end;
+
+   lResultado := AceitarUmaCorrida(lIDDoMotorista, lIDDaCorrida);
+   lResultado.Destroy;
+
+   lResultado := IniciarUmaCorrida(lIDDoMotorista, '');
+   try
+      Assert.IsTrue(Assigned(lResultado));
+      Assert.AreEqual<Integer>(400, lResultado.CodigoDeRespostaHTTP);
+      Assert.Contains(lResultado.JSON.ToJSON, '"Tipo":"EUUIDInvalido"');
+   finally
+      lResultado.Destroy;
+   end;
+end;
+
+procedure TControladorMotoristaPOPAPIRESTTeste.DeveObterUmaCorrida;
+var lResultado: TResultadoHTTP;
+    lIDDoPassageiro, lIDDaCorrida: String;
+begin
+   lResultado := CriarContaDePassageiro(Format('john.doe.%d@gmail.com', [Random(100000000)]));
+   try
+      lIDDoPassageiro := lResultado.JSON.GetValue<string>('IDDoUsuario');
+   finally
+      lResultado.Destroy;
+   end;
+
+   lResultado := SolicitarUmaCorrida(lIDDoPassageiro);
+   try
+      lIDDaCorrida := lResultado.JSON.GetValue<string>('IDDaCorrida');
+   finally
+      lResultado.Destroy;
+   end;
+
+   lResultado := ObterCorrida(lIDDaCorrida);
+   try
+      Assert.IsTrue(Assigned(lResultado));
+      Assert.AreEqual<Integer>(200, lResultado.CodigoDeRespostaHTTP);
+      Assert.IsNotEmpty(lResultado.JSON.ToJSON);
+      Assert.AreEqual(lIDDaCorrida, lResultado.JSON.GetValue<string>('ID'));
+      Assert.AreEqual(lIDDoPassageiro, lResultado.JSON.GetValue<TJSONObject>('Passageiro').GetValue<String>('ID'));
+      Assert.AreEqual('null', lResultado.JSON.GetValue<TJSONNull>('Motorista').Value);
+      Assert.AreEqual('requested', lResultado.JSON.GetValue<string>('Status'));
+   finally
+      lResultado.Destroy;
+   end;
+end;
+
+procedure TControladorMotoristaPOPAPIRESTTeste.NaoPodeObterCorridaComIDInexistente;
+var lResultado: TResultadoHTTP;
+begin
+   lResultado := ObterCorrida('123456789012345678901234567890ff');
+   try
+      Assert.IsTrue(Assigned(lResultado));
+      Assert.AreEqual<Integer>(404, lResultado.CodigoDeRespostaHTTP);
+      Assert.Contains(lResultado.JSON.ToJSON, '"Tipo":"ECorridaNaoEncontrada"');
+   finally
+      lResultado.Destroy;
+   end;
+end;
+
 function TControladorMotoristaPOPAPIRESTTeste.SolicitarUmaCorrida(pIDDoPassageiro: String): TResultadoHTTP;
 var lJSONSolicitacaoCorrida: TJSONObject;
     lParametros : TParametroHTTP;
@@ -380,6 +601,40 @@ begin
       Result := FServidorHTTP.Invocar(mPOST, '/corrida/solicitar', lParametros, lJSONSolicitacaoCorrida.ToJSON);
    finally
       lJSONSolicitacaoCorrida.Destroy;
+      lParametros.Destroy;
+   end;
+end;
+
+function TControladorMotoristaPOPAPIRESTTeste.AceitarUmaCorrida(pIDDoMotorista,
+  pIDDaCorrida: String): TResultadoHTTP;
+var lJSONAceiteCorrida: TJSONObject;
+    lParametros : TParametroHTTP;
+begin
+   lParametros := TParametroHTTP.Create;
+   lJSONAceiteCorrida := TJSONObject.Create;
+   try
+      lJSONAceiteCorrida.AddPair('IDDoMotorista', pIDDoMotorista);
+      lParametros.Add('id', pIDDaCorrida);
+      Result := FServidorHTTP.Invocar(mPOST, '/corrida/:id/aceitar', lParametros, lJSONAceiteCorrida.ToJSON);
+   finally
+      lJSONAceiteCorrida.Destroy;
+      lParametros.Destroy;
+   end;
+end;
+
+function TControladorMotoristaPOPAPIRESTTeste.IniciarUmaCorrida(pIDDoMotorista,
+  pIDDaCorrida: String): TResultadoHTTP;
+var lJSONInicioCorrida: TJSONObject;
+    lParametros : TParametroHTTP;
+begin
+   lParametros := TParametroHTTP.Create;
+   lJSONInicioCorrida := TJSONObject.Create;
+   try
+      lJSONInicioCorrida.AddPair('IDDoMotorista', pIDDoMotorista);
+      lParametros.Add('id', pIDDaCorrida);
+      Result := FServidorHTTP.Invocar(mPOST, '/corrida/:id/iniciar', lParametros, lJSONInicioCorrida.ToJSON);
+   finally
+      lJSONInicioCorrida.Destroy;
       lParametros.Destroy;
    end;
 end;
@@ -430,6 +685,26 @@ begin
    end;
 end;
 
+function TControladorMotoristaPOPAPIRESTTeste.CriarContaDeMotorista(pEmail: String): TResultadoHTTP;
+var lJSONMotorista: TJSONObject;
+    lParametros: TParametroHTTP;
+begin
+   lParametros := TParametroHTTP.Create;
+   lJSONMotorista := TJSONObject.Create;
+   try
+      lJSONMotorista.AddPair('nome', 'Vera Root');
+      lJSONMotorista.AddPair('email', pEmail);
+      lJSONMotorista.AddPair('cpf', '524.082.580-73');
+      lJSONMotorista.AddPair('passageiro', TJSONBool.Create(False));
+      lJSONMotorista.AddPair('motorista', TJSONBool.Create(True));
+      lJSONMotorista.AddPair('placaDoCarro', 'XJF1H34');
+      Result := FServidorHTTP.Invocar(mPOST, '/usuario', lParametros, lJSONMotorista.ToJSON);
+   finally
+      lJSONMotorista.Destroy;
+      lParametros.Destroy;
+   end;
+end;
+
 function TControladorMotoristaPOPAPIRESTTeste.ObterContaDeUsuario(pIDDoUsuario: String): TResultadoHTTP;
 var lParametros: TParametroHTTP;
 begin
@@ -450,6 +725,18 @@ begin
    try
       lParametros.Add('email', pEmail);
       Result := FServidorHTTP.Invocar(mPOST, '/login/:email', lParametros, '');
+   finally
+      lParametros.Destroy;
+   end;
+end;
+
+function TControladorMotoristaPOPAPIRESTTeste.ObterCorrida(pIDDaCorrida: String): TResultadoHTTP;
+var lParametros: TParametroHTTP;
+begin
+   lParametros := TParametroHTTP.Create;
+   try
+      lParametros.Add('id', pIDDaCorrida);
+      Result := FServidorHTTP.Invocar(mGET, '/corrida/:id', lParametros, '');
    finally
       lParametros.Destroy;
    end;

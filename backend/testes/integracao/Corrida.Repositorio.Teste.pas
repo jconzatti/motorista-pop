@@ -29,6 +29,8 @@ type
       procedure DeveObterCorridasAtivasDoPassageiro;
       [Test]
       procedure DeveObterCorridasAtivasDoMotorista;
+      [Test]
+      procedure NaoPodeObterCorridasDeUsuarioSemComrridas;
    end;
 
 implementation
@@ -216,6 +218,24 @@ begin
       finally
          LListaDeCorridasAtivas.Destroy;
       end;
+   finally
+      lID.Destroy;
+   end;
+end;
+
+procedure TRepositorioCorridaTeste.NaoPodeObterCorridasDeUsuarioSemComrridas;
+var lID : TUUID;
+begin
+   lID := TUUID.Create(TUUID.Gerar);
+   try
+      Assert.WillRaiseWithMessage(
+         procedure
+         begin
+            FRepositorioCorrida.ObterListaDeCorridasDoUsuario(lID, []);
+         end,
+         ENehumaCorridaEncontrada,
+         'Nenhuma corrida encontrada!'
+      );
    finally
       lID.Destroy;
    end;

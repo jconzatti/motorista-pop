@@ -1,4 +1,4 @@
-unit ObterCorridas;
+unit ObterCorrida;
 
 interface
 
@@ -12,11 +12,6 @@ uses
    UUID;
 
 type
-   TDadoEntradaObtencaoCorridas = record
-      IDDoUsuario: string;
-      ListaDeStatus: TArray<String>;
-   end;
-
    TCoodernadaObtencaoCorridas = record
       Latitude: Double;
       Longitude: Double;
@@ -47,57 +42,46 @@ type
       Data: TDateTime;
    end;
 
-   TDadoSaidaObtencaoCorridas = TArray<TDadoSaidaObtencaoCorrida>;
-
-   TObterCorridas = class
+   TObterCorrida = class
    private
       FRepositorioCorrida: TRepositorioCorrida;
       FRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
       function CarregarDadoSaidaObtencaoCorrida(pCorrida: TCorrida):TDadoSaidaObtencaoCorrida;
    public
       constructor Create(pRepositorioCorrida: TRepositorioCorrida; pRepositorioContaDeUsuario: TRepositorioContaDeUsuario); reintroduce;
-      function Executar(pEntradaObtencaoCorridas: TDadoEntradaObtencaoCorridas): TDadoSaidaObtencaoCorridas;
+      function Executar(pIDDaCorrida: String): TDadoSaidaObtencaoCorrida;
    end;
 
 implementation
 
-{ TObterCorridas }
+{ TObterCorrida }
 
-constructor TObterCorridas.Create(pRepositorioCorrida: TRepositorioCorrida;
+constructor TObterCorrida.Create(pRepositorioCorrida: TRepositorioCorrida;
   pRepositorioContaDeUsuario: TRepositorioContaDeUsuario);
 begin
    FRepositorioCorrida := pRepositorioCorrida;
    FRepositorioContaDeUsuario := pRepositorioContaDeUsuario;
 end;
 
-function TObterCorridas.Executar(pEntradaObtencaoCorridas: TDadoEntradaObtencaoCorridas): TDadoSaidaObtencaoCorridas;
+function TObterCorrida.Executar(pIDDaCorrida: String): TDadoSaidaObtencaoCorrida;
 var
-   lListaDeCorridas: TListaDeCorridas;
    lID: TUUID;
-   lConjuntoDeStatusDeCorrida: TConjuntoDeStatusCorrida;
-   lStatusDeCorrida: String;
-   I: Integer;
+   lCorrida: TCorrida;
 begin
-   lID := TUUID.Create(pEntradaObtencaoCorridas.IDDoUsuario);
+   lID := TUUID.Create(pIDDaCorrida);
    try
-      lConjuntoDeStatusDeCorrida := [];
-      for lStatusDeCorrida in pEntradaObtencaoCorridas.ListaDeStatus do
-         lConjuntoDeStatusDeCorrida := lConjuntoDeStatusDeCorrida + [TStatusCorrida.Status(lStatusDeCorrida)];
-      lListaDeCorridas := FRepositorioCorrida.ObterListaDeCorridasDoUsuario(lID, lConjuntoDeStatusDeCorrida);
+      lCorrida := FRepositorioCorrida.ObterPorID(lID);
       try
-         SetLength(Result, lListaDeCorridas.Count);
-
-         for I := 0 to lListaDeCorridas.Count - 1 do
-            Result[I] := CarregarDadoSaidaObtencaoCorrida(lListaDeCorridas.Items[I]);
+         Result := CarregarDadoSaidaObtencaoCorrida(lCorrida);
       finally
-         lListaDeCorridas.Destroy;
+         lCorrida.Destroy;
       end;
    finally
       lID.Destroy;
    end;
 end;
 
-function TObterCorridas.CarregarDadoSaidaObtencaoCorrida(pCorrida: TCorrida): TDadoSaidaObtencaoCorrida;
+function TObterCorrida.CarregarDadoSaidaObtencaoCorrida(pCorrida: TCorrida): TDadoSaidaObtencaoCorrida;
 var
    lID: TUUID;
    lUsuario: TContaDeUsuario;

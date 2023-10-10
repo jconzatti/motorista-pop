@@ -86,7 +86,19 @@ uses
   AceitarCorrida in 'fontes\aplicacao\caso-de-uso\AceitarCorrida.pas',
   HTTP.Servidor.Fake in 'fontes\infraestrutura\http\HTTP.Servidor.Fake.pas',
   MotoristaPOP.Controlador.API.REST.Teste in 'testes\integracao\MotoristaPOP.Controlador.API.REST.Teste.pas',
-  MotoristaPOP.Invocador.Cliente.API.REST.Teste in 'testes\ponta-a-ponta\MotoristaPOP.Invocador.Cliente.API.REST.Teste.pas';
+  MotoristaPOP.Invocador.Cliente.API.REST.Teste in 'testes\ponta-a-ponta\MotoristaPOP.Invocador.Cliente.API.REST.Teste.pas',
+  ObterCorrida.Teste in 'testes\integracao\ObterCorrida.Teste.pas',
+  ObterCorrida in 'fontes\aplicacao\caso-de-uso\ObterCorrida.pas',
+  IniciarCorrida.Teste in 'testes\integracao\IniciarCorrida.Teste.pas',
+  IniciarCorrida in 'fontes\aplicacao\caso-de-uso\IniciarCorrida.pas',
+  Posicao in 'fontes\dominio\Posicao.pas',
+  Posicao.Teste in 'testes\unidade\Posicao.Teste.pas',
+  Posicao.Repositorio in 'fontes\aplicacao\repositorio\Posicao.Repositorio.pas',
+  Posicao.Repositorio.Teste in 'testes\integracao\Posicao.Repositorio.Teste.pas',
+  Posicao.Repositorio.Fake.Teste in 'testes\integracao\Posicao.Repositorio.Fake.Teste.pas',
+  Posicao.Repositorio.Fake in 'fontes\infraestrutura\repositorio\Posicao.Repositorio.Fake.pas',
+  Posicao.Repositorio.BancoDeDado.Conexao.FireDAC.Teste in 'testes\integracao\Posicao.Repositorio.BancoDeDado.Conexao.FireDAC.Teste.pas',
+  Posicao.Repositorio.BancoDeDado in 'fontes\infraestrutura\repositorio\Posicao.Repositorio.BancoDeDado.pas';
 
 var
   runner : ITestRunner;
