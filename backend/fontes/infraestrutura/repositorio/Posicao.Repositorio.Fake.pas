@@ -61,10 +61,10 @@ begin
       for lPosicao in lPosicoes do
       begin
          if lPosicao.IDDaCorrida.Equals(pIDDaCorrida.Valor) then
-            Result.Add(lPosicao);
+            Result.Add(ClonarPosicao(lPosicao));
       end;
       if Result.Count = 0 then
-         raise ENehumaPosicaoEncontrada.Create(Format('Nenhuma posição da corrida (ID %s) encontrada!', [pIDDaCorrida.Valor]));
+         raise ERepositorioPosicaoNaoEncontrada.Create(Format('Nenhuma posição da corrida (ID %s) encontrada!', [pIDDaCorrida.Valor]));
    except
       Result.Destroy;
       raise;

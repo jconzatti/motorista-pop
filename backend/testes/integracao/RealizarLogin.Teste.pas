@@ -3,8 +3,8 @@ unit RealizarLogin.Teste;
 interface
 
 uses
-   ContaDeUsuario.Repositorio,
-   ContaDeUsuario.Repositorio.Fake,
+   Repositorio.Fabrica,
+   Repositorio.Fabrica.Fake,
    InscreverUsuario,
    RealizarLogin,
    DUnitX.TestFramework;
@@ -13,7 +13,7 @@ type
    [TestFixture]
    RealizarLoginTeste = class
    private
-      FRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
+      FFabricaRepositorio: TFabricaRepositorio;
       FInscreverUsuario: TInscreverUsuario;
       FRealizarLogin: TRealizarLogin;
    public
@@ -32,16 +32,16 @@ implementation
 
 procedure RealizarLoginTeste.Inicializar;
 begin
-   FRepositorioContaDeUsuario := TRepositorioContaDeUsuarioFake.Create;
-   FInscreverUsuario := TInscreverUsuario.Create(FRepositorioContaDeUsuario);
-   FRealizarLogin := TRealizarLogin.Create(FRepositorioContaDeUsuario);
+   FFabricaRepositorio := TFabricaRepositorioFake.Create;
+   FInscreverUsuario := TInscreverUsuario.Create(FFabricaRepositorio);
+   FRealizarLogin := TRealizarLogin.Create(FFabricaRepositorio);
 end;
 
 procedure RealizarLoginTeste.Finalizar;
 begin
    FRealizarLogin.Destroy;
    FInscreverUsuario.Destroy;
-   FRepositorioContaDeUsuario.Destroy;
+   FFabricaRepositorio.Destroy;
 end;
 
 procedure RealizarLoginTeste.DeverRealizarLoginComEmailDoUsuario;

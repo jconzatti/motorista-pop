@@ -10,8 +10,6 @@ uses
    UUID;
 
 type
-   EOutroMotorista = class(EArgumentException);
-
    TPosicao = class
    private
       FID: TUUID;
@@ -42,7 +40,7 @@ type
       property Data: TDateTime read FData;
    end;
 
-   TListaDePosicoes = TList<TPosicao>;
+   TListaDePosicoes = TObjectList<TPosicao>;
 
 implementation
 

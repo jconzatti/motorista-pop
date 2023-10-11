@@ -29,44 +29,38 @@ uses
   Corrida.Status in 'fontes\dominio\Corrida.Status.pas',
   Corrida.Repositorio in 'fontes\aplicacao\repositorio\Corrida.Repositorio.pas',
   Corrida.Repositorio.BancoDeDado in 'fontes\infraestrutura\repositorio\Corrida.Repositorio.BancoDeDado.pas',
-  ObterCorridas in 'fontes\aplicacao\caso-de-uso\ObterCorridas.pas';
+  ObterCorridas in 'fontes\aplicacao\caso-de-uso\ObterCorridas.pas',
+  ObterCorrida in 'fontes\aplicacao\caso-de-uso\ObterCorrida.pas',
+  AceitarCorrida in 'fontes\aplicacao\caso-de-uso\AceitarCorrida.pas',
+  IniciarCorrida in 'fontes\aplicacao\caso-de-uso\IniciarCorrida.pas',
+  Repositorio.Fabrica in 'fontes\aplicacao\repositorio\Repositorio.Fabrica.pas',
+  Posicao.Repositorio in 'fontes\aplicacao\repositorio\Posicao.Repositorio.pas',
+  Posicao in 'fontes\dominio\Posicao.pas',
+  Distancia.Calculador in 'fontes\dominio\Distancia.Calculador.pas',
+  TarifaPorKM.Calculador in 'fontes\dominio\TarifaPorKM.Calculador.pas',
+  AtualizarPosicao in 'fontes\aplicacao\caso-de-uso\AtualizarPosicao.pas',
+  FinalizarCorrida in 'fontes\aplicacao\caso-de-uso\FinalizarCorrida.pas',
+  CasoDeUso.Fabrica in 'fontes\aplicacao\caso-de-uso\CasoDeUso.Fabrica.pas',
+  Repositorio.Fabrica.BancoDeDado in 'fontes\infraestrutura\repositorio\Repositorio.Fabrica.BancoDeDado.pas',
+  Posicao.Repositorio.BancoDeDado in 'fontes\infraestrutura\repositorio\Posicao.Repositorio.BancoDeDado.pas';
 
 var
    lServidorHTTP: TServidorHTTP;
-   lInscreverUsuario: TInscreverUsuario;
-   lObterContaDeUsuario: TObterContaDeUsuario;
-   lObterCorridas: TObterCorridas;
-   lRealizarLogin: TRealizarLogin;
-   lSolicitarCorrida: TSolicitarCorrida;
-   lRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
-   lRepositorioCorrida: TRepositorioCorrida;
    lConexaoBancoDeDado: TConexaoBancoDeDado;
+   lFabricaRepositorio: TFabricaRepositorio;
+   lFabricaCasoDeUso: TFabricaCasoDeUso;
 begin
    ReportMemoryLeaksOnShutdown := True;
-   lConexaoBancoDeDado        := TConexaoBancoDeDadoFireDAC.Create;
-   lRepositorioContaDeUsuario := TRepositorioContaDeUsuarioBancoDeDado.Create(lConexaoBancoDeDado);
-   lRepositorioCorrida        := TRepositorioCorridaBancoDeDado.Create(lConexaoBancoDeDado);
-   lInscreverUsuario          := TInscreverUsuario.Create(lRepositorioContaDeUsuario);
-   lObterContaDeUsuario       := TObterContaDeUsuario.Create(lRepositorioContaDeUsuario);
-   lRealizarLogin             := TRealizarLogin.Create(lRepositorioContaDeUsuario);
-   lSolicitarCorrida          := TSolicitarCorrida.Create(lRepositorioCorrida, lRepositorioContaDeUsuario);
-   lObterCorridas             := TObterCorridas.Create(lRepositorioCorrida, lRepositorioContaDeUsuario);
-   lServidorHTTP              := TServidorHTTPHorse.Create;
+   lConexaoBancoDeDado := TConexaoBancoDeDadoFireDAC.Create;
+   lFabricaRepositorio := TFabricaRepositorioBancoDeDado.Create(lConexaoBancoDeDado);
+   lFabricaCasoDeUso   := TFabricaCasoDeUso.Create(lFabricaRepositorio);
+   lServidorHTTP       := TServidorHTTPHorse.Create;
    try
-      TControladorMotoristaPOPAPIREST.Create(lServidorHTTP,
-                                             lInscreverUsuario,
-                                             lObterContaDeUsuario,
-                                             lRealizarLogin,
-                                             lSolicitarCorrida,
-                                             lObterCorridas);
+      TControladorMotoristaPOPAPIREST.Create(lServidorHTTP, lFabricaCasoDeUso);
    finally
       lServidorHTTP.Destroy;
-      lRealizarLogin.Destroy;
-      lObterCorridas.Destroy;
-      lObterContaDeUsuario.Destroy;
-      lInscreverUsuario.Destroy;
-      lRepositorioCorrida.Destroy;
-      lRepositorioContaDeUsuario.Destroy;
+      lFabricaCasoDeUso.Destroy;
+      lFabricaRepositorio.Destroy;
       lConexaoBancoDeDado.Destroy;
    end;
 end.

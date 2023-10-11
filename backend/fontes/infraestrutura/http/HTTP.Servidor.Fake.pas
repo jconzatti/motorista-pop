@@ -56,7 +56,6 @@ end;
 function TServidorHTTPFake.Invocar(pMetodo: TMetodoHTTP; pURL : String; pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
 var lCallback: TCallbackServidorHTTP;
 begin
-   Result := nil;
    lCallback := nil;
    case pMetodo of
       mGET: FRegistoRotaGET.TryGetValue(pURL.ToLower, lCallback);

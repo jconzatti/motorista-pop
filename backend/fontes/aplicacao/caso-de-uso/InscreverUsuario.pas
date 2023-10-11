@@ -6,11 +6,12 @@ uses
    System.SysUtils,
    ContaDeUsuario,
    ContaDeUsuario.Repositorio,
+   Repositorio.Fabrica,
    Email.Enviador.Gateway,
    Email;
 
 type
-   EContaDeUsuarioJaExiste = class(EArgumentException);
+   EInscricaoContaDeUsuarioJaExiste = class(EArgumentException);
 
    TDadoEntradaInscricaoContaDeUsuario = record
       Nome: String;
@@ -31,7 +32,7 @@ type
       RepositorioContaDeUsuario: TRepositorioContaDeUsuario;
       procedure ValidarContaDeUsuarioJaExistenteParaOEMailInformado(pEmail: String);
    public
-      constructor Create(pRepositorioContaUsuario: TRepositorioContaDEUsuario); reintroduce;
+      constructor Create(pFabricaRepositorio: TFabricaRepositorio); reintroduce;
       destructor Destroy; override;
       function Executar(pEntrada: TDadoEntradaInscricaoContaDeUsuario): TDadoSaidaInscricaoContaDeUsuario;
    end;
@@ -40,15 +41,16 @@ implementation
 
 { TInscreverUsuario }
 
-constructor TInscreverUsuario.Create(pRepositorioContaUsuario: TRepositorioContaDEUsuario);
+constructor TInscreverUsuario.Create(pFabricaRepositorio: TFabricaRepositorio);
 begin
-   RepositorioContaDeUsuario := pRepositorioContaUsuario;
+   RepositorioContaDeUsuario := pFabricaRepositorio.CriarRepositorioContaDeUsuario;
    FGatewayEnviadorEmail := TGatewayEnviadorEmail.Create;
 end;
 
 destructor TInscreverUsuario.Destroy;
 begin
    FGatewayEnviadorEmail.Destroy;
+   RepositorioContaDeUsuario.Destroy;
    inherited;
 end;
 
@@ -83,7 +85,7 @@ begin
       try
          lContaDeUsuario := RepositorioContaDeUsuario.ObterPorEmail(lEmail);
          try
-            raise EContaDeUsuarioJaExiste.Create(Format('Já existe conta de usuário criada para o e-mail informado! ID: %s, e-mail: %s!',
+            raise EInscricaoContaDeUsuarioJaExiste.Create(Format('Já existe conta de usuário criada para o e-mail informado! ID: %s, e-mail: %s!',
                                                         [lContaDeUsuario.ID, lEmail.Valor]));
          finally
             lContaDeUsuario.Destroy;
@@ -91,7 +93,7 @@ begin
       except
          on E: Exception do
          begin
-            if not (E is EContaDeUsuarioNaoEncontrada) then
+            if not (E is ERepositorioContaDeUsuarioNaoEncontrada) then
                raise;
          end;
       end;

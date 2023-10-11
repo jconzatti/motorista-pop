@@ -55,7 +55,7 @@ begin
    end;
 
    if not Assigned(Result) then
-      raise EContaDeUsuarioNaoEncontrada.Create(Format('Conta de usuário com email %s não encontada!', [pEmail.Valor]));
+      raise ERepositorioContaDeUsuarioNaoEncontrada.Create(Format('Conta de usuário com email %s não encontada!', [pEmail.Valor]));
 end;
 
 function TRepositorioContaDeUsuarioFake.ObterPorID(pID: TUUID): TContaDeUsuario;
@@ -65,7 +65,7 @@ begin
       Result := ClonarContaDeUsuario(FTabelaDeContasDeUsuarios.Items[pID.Valor]);
 
    if not Assigned(Result) then
-      raise EContaDeUsuarioNaoEncontrada.Create(Format('Conta de usuário com ID %s não encontada!', [pID.Valor]));
+      raise ERepositorioContaDeUsuarioNaoEncontrada.Create(Format('Conta de usuário com ID %s não encontada!', [pID.Valor]));
 end;
 
 function TRepositorioContaDeUsuarioFake.ClonarContaDeUsuario(

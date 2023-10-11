@@ -9,7 +9,7 @@ uses
    UUID;
 
 type
-   EContaDeUsuarioNaoEncontrada = class(EResNotFound);
+   ERepositorioContaDeUsuarioNaoEncontrada = class(EResNotFound);
 
    TRepositorioContaDeUsuario = class abstract
    public

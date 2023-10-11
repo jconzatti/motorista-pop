@@ -4,11 +4,9 @@ interface
 
 uses
    System.SysUtils,
-   ContaDeUsuario.Repositorio,
-   ContaDeUsuario.Repositorio.Fake,
+   Repositorio.Fabrica,
+   Repositorio.Fabrica.Fake,
    InscreverUsuario,
-   Corrida.Repositorio,
-   Corrida.Repositorio.Fake,
    SolicitarCorrida,
    DUnitX.TestFramework;
 
@@ -16,9 +14,8 @@ type
    [TestFixture]
    TSolicitarCorridaTeste = class
    private
-      FRepositorioCorrida: TRepositorioCorrida;
+      FFabricaRepositorio: TFabricaRepositorio;
       FSolicitarCorrida: TSolicitarCorrida;
-      FRepositorioContaDeUsuario: TRepositorioContaDEUsuario;
       FInscreverUsuario: TInscreverUsuario;
    public
       [Setup]
@@ -40,18 +37,16 @@ implementation
 
 procedure TSolicitarCorridaTeste.Inicializar;
 begin
-   FRepositorioCorrida := TRepositorioCorridaFake.Create;
-   FRepositorioContaDeUsuario := TRepositorioContaDeUsuarioFake.Create;
-   FSolicitarCorrida := TSolicitarCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
-   FInscreverUsuario := TInscreverUsuario.Create(FRepositorioContaDeUsuario);
+   FFabricaRepositorio := TFabricaRepositorioFake.Create;
+   FSolicitarCorrida := TSolicitarCorrida.Create(FFabricaRepositorio);
+   FInscreverUsuario := TInscreverUsuario.Create(FFabricaRepositorio);
 end;
 
 procedure TSolicitarCorridaTeste.Finalizar;
 begin
    FInscreverUsuario.Destroy;
    FSolicitarCorrida.Destroy;
-   FRepositorioContaDeUsuario.Destroy;
-   FRepositorioCorrida.Destroy;
+   FFabricaRepositorio.Destroy;
 end;
 
 procedure TSolicitarCorridaTeste.PassageiroDeveSolicitarUmaCorrida;
@@ -99,7 +94,7 @@ begin
       begin
          FSolicitarCorrida.Executar(lEntradaSolicitacaoCorrida);
       end,
-      EContaDeUsuarioNaoEhPassageiro,
+      ESolicitacaoCorridaUsuarioNaoEhPassageiro,
       'Conta de usuário não pertence a um passageiro!'
    );
 end;
@@ -127,7 +122,7 @@ begin
       begin
          FSolicitarCorrida.Executar(lEntradaSolicitacaoCorrida);
       end,
-      EPassageiroJaPossuiCorridaAtiva,
+      ESolicitacaoCorridaPassageiroJaPossuiCorridaAtiva,
       'Passageiro possui corridas ativas!'
    );
 end;

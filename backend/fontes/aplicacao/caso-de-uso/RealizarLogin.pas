@@ -6,6 +6,7 @@ uses
    System.SysUtils,
    ContaDeUsuario,
    ContaDeUsuario.Repositorio,
+   Repositorio.Fabrica,
    Email;
 
 type
@@ -15,9 +16,10 @@ type
 
    TRealizarLogin = class
    private
-      RepositorioContaDeUsuario: TRepositorioContaDeUsuario;
+      FRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
    public
-      constructor Create(pRepositorioContaUsuario: TRepositorioContaDeUsuario); reintroduce;
+      constructor Create(pFabricaRepositorio: TFabricaRepositorio); reintroduce;
+      destructor Destroy; override;
       function Executar(pEmail: string): TDadoSaidaRealizacaoLogin;
    end;
 
@@ -25,9 +27,15 @@ implementation
 
 { TRealizarLogin }
 
-constructor TRealizarLogin.Create(pRepositorioContaUsuario: TRepositorioContaDeUsuario);
+constructor TRealizarLogin.Create(pFabricaRepositorio: TFabricaRepositorio);
 begin
-   RepositorioContaDeUsuario := pRepositorioContaUsuario;
+   FRepositorioContaDeUsuario := pFabricaRepositorio.CriarRepositorioContaDeUsuario;
+end;
+
+destructor TRealizarLogin.Destroy;
+begin
+   FRepositorioContaDeUsuario.Destroy;
+   inherited;
 end;
 
 function TRealizarLogin.Executar(pEmail: string): TDadoSaidaRealizacaoLogin;
@@ -37,7 +45,7 @@ var
 begin
    lEmail := TEmail.Create(pEmail);
    try
-      lContaDeUsuario := RepositorioContaDeUsuario.ObterPorEmail(lEmail);
+      lContaDeUsuario := FRepositorioContaDeUsuario.ObterPorEmail(lEmail);
       try
          Result.IDDoUsuario := lContaDeUsuario.ID;
       finally

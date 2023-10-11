@@ -105,7 +105,7 @@
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>(None)</Manifest_File>
-        <Debugger_RunParams>-r:Posicao.Repositorio.BancoDeDado.Conexao.FireDAC.Teste</Debugger_RunParams>
+        <Debugger_RunParams>-r:FinalizarCorrida.Teste</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -136,27 +136,6 @@
         <DCCReference Include="testes\integracao\ObterContaDeUsuario.Teste.pas"/>
         <DCCReference Include="fontes\aplicacao\caso-de-uso\ObterContaDeUsuario.pas"/>
         <DCCReference Include="fontes\infraestrutura\gateway\Email.Enviador.Gateway.pas"/>
-        <DCCReference Include="fontes\_old\ContaUsuario.DAO.FireDAC.pas"/>
-        <DCCReference Include="fontes\_old\ContaUsuario.DAO.pas"/>
-        <DCCReference Include="fontes\_old\ContaUsuario.Servico.pas"/>
-        <DCCReference Include="fontes\_old\Corrida.DAO.FireDAC.pas"/>
-        <DCCReference Include="fontes\_old\Corrida.DAO.pas"/>
-        <DCCReference Include="fontes\_old\Corrida.Servico.pas"/>
-        <DCCReference Include="fontes\_old\CPF.Validador.pas"/>
-        <DCCReference Include="fontes\_old\Distancia.Calculador.pas"/>
-        <DCCReference Include="fontes\_old\Posicao.DAO.FireDAC.pas"/>
-        <DCCReference Include="fontes\_old\Posicao.DAO.pas"/>
-        <DCCReference Include="testes\_old\ContaUsuario.DAO.Fake.pas"/>
-        <DCCReference Include="testes\_old\ContaUsuario.DAO.FireDAC.Teste.pas"/>
-        <DCCReference Include="testes\_old\ContaUsuario.Servico.Teste.pas"/>
-        <DCCReference Include="testes\_old\Corrida.DAO.Fake.pas"/>
-        <DCCReference Include="testes\_old\Corrida.DAO.FireDAC.Teste.pas"/>
-        <DCCReference Include="testes\_old\Corrida.Servico.Teste.pas"/>
-        <DCCReference Include="testes\_old\CPF.Validador.Teste.pas"/>
-        <DCCReference Include="testes\_old\Distancia.Calculador.Teste.pas"/>
-        <DCCReference Include="testes\_old\MotoristaPOP.API.Teste.pas"/>
-        <DCCReference Include="testes\_old\Posicao.DAO.Fake.pas"/>
-        <DCCReference Include="testes\_old\Posicao.DAO.FireDAC.Teste.pas"/>
         <DCCReference Include="testes\integracao\ContaDeUsuario.Repositorio.BancoDeDado.Conexao.FireDAC.Teste.pas"/>
         <DCCReference Include="fontes\infraestrutura\repositorio\ContaDeUsuario.Repositorio.BancoDeDado.pas"/>
         <DCCReference Include="fontes\infraestrutura\banco-de-dado\BancoDeDado.Conexao.pas"/>
@@ -205,6 +184,18 @@
         <DCCReference Include="fontes\infraestrutura\repositorio\Posicao.Repositorio.Fake.pas"/>
         <DCCReference Include="testes\integracao\Posicao.Repositorio.BancoDeDado.Conexao.FireDAC.Teste.pas"/>
         <DCCReference Include="fontes\infraestrutura\repositorio\Posicao.Repositorio.BancoDeDado.pas"/>
+        <DCCReference Include="testes\integracao\AtualizarPosicao.Teste.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\AtualizarPosicao.pas"/>
+        <DCCReference Include="testes\integracao\FinalizarCorrida.Teste.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\FinalizarCorrida.pas"/>
+        <DCCReference Include="fontes\dominio\Distancia.Calculador.pas"/>
+        <DCCReference Include="testes\unidade\Distancia.Calculador.Teste.pas"/>
+        <DCCReference Include="testes\unidade\TarifaPorKM.Calculador.Teste.pas"/>
+        <DCCReference Include="fontes\dominio\TarifaPorKM.Calculador.pas"/>
+        <DCCReference Include="fontes\aplicacao\repositorio\Repositorio.Fabrica.pas"/>
+        <DCCReference Include="fontes\infraestrutura\repositorio\Repositorio.Fabrica.Fake.pas"/>
+        <DCCReference Include="fontes\infraestrutura\repositorio\Repositorio.Fabrica.BancoDeDado.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\CasoDeUso.Fabrica.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -4,11 +4,10 @@ interface
 
 uses
    System.SysUtils,
-   ContaDeUsuario.Repositorio,
-   ContaDeUsuario.Repositorio.Fake,
-   InscreverUsuario,
+   Repositorio.Fabrica,
+   Repositorio.Fabrica.Fake,
    Corrida.Repositorio,
-   Corrida.Repositorio.Fake,
+   InscreverUsuario,
    SolicitarCorrida,
    AceitarCorrida,
    ObterCorridas,
@@ -18,10 +17,9 @@ type
    [TestFixture]
    TObterCorridasTeste = class
    private
-      FRepositorioCorrida: TRepositorioCorrida;
+      FFabricaRepositorio: TFabricaRepositorio;
       FSolicitarCorrida: TSolicitarCorrida;
       FAceitarCorrida: TAceitarCorrida;
-      FRepositorioContaDeUsuario: TRepositorioContaDEUsuario;
       FInscreverUsuario: TInscreverUsuario;
       FObterCorridas: TObterCorridas;
    public
@@ -44,12 +42,11 @@ implementation
 
 procedure TObterCorridasTeste.Inicializar;
 begin
-   FRepositorioCorrida := TRepositorioCorridaFake.Create;
-   FRepositorioContaDeUsuario := TRepositorioContaDeUsuarioFake.Create;
-   FSolicitarCorrida := TSolicitarCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
-   FAceitarCorrida := TAceitarCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
-   FInscreverUsuario := TInscreverUsuario.Create(FRepositorioContaDeUsuario);
-   FObterCorridas := TObterCorridas.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
+   FFabricaRepositorio := TFabricaRepositorioFake.Create;
+   FSolicitarCorrida := TSolicitarCorrida.Create(FFabricaRepositorio);
+   FAceitarCorrida := TAceitarCorrida.Create(FFabricaRepositorio);
+   FInscreverUsuario := TInscreverUsuario.Create(FFabricaRepositorio);
+   FObterCorridas := TObterCorridas.Create(FFabricaRepositorio);
 end;
 
 procedure TObterCorridasTeste.Finalizar;
@@ -58,8 +55,7 @@ begin
    FInscreverUsuario.Destroy;
    FAceitarCorrida.Destroy;
    FSolicitarCorrida.Destroy;
-   FRepositorioContaDeUsuario.Destroy;
-   FRepositorioCorrida.Destroy;
+   FFabricaRepositorio.Destroy;
 end;
 
 procedure TObterCorridasTeste.DeveObterCorridaAtivaDoPassageiro;
@@ -176,7 +172,7 @@ begin
       begin
          FObterCorridas.Executar(lEntradaObtencaoCorridas);
       end,
-      ENehumaCorridaEncontrada,
+      ERepositorioCorridaNaoEncontrada,
       'Nenhuma corrida encontrada!'
    );
 end;

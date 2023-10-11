@@ -61,7 +61,7 @@ begin
                                False,
                                'ABC1D23');
       end,
-      EPlacaDoCarroInformada,
+      EContaDeUsuarioPlacaDoCarroInformada,
       'Informada placa do carro, mas a conta de usuário não pertence a um motorista!'
    );
 end;

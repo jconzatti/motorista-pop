@@ -4,13 +4,18 @@ interface
 
 uses
    System.SysUtils,
+   System.Math,
    System.Generics.Collections,
+   Distancia.Calculador,
    Corrida.Status,
    Coordenada,
-   UUID;
+   Posicao,
+   UUID,
+   TarifaPorKM.Calculador;
 
 type
-   EOutroMotorista = class(EArgumentException);
+   ECorridaOutroMotorista = class(EArgumentException);
+   ECorridaPosicaoOutraCorrida = class(EArgumentException);
 
    TCorrida = class
    private
@@ -57,6 +62,7 @@ type
       destructor Destroy; override;
       procedure Aceitar(pIDDoMotorista: string);
       procedure Iniciar(pIDDoMotorista: string);
+      procedure Finalizar(pIDDoMotorista: string; pListaDePosicoesDaCorrida: TListaDePosicoes);
       property ID: String read ObterID;
       property IDDoPassageiro: String read ObterIDDoPassageiro;
       property IDDoMotorista: String read ObterIDDoMotorista;
@@ -68,7 +74,7 @@ type
       property Data: TDateTime read FData;
    end;
 
-   TListaDeCorridas = TList<TCorrida>;
+   TListaDeCorridas = TObjectList<TCorrida>;
 
 implementation
 
@@ -144,7 +150,39 @@ begin
    try
       FStatus := FStatus.TransicaoPara(TStatusCorrida.Iniciada);
       if not FIDDoMotorista.Valor.Equals(lID.Valor) then
-         raise EOutroMotorista.Create('Corrida já aceita por outro motorista!');
+         raise ECorridaOutroMotorista.Create('Corrida já aceita por outro motorista!');
+   finally
+      lID.Destroy;
+   end;
+end;
+
+procedure TCorrida.Finalizar(pIDDoMotorista: string;
+  pListaDePosicoesDaCorrida: TListaDePosicoes);
+var lID: TUUID;
+    lPosicao, lPosicaoAnterior: TPosicao;
+    lCalculadorTarifaPorKM: TCalculadorTarifaPorKM;
+begin
+   FDistancia := 0;
+   lPosicaoAnterior := nil;
+   for lPosicao in pListaDePosicoesDaCorrida do
+   begin
+      if not lPosicao.IDDaCorrida.Equals(ID) then
+         raise ECorridaPosicaoOutraCorrida.Create('Posição pertence a outra corrida!');
+      if Assigned(lPosicaoAnterior) then
+         FDistancia := FDistancia + TCalculadorDistancia.Calcular(lPosicaoAnterior.Coordenada, lPosicao.Coordenada);
+      lPosicaoAnterior := lPosicao;
+   end;
+   lCalculadorTarifaPorKM := TFabricaCalculadorTarifaPorKM.Criar(FData);
+   try
+      FTarifa := RoundTo(FDistancia * lCalculadorTarifaPorKM.Obter, -2);
+   finally
+      lCalculadorTarifaPorKM.Destroy;
+   end;
+   lID := TUUID.Create(pIDDoMotorista);
+   try
+      FStatus := FStatus.TransicaoPara(TStatusCorrida.Finalizada);
+      if not FIDDoMotorista.Valor.Equals(lID.Valor) then
+         raise ECorridaOutroMotorista.Create('Corrida já aceita por outro motorista!');
    finally
       lID.Destroy;
    end;

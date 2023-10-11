@@ -85,7 +85,7 @@ begin
          begin
             FRepositorioCorrida.ObterPorID(lID)
          end,
-         ECorridaNaoEncontrada,
+         ERepositorioCorridaNaoEncontrada,
          Format('Corrida com ID %s não encontada!', [lID.Valor])
       );
    finally
@@ -233,7 +233,7 @@ begin
          begin
             FRepositorioCorrida.ObterListaDeCorridasDoUsuario(lID, []);
          end,
-         ENehumaCorridaEncontrada,
+         ERepositorioCorridaNaoEncontrada,
          'Nenhuma corrida encontrada!'
       );
    finally

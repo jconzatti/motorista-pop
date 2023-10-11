@@ -9,6 +9,7 @@ uses
    Corrida.Repositorio,
    ContaDeUsuario,
    ContaDeUsuario.Repositorio,
+   Repositorio.Fabrica,
    UUID;
 
 type
@@ -55,7 +56,8 @@ type
       FRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
       function CarregarDadoSaidaObtencaoCorrida(pCorrida: TCorrida):TDadoSaidaObtencaoCorrida;
    public
-      constructor Create(pRepositorioCorrida: TRepositorioCorrida; pRepositorioContaDeUsuario: TRepositorioContaDeUsuario); reintroduce;
+      constructor Create(pFabricaRepositorio: TFabricaRepositorio); reintroduce;
+      destructor Destroy; override;
       function Executar(pEntradaObtencaoCorridas: TDadoEntradaObtencaoCorridas): TDadoSaidaObtencaoCorridas;
    end;
 
@@ -63,11 +65,17 @@ implementation
 
 { TObterCorridas }
 
-constructor TObterCorridas.Create(pRepositorioCorrida: TRepositorioCorrida;
-  pRepositorioContaDeUsuario: TRepositorioContaDeUsuario);
+constructor TObterCorridas.Create(pFabricaRepositorio: TFabricaRepositorio);
 begin
-   FRepositorioCorrida := pRepositorioCorrida;
-   FRepositorioContaDeUsuario := pRepositorioContaDeUsuario;
+   FRepositorioContaDeUsuario := pFabricaRepositorio.CriarRepositorioContaDeUsuario;
+   FRepositorioCorrida := pFabricaRepositorio.CriarRepositorioCorrida;
+end;
+
+destructor TObterCorridas.Destroy;
+begin
+   FRepositorioCorrida.Destroy;
+   FRepositorioContaDeUsuario.Destroy;
+   inherited;
 end;
 
 function TObterCorridas.Executar(pEntradaObtencaoCorridas: TDadoEntradaObtencaoCorridas): TDadoSaidaObtencaoCorridas;

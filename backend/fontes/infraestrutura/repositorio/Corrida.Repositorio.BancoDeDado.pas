@@ -105,7 +105,7 @@ begin
                                 'date FROM ride WHERE ride_id = :ride_id', [pID.Valor], [ftString]);
    FConexaoBancoDeDado.DataSet.First;
    if FConexaoBancoDeDado.DataSet.Eof then
-      raise ECorridaNaoEncontrada.Create(Format('Corrida com ID %s não encontada!', [pID.Valor]));
+      raise ERepositorioCorridaNaoEncontrada.Create(Format('Corrida com ID %s não encontada!', [pID.Valor]));
    Result := TCorrida.Restaurar(FConexaoBancoDeDado.DataSet.FieldByName('ride_id').AsString,
                                 FConexaoBancoDeDado.DataSet.FieldByName('passenger_id').AsString,
                                 FConexaoBancoDeDado.DataSet.FieldByName('driver_id').AsString,
@@ -154,7 +154,7 @@ begin
                                   [pIDDoUsuario.Valor, pIDDoUsuario.Valor], [ftString, ftString]);
    try
       if Result.Count = 0 then
-         raise ENehumaCorridaEncontrada.Create('Nenhuma corrida encontrada!');
+         raise ERepositorioCorridaNaoEncontrada.Create('Nenhuma corrida encontrada!');
    except
       Result.Destroy;
       raise;

@@ -9,6 +9,7 @@ uses
    Corrida.Repositorio,
    ContaDeUsuario,
    ContaDeUsuario.Repositorio,
+   Repositorio.Fabrica,
    UUID;
 
 type
@@ -40,6 +41,8 @@ type
       Origem: TCoodernadaObtencaoCorridas;
       Destino: TCoodernadaObtencaoCorridas;
       Data: TDateTime;
+      Distancia: Double;
+      Tarifa: Double;
    end;
 
    TObterCorrida = class
@@ -48,7 +51,8 @@ type
       FRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
       function CarregarDadoSaidaObtencaoCorrida(pCorrida: TCorrida):TDadoSaidaObtencaoCorrida;
    public
-      constructor Create(pRepositorioCorrida: TRepositorioCorrida; pRepositorioContaDeUsuario: TRepositorioContaDeUsuario); reintroduce;
+      constructor Create(pFabricaRepositorio: TFabricaRepositorio); reintroduce;
+      destructor Destroy; override;
       function Executar(pIDDaCorrida: String): TDadoSaidaObtencaoCorrida;
    end;
 
@@ -56,11 +60,17 @@ implementation
 
 { TObterCorrida }
 
-constructor TObterCorrida.Create(pRepositorioCorrida: TRepositorioCorrida;
-  pRepositorioContaDeUsuario: TRepositorioContaDeUsuario);
+constructor TObterCorrida.Create(pFabricaRepositorio: TFabricaRepositorio);
 begin
-   FRepositorioCorrida := pRepositorioCorrida;
-   FRepositorioContaDeUsuario := pRepositorioContaDeUsuario;
+   FRepositorioContaDeUsuario := pFabricaRepositorio.CriarRepositorioContaDeUsuario;
+   FRepositorioCorrida := pFabricaRepositorio.CriarRepositorioCorrida;
+end;
+
+destructor TObterCorrida.Destroy;
+begin
+   FRepositorioCorrida.Destroy;
+   FRepositorioContaDeUsuario.Destroy;
+   inherited;
 end;
 
 function TObterCorrida.Executar(pIDDaCorrida: String): TDadoSaidaObtencaoCorrida;
@@ -93,6 +103,8 @@ begin
    Result.Destino.Latitude  := pCorrida.Para.Latitude;
    Result.Destino.Longitude := pCorrida.Para.Longitude;
    Result.Data              := pCorrida.Data;
+   Result.Distancia         := pCorrida.Distancia;
+   Result.Tarifa            := pCorrida.Tarifa;
 
    lID := TUUID.Create(pCorrida.IDDoPassageiro);
    try

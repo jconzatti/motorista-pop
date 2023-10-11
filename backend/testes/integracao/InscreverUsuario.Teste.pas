@@ -5,8 +5,8 @@ interface
 uses
    System.SysUtils,
    System.DateUtils,
-   ContaDeUsuario.Repositorio,
-   ContaDeUsuario.Repositorio.Fake,
+   Repositorio.Fabrica,
+   Repositorio.Fabrica.Fake,
    InscreverUsuario,
    ObterContaDeUsuario,
    DUnitX.TestFramework;
@@ -15,7 +15,7 @@ type
    [TestFixture]
    TInscreverUsuarioTeste = class
    private
-      FRepositorioContaDeUsuario: TRepositorioContaDEUsuario;
+      FFabricaRepositorio: TFabricaRepositorio;
       FInscreverUsuario: TInscreverUsuario;
       FObterContaDeUsuario: TObterContaDeUsuario;
    public
@@ -35,16 +35,16 @@ implementation
 
 procedure TInscreverUsuarioTeste.Inicializar;
 begin
-   FRepositorioContaDeUsuario := TRepositorioContaDeUsuarioFake.Create;
-   FInscreverUsuario := TInscreverUsuario.Create(FRepositorioContaDeUsuario);
-   FObterContaDeUsuario := TObterContaDeUsuario.Create(FRepositorioContaDeUsuario);
+   FFabricaRepositorio := TFabricaRepositorioFake.Create;
+   FInscreverUsuario := TInscreverUsuario.Create(FFabricaRepositorio);
+   FObterContaDeUsuario := TObterContaDeUsuario.Create(FFabricaRepositorio);
 end;
 
 procedure TInscreverUsuarioTeste.Finalizar;
 begin
    FObterContaDeUsuario.Destroy;
    FInscreverUsuario.Destroy;
-   FRepositorioContaDeUsuario.Destroy;
+   FFabricaRepositorio.Destroy;
 end;
 
 procedure TInscreverUsuarioTeste.DeveInscreverUmPassageiro;
@@ -108,7 +108,7 @@ begin
       begin
          FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
       end,
-      EContaDeUsuarioJaExiste
+      EInscricaoContaDeUsuarioJaExiste
    );
 end;
 

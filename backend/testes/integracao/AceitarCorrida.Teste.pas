@@ -4,11 +4,9 @@ interface
 
 uses
    System.SysUtils,
-   ContaDeUsuario.Repositorio,
-   ContaDeUsuario.Repositorio.Fake,
+   Repositorio.Fabrica,
+   Repositorio.Fabrica.Fake,
    InscreverUsuario,
-   Corrida.Repositorio,
-   Corrida.Repositorio.Fake,
    SolicitarCorrida,
    AceitarCorrida,
    ObterCorrida,
@@ -19,11 +17,10 @@ type
    [TestFixture]
    TAceitarCorridaTeste = class
    private
-      FRepositorioCorrida: TRepositorioCorrida;
+      FFabricaRepositorio: TFabricaRepositorio;
       FSolicitarCorrida: TSolicitarCorrida;
       FAceitarCorrida: TAceitarCorrida;
       FObterCorrida: TObterCorrida;
-      FRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
       FInscreverUsuario: TInscreverUsuario;
    public
       [Setup]
@@ -47,12 +44,11 @@ implementation
 
 procedure TAceitarCorridaTeste.Inicializar;
 begin
-   FRepositorioCorrida := TRepositorioCorridaFake.Create;
-   FRepositorioContaDeUsuario := TRepositorioContaDeUsuarioFake.Create;
-   FSolicitarCorrida := TSolicitarCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
-   FAceitarCorrida := TAceitarCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
-   FObterCorrida := TObterCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
-   FInscreverUsuario := TInscreverUsuario.Create(FRepositorioContaDeUsuario);
+   FFabricaRepositorio := TFabricaRepositorioFake.Create;
+   FSolicitarCorrida := TSolicitarCorrida.Create(FFabricaRepositorio);
+   FAceitarCorrida := TAceitarCorrida.Create(FFabricaRepositorio);
+   FObterCorrida := TObterCorrida.Create(FFabricaRepositorio);
+   FInscreverUsuario := TInscreverUsuario.Create(FFabricaRepositorio);
 end;
 
 procedure TAceitarCorridaTeste.Finalizar;
@@ -61,8 +57,7 @@ begin
    FObterCorrida.Destroy;
    FAceitarCorrida.Destroy;
    FSolicitarCorrida.Destroy;
-   FRepositorioContaDeUsuario.Destroy;
-   FRepositorioCorrida.Destroy;
+   FFabricaRepositorio.Destroy;
 end;
 
 procedure TAceitarCorridaTeste.MotoristaDeveAceitarCorrida;
@@ -148,7 +143,7 @@ begin
       begin
          FAceitarCorrida.Executar(lEntradaAceiteCorrida);
       end,
-      EContaDeUsuarioNaoEhMotorista,
+      EAceiteCorridaUsuarioNaoEhMotorista,
       'Conta de usuário não pertence a um motorista! Somente motoristas podem aceitar corridas!'
    );
 end;
@@ -207,7 +202,7 @@ begin
       begin
          FAceitarCorrida.Executar(lEntradaAceiteCorrida2);
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida foi aceita por um motorista. Não pode ser aceita por um motorista novamente!'
    );
 end;
@@ -253,7 +248,7 @@ begin
       begin
          FAceitarCorrida.Executar(lEntradaAceiteCorrida);
       end,
-      EMotoristaJaPossuiCorridaAtiva,
+      EAceiteCorridaMotoristaJaPossuiCorridaAtiva,
       'Motorista possui corridas ativas! Não pode aceitar corridas!'
    );
 end;

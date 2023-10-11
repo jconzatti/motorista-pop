@@ -8,10 +8,11 @@ uses
    ContaDeUsuario.Repositorio,
    Corrida,
    Corrida.Repositorio,
+   Repositorio.Fabrica,
    UUID;
 
 type
-   EContaDeUsuarioNaoEhMotorista = class(EArgumentException);
+   EInicioCorridaUsuarioNaoEhMotorista = class(EArgumentException);
 
    TDadoEntradaInicioCorrida = record
       IDDoMotorista: String;
@@ -24,7 +25,8 @@ type
       FRepositorioCorrida: TRepositorioCorrida;
       procedure ValidarContaDeUsuarioEhMotorista(pIDDoUsuario: String);
    public
-      constructor Create(pRepositorioCorrida: TRepositorioCorrida; pRepositorioContaUsuario: TRepositorioContaDeUsuario); reintroduce;
+      constructor Create(pFabricaRepositorio: TFabricaRepositorio); reintroduce;
+      destructor Destroy; override;
       procedure Executar(pEntradaInicioDeCorrida: TDadoEntradaInicioCorrida);
    end;
 
@@ -32,10 +34,17 @@ implementation
 
 { TIniciarCorrida }
 
-constructor TIniciarCorrida.Create(pRepositorioCorrida: TRepositorioCorrida; pRepositorioContaUsuario: TRepositorioContaDeUsuario);
+constructor TIniciarCorrida.Create(pFabricaRepositorio: TFabricaRepositorio);
 begin
-   FRepositorioCorrida := pRepositorioCorrida;
-   FRepositorioContaUsuario := pRepositorioContaUsuario;
+   FRepositorioContaUsuario := pFabricaRepositorio.CriarRepositorioContaDeUsuario;
+   FRepositorioCorrida := pFabricaRepositorio.CriarRepositorioCorrida;
+end;
+
+destructor TIniciarCorrida.Destroy;
+begin
+   FRepositorioContaUsuario.Destroy;
+   FRepositorioCorrida.Destroy;
+   inherited;
 end;
 
 procedure TIniciarCorrida.Executar(
@@ -69,7 +78,7 @@ begin
       lContaDeUsuario := FRepositorioContaUsuario.ObterPorID(lUUID);
       try
          if not lContaDeUsuario.Motorista then
-            raise EContaDeUsuarioNaoEhMotorista.Create('Conta de usuário não pertence a um motorista! Somente motoristas podem iniciar corridas!');
+            raise EInicioCorridaUsuarioNaoEhMotorista.Create('Conta de usuário não pertence a um motorista! Somente motoristas podem iniciar corridas!');
       finally
          lContaDeUsuario.Destroy;
       end;

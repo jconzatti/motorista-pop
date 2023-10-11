@@ -5,8 +5,8 @@ interface
 uses
    System.SysUtils,
    System.DateUtils,
-   ContaDeUsuario.Repositorio,
-   ContaDeUsuario.Repositorio.Fake,
+   Repositorio.Fabrica,
+   Repositorio.Fabrica.Fake,
    InscreverUsuario,
    ObterContaDeUsuario,
    DUnitX.TestFramework;
@@ -15,7 +15,7 @@ type
    [TestFixture]
    TObterContaDeUsuarioTeste = class
    private
-      FRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
+      FFabricaRepositorio: TFabricaRepositorio;
       FInscreverUsuario: TInscreverUsuario;
       FObterContaDeUsuario: TObterContaDeUsuario;
    public
@@ -34,16 +34,16 @@ implementation
 
 procedure TObterContaDeUsuarioTeste.Inicializar;
 begin
-   FRepositorioContaDeUsuario := TRepositorioContaDeUsuarioFake.Create;
-   FInscreverUsuario := TInscreverUsuario.Create(FRepositorioContaDeUsuario);
-   FObterContaDeUsuario := TObterContaDeUsuario.Create(FRepositorioContaDeUsuario);
+   FFabricaRepositorio := TFabricaRepositorioFake.Create;
+   FInscreverUsuario := TInscreverUsuario.Create(FFabricaRepositorio);
+   FObterContaDeUsuario := TObterContaDeUsuario.Create(FFabricaRepositorio);
 end;
 
 procedure TObterContaDeUsuarioTeste.Finalizar;
 begin
    FObterContaDeUsuario.Destroy;
    FInscreverUsuario.Destroy;
-   FRepositorioContaDeUsuario.Destroy;
+   FFabricaRepositorio.Destroy;
 end;
 
 procedure TObterContaDeUsuarioTeste.DeveObterUmaContaDeUsuario;

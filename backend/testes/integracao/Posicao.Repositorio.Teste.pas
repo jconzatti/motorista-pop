@@ -172,7 +172,7 @@ begin
          begin
             FRepositorioPosicao.ObterListaDePosicoesDaCorrida(lIDCorrida);
          end,
-         ENehumaPosicaoEncontrada,
+         ERepositorioPosicaoNaoEncontrada,
          Format('Nenhuma posição da corrida (ID %s) encontrada!', [lIDCorrida.Valor])
       );
    finally

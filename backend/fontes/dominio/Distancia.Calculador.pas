@@ -3,21 +3,20 @@ unit Distancia.Calculador;
 interface
 
 uses
-   System.Math;
+   System.Math,
+   Coordenada;
 
 type
    TCalculadorDistancia = class
    public
-      function Calcular(pDeLatitude, pDeLongitude: Double;
-                        pParaLatitude, pParaLongitude: Double): Double;
+      class function Calcular(pOrigem, pDestino: TCoordenada): Double;
    end;
 
 implementation
 
 { TCalculadorDistancia }
 
-function TCalculadorDistancia.Calcular(pDeLatitude, pDeLongitude, pParaLatitude,
-  pParaLongitude: Double): Double;
+class function TCalculadorDistancia.Calcular(pOrigem, pDestino: TCoordenada): Double;
 var
    lLatitudeDeOrigemEmRadiano: Double;
    lLatitudeDeDestinoEmRadiano: Double;
@@ -25,12 +24,12 @@ var
    lVariacaoDeLongitudeEmRadiano: Double;
 begin
    Result := 0;
-   if (pDeLatitude <> pParaLatitude)
-   or (pDeLongitude <> pParaLongitude) then
+   if (pOrigem.Latitude <> pDestino.Latitude)
+   or (pOrigem.Longitude <> pDestino.Longitude) then
    begin
-      lLatitudeDeOrigemEmRadiano    := (PI * pDeLatitude) / 180;
-      lLatitudeDeDestinoEmRadiano   := (PI * pParaLatitude) / 180;
-      lVariacaoDeLongitude          := pDeLongitude - pParaLongitude;
+      lLatitudeDeOrigemEmRadiano    := (PI * pOrigem.Latitude) / 180;
+      lLatitudeDeDestinoEmRadiano   := (PI * pDestino.Latitude) / 180;
+      lVariacaoDeLongitude          := pOrigem.Longitude - pDestino.Longitude;
       lVariacaoDeLongitudeEmRadiano := (PI * lVariacaoDeLongitude) / 180;
       Result := Sin(lLatitudeDeOrigemEmRadiano) *
                 Sin(lLatitudeDeDestinoEmRadiano) +

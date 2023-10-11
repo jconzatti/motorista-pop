@@ -5,14 +5,15 @@ interface
 uses
    System.SysUtils,
    ContaDeUsuario,
-   ContaDeUsuario.Repositorio,
    Corrida,
+   Repositorio.Fabrica,
+   ContaDeUsuario.Repositorio,
    Corrida.Repositorio,
    UUID;
 
 type
-   EContaDeUsuarioNaoEhPassageiro = class(EArgumentException);
-   EPassageiroJaPossuiCorridaAtiva = class(EArgumentException);
+   ESolicitacaoCorridaUsuarioNaoEhPassageiro = class(EArgumentException);
+   ESolicitacaoCorridaPassageiroJaPossuiCorridaAtiva = class(EArgumentException);
 
    TCoodernadaSolicitacaoCorrida = record
       Latitude: Double;
@@ -36,7 +37,8 @@ type
       procedure ValidarContaDeUsuarioEhPassageiro(pIDDoUsuario: String);
       procedure ValidarPassageiroComAlgumaCorridaAtiva(pIDDoPassageiro: String);
    public
-      constructor Create(pRepositorioCorrida: TRepositorioCorrida; pRepositorioContaDeUsuario: TRepositorioContaDeUsuario); reintroduce;
+      constructor Create(pFabricaRepositorio: TFabricaRepositorio); reintroduce;
+      destructor Destroy; override;
       function Executar(pEntradaSolicitacaoDeCorrida: TDadoEntradaSolicitacaoCorrida): TDadoSaidaSolicitacaoCorrida;
    end;
 
@@ -44,10 +46,17 @@ implementation
 
 { TSolicitarCorrida }
 
-constructor TSolicitarCorrida.Create(pRepositorioCorrida: TRepositorioCorrida; pRepositorioContaDeUsuario: TRepositorioContaDeUsuario);
+constructor TSolicitarCorrida.Create(pFabricaRepositorio: TFabricaRepositorio);
 begin
-   FRepositorioContaUsuario := pRepositorioContaDeUsuario;
-   FRepositorioCorrida      := pRepositorioCorrida;
+   FRepositorioContaUsuario := pFabricaRepositorio.CriarRepositorioContaDeUsuario;
+   FRepositorioCorrida      := pFabricaRepositorio.CriarRepositorioCorrida;
+end;
+
+destructor TSolicitarCorrida.Destroy;
+begin
+   FRepositorioCorrida.Destroy;
+   FRepositorioContaUsuario.Destroy;
+   inherited;
 end;
 
 function TSolicitarCorrida.Executar(pEntradaSolicitacaoDeCorrida: TDadoEntradaSolicitacaoCorrida): TDadoSaidaSolicitacaoCorrida;
@@ -78,7 +87,7 @@ begin
       lContaDeUsuario := FRepositorioContaUsuario.ObterPorID(lUUID);
       try
          if not lContaDeUsuario.Passageiro then
-            raise EContaDeUsuarioNaoEhPassageiro.Create('Conta de usuário não pertence a um passageiro!');
+            raise ESolicitacaoCorridaUsuarioNaoEhPassageiro.Create('Conta de usuário não pertence a um passageiro!');
       finally
          lContaDeUsuario.Destroy;
       end;
@@ -97,14 +106,14 @@ begin
          lListaDeCorridasAtivas := FRepositorioCorrida.ObterListaDeCorridasAtivasDoPassageiro(lUUID);
          try
             if lListaDeCorridasAtivas.Count > 0 then
-               raise EPassageiroJaPossuiCorridaAtiva.Create('Passageiro possui corridas ativas!');
+               raise ESolicitacaoCorridaPassageiroJaPossuiCorridaAtiva.Create('Passageiro possui corridas ativas!');
          finally
             lListaDeCorridasAtivas.Destroy;
          end;
       except
          on E: Exception do
          begin
-            if not (E is ENehumaCorridaEncontrada) then
+            if not (E is ERepositorioCorridaNaoEncontrada) then
                raise;
          end;
       end;

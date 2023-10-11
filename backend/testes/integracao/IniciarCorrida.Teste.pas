@@ -4,11 +4,9 @@ interface
 
 uses
    System.SysUtils,
-   ContaDeUsuario.Repositorio,
-   ContaDeUsuario.Repositorio.Fake,
+   Repositorio.Fabrica,
+   Repositorio.Fabrica.Fake,
    InscreverUsuario,
-   Corrida.Repositorio,
-   Corrida.Repositorio.Fake,
    SolicitarCorrida,
    AceitarCorrida,
    IniciarCorrida,
@@ -21,12 +19,11 @@ type
    [TestFixture]
    TIniciarCorridaTeste = class
    private
-      FRepositorioCorrida: TRepositorioCorrida;
+      FFabricaRepositorio: TFabricaRepositorio;
       FSolicitarCorrida: TSolicitarCorrida;
       FAceitarCorrida: TAceitarCorrida;
       FIniciarCorrida: TIniciarCorrida;
       FObterCorrida: TObterCorrida;
-      FRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
       FInscreverUsuario: TInscreverUsuario;
    public
       [Setup]
@@ -51,13 +48,12 @@ implementation
 
 procedure TIniciarCorridaTeste.Inicializar;
 begin
-   FRepositorioCorrida := TRepositorioCorridaFake.Create;
-   FRepositorioContaDeUsuario := TRepositorioContaDeUsuarioFake.Create;
-   FSolicitarCorrida := TSolicitarCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
-   FAceitarCorrida := TAceitarCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
-   FIniciarCorrida := TIniciarCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
-   FObterCorrida := TObterCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
-   FInscreverUsuario := TInscreverUsuario.Create(FRepositorioContaDeUsuario);
+   FFabricaRepositorio := TFabricaRepositorioFake.Create;
+   FSolicitarCorrida := TSolicitarCorrida.Create(FFabricaRepositorio);
+   FAceitarCorrida := TAceitarCorrida.Create(FFabricaRepositorio);
+   FIniciarCorrida := TIniciarCorrida.Create(FFabricaRepositorio);
+   FObterCorrida := TObterCorrida.Create(FFabricaRepositorio);
+   FInscreverUsuario := TInscreverUsuario.Create(FFabricaRepositorio);
 end;
 
 procedure TIniciarCorridaTeste.Finalizar;
@@ -67,8 +63,7 @@ begin
    FIniciarCorrida.Destroy;
    FAceitarCorrida.Destroy;
    FSolicitarCorrida.Destroy;
-   FRepositorioContaDeUsuario.Destroy;
-   FRepositorioCorrida.Destroy;
+   FFabricaRepositorio.Destroy;
 end;
 
 procedure TIniciarCorridaTeste.MotoristaDeveIniciarCorrida;
@@ -173,7 +168,7 @@ begin
       begin
          FIniciarCorrida.Executar(lEntradaInicioCorrida);
       end,
-      EContaDeUsuarioNaoEhMotorista,
+      EInicioCorridaUsuarioNaoEhMotorista,
       'Conta de usuário não pertence a um motorista! Somente motoristas podem iniciar corridas!'
    );
 end;
@@ -216,7 +211,7 @@ begin
       begin
          FIniciarCorrida.Executar(lEntradaInicioCorrida);
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida está solicitada. Não pode ser iniciada! Primeiro deve ser aceita por um motorista!'
    );
 end;
@@ -265,7 +260,7 @@ begin
       begin
          FIniciarCorrida.Executar(lEntradaInicioCorrida);
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida já iniciada pelo motorista. Não pode ser iniciada por um motorista novamente!'
    );
 end;
@@ -323,7 +318,7 @@ begin
       begin
          FIniciarCorrida.Executar(lEntradaInicioCorrida);
       end,
-      EOutroMotorista,
+      ECorridaOutroMotorista,
       'Corrida já aceita por outro motorista!'
    );
 end;

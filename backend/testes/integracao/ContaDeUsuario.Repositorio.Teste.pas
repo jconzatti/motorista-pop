@@ -98,7 +98,7 @@ begin
          begin
             FRepositorioContaDeUsuario.ObterPorEmail(lEmail);
          end,
-         EContaDeUsuarioNaoEncontrada
+         ERepositorioContaDeUsuarioNaoEncontrada
       );
    finally
       lEmail.Destroy;
@@ -115,7 +115,7 @@ begin
          begin
             FRepositorioContaDeUsuario.ObterPorID(lID);
          end,
-         EContaDeUsuarioNaoEncontrada
+         ERepositorioContaDeUsuarioNaoEncontrada
       );
    finally
       lID.Destroy;

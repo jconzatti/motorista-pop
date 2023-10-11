@@ -75,7 +75,7 @@ begin
          FConexaoBancoDeDado.DataSet.Next;
       end;
       if Result.Count = 0 then
-         raise ENehumaPosicaoEncontrada.Create(Format('Nenhuma posição da corrida (ID %s) encontrada!', [pIDDaCorrida.Valor]));
+         raise ERepositorioPosicaoNaoEncontrada.Create(Format('Nenhuma posição da corrida (ID %s) encontrada!', [pIDDaCorrida.Valor]));
    except
       Result.Destroy;
       raise;

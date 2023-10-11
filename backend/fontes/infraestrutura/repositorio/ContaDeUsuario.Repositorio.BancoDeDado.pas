@@ -108,7 +108,7 @@ begin
    FConexaoBancoDeDado.Executar(pSQLSelect, pParametros, pTiposDeDados);
    FConexaoBancoDeDado.DataSet.First;
    if FConexaoBancoDeDado.DataSet.Eof then
-      raise EContaDeUsuarioNaoEncontrada.Create('Conta de usuário não encontada!');
+      raise ERepositorioContaDeUsuarioNaoEncontrada.Create('Conta de usuário não encontada!');
    Result := TContaDeUsuario.Restaurar(FConexaoBancoDeDado.DataSet.FieldByName('account_id').AsString,
                                        FConexaoBancoDeDado.DataSet.FieldByName('name').AsString,
                                        FConexaoBancoDeDado.DataSet.FieldByName('email').AsString,

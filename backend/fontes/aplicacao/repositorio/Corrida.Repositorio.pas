@@ -10,8 +10,7 @@ uses
    UUID;
 
 type
-   ECorridaNaoEncontrada = class(EResNotFound);
-   ENehumaCorridaEncontrada = class(EResNotFound);
+   ERepositorioCorridaNaoEncontrada = class(EResNotFound);
 
    TRepositorioCorrida = class abstract
    public

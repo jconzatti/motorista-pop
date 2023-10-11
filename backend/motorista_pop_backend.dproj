@@ -148,6 +148,19 @@
         <DCCReference Include="fontes\aplicacao\repositorio\Corrida.Repositorio.pas"/>
         <DCCReference Include="fontes\infraestrutura\repositorio\Corrida.Repositorio.BancoDeDado.pas"/>
         <DCCReference Include="fontes\aplicacao\caso-de-uso\ObterCorridas.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\ObterCorrida.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\AceitarCorrida.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\IniciarCorrida.pas"/>
+        <DCCReference Include="fontes\aplicacao\repositorio\Repositorio.Fabrica.pas"/>
+        <DCCReference Include="fontes\aplicacao\repositorio\Posicao.Repositorio.pas"/>
+        <DCCReference Include="fontes\dominio\Posicao.pas"/>
+        <DCCReference Include="fontes\dominio\Distancia.Calculador.pas"/>
+        <DCCReference Include="fontes\dominio\TarifaPorKM.Calculador.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\AtualizarPosicao.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\FinalizarCorrida.pas"/>
+        <DCCReference Include="fontes\aplicacao\caso-de-uso\CasoDeUso.Fabrica.pas"/>
+        <DCCReference Include="fontes\infraestrutura\repositorio\Repositorio.Fabrica.BancoDeDado.pas"/>
+        <DCCReference Include="fontes\infraestrutura\repositorio\Posicao.Repositorio.BancoDeDado.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

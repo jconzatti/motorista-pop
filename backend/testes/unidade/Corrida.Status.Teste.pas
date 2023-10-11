@@ -121,7 +121,7 @@ begin
       begin
          TStatusCorrida.Solicitada.TransicaoPara(TStatusCorrida.Solicitada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida já está solicitada. Não pode ser solicitada novamente!'
    );
 end;
@@ -138,7 +138,7 @@ begin
       begin
          TStatusCorrida.Solicitada.TransicaoPara(TStatusCorrida.Iniciada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida está solicitada. Não pode ser iniciada! Primeiro deve ser aceita por um motorista!'
    );
 end;
@@ -150,7 +150,7 @@ begin
       begin
          TStatusCorrida.Solicitada.TransicaoPara(TStatusCorrida.Finalizada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida está solicitada. Não pode ser finalizada! Primeiro deve ser aceita e depois iniciada por um motorista!'
    );
 end;
@@ -167,7 +167,7 @@ begin
       begin
          TStatusCorrida.Aceita.TransicaoPara(TStatusCorrida.Solicitada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida foi aceita por um motorista. Não pode ser solicitada novamente!'
    );
 end;
@@ -179,7 +179,7 @@ begin
       begin
          TStatusCorrida.Aceita.TransicaoPara(TStatusCorrida.Aceita)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida foi aceita por um motorista. Não pode ser aceita por um motorista novamente!'
    );
 end;
@@ -196,7 +196,7 @@ begin
       begin
          TStatusCorrida.Aceita.TransicaoPara(TStatusCorrida.Finalizada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida foi aceita por um motorista. Não pode ser finalizada! Primeiro deve ser iniciada pelo motorista!'
    );
 end;
@@ -213,7 +213,7 @@ begin
       begin
          TStatusCorrida.Iniciada.TransicaoPara(TStatusCorrida.Solicitada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida já iniciada pelo motorista. Não pode ser solicitada novamente!'
    );
 end;
@@ -225,7 +225,7 @@ begin
       begin
          TStatusCorrida.Iniciada.TransicaoPara(TStatusCorrida.Aceita)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida já iniciada pelo motorista. Não pode ser aceita por um motorista novamente!'
    );
 end;
@@ -237,7 +237,7 @@ begin
       begin
          TStatusCorrida.Iniciada.TransicaoPara(TStatusCorrida.Iniciada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida já iniciada pelo motorista. Não pode ser iniciada por um motorista novamente!'
    );
 end;
@@ -260,7 +260,7 @@ begin
       begin
          TStatusCorrida.Finalizada.TransicaoPara(TStatusCorrida.Solicitada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida já finalizada pelo motorista. Não pode ser solicitada novamente!'
    );
 end;
@@ -272,7 +272,7 @@ begin
       begin
          TStatusCorrida.Finalizada.TransicaoPara(TStatusCorrida.Aceita)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida já finalizada pelo motorista. Não pode ser aceita por um motorista novamente!'
    );
 end;
@@ -284,7 +284,7 @@ begin
       begin
          TStatusCorrida.Finalizada.TransicaoPara(TStatusCorrida.Iniciada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida já finalizada pelo motorista. Não pode ser iniciada por um motorista novamente!'
    );
 end;
@@ -296,7 +296,7 @@ begin
       begin
          TStatusCorrida.Finalizada.TransicaoPara(TStatusCorrida.Finalizada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida já finalizada pelo motorista. Não pode ser finalizada por um motorista novamente!'
    );
 end;
@@ -308,7 +308,7 @@ begin
       begin
          TStatusCorrida.Finalizada.TransicaoPara(TStatusCorrida.Cancelada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida já finalizada pelo motorista. Não pode ser cancelada!'
    );
 end;
@@ -320,7 +320,7 @@ begin
       begin
          TStatusCorrida.Cancelada.TransicaoPara(TStatusCorrida.Solicitada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida cancelada. Não pode ser solicitada novamente!'
    );
 end;
@@ -332,7 +332,7 @@ begin
       begin
          TStatusCorrida.Cancelada.TransicaoPara(TStatusCorrida.Aceita)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
      'Corrida cancelada. Não pode ser aceita por um motorista!'
    );
 end;
@@ -344,7 +344,7 @@ begin
       begin
          TStatusCorrida.Cancelada.TransicaoPara(TStatusCorrida.Iniciada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida cancelada. Não pode ser iniciada por um motorista!'
    );
 end;
@@ -356,7 +356,7 @@ begin
       begin
          TStatusCorrida.Cancelada.TransicaoPara(TStatusCorrida.Finalizada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida cancelada. Não pode ser finalizada por um motorista!'
    );
 end;
@@ -368,7 +368,7 @@ begin
       begin
          TStatusCorrida.Cancelada.TransicaoPara(TStatusCorrida.Cancelada)
       end,
-      ETransicaoStatusCorridaInvalido,
+      EStatusCorridaTransicaoInvalida,
       'Corrida já cancelada. Não pode ser cancelada novamente!'
    );
 end;

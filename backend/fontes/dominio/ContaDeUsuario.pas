@@ -11,7 +11,7 @@ uses
    PlacaDeCarro;
 
 type
-   EPlacaDoCarroInformada = class(EArgumentException);
+   EContaDeUsuarioPlacaDoCarroInformada = class(EArgumentException);
 
    TContaDeUsuario = class
    private
@@ -92,7 +92,7 @@ begin
 
    if not FMotorista then
       if not pPlacaDoCarro.IsEmpty then
-         raise EPlacaDoCarroInformada.Create('Informada placa do carro, mas a conta de usuário não pertence a um motorista!');
+         raise EContaDeUsuarioPlacaDoCarroInformada.Create('Informada placa do carro, mas a conta de usuário não pertence a um motorista!');
 
    FID                  := TUUID.Create(pID);
    FNome                := TNome.Create(pNome);

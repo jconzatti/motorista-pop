@@ -8,7 +8,7 @@ uses
    UUID;
 
 type
-   ENehumaPosicaoEncontrada = class(EResNotFound);
+   ERepositorioPosicaoNaoEncontrada = class(EResNotFound);
 
    TRepositorioPosicao = class abstract
    public

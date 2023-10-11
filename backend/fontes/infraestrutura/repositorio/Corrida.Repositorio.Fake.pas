@@ -54,7 +54,7 @@ begin
       Result := ClonarCorrida(FTabelaDeCorridas.Items[pID.Valor]);
 
    if not Assigned(Result) then
-      raise ECorridaNaoEncontrada.Create(Format('Corrida com ID %s não encontada!', [pID.Valor]));
+      raise ERepositorioCorridaNaoEncontrada.Create(Format('Corrida com ID %s não encontada!', [pID.Valor]));
 end;
 
 function TRepositorioCorridaFake.ObterListaDeCorridasDoUsuario(
@@ -71,10 +71,10 @@ begin
          or   (lCorrida.IDDoMotorista.Equals(pIDDoUsuario.Valor)))
          and ((pConjuntoDeStatus = [])
          or   (lCorrida.Status in pConjuntoDeStatus)) then
-            Result.Add(lCorrida);
+            Result.Add(ClonarCorrida(lCorrida));
       end;
       if Result.Count = 0 then
-         raise ENehumaCorridaEncontrada.Create('Nenhuma corrida encontrada!');
+         raise ERepositorioCorridaNaoEncontrada.Create('Nenhuma corrida encontrada!');
    except
       Result.Destroy;
       raise;

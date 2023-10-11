@@ -6,13 +6,14 @@ uses
    System.SysUtils,
    ContaDeUsuario,
    ContaDeUsuario.Repositorio,
+   Repositorio.Fabrica,
    Corrida,
    Corrida.Repositorio,
    UUID;
 
 type
-   EContaDeUsuarioNaoEhMotorista = class(EArgumentException);
-   EMotoristaJaPossuiCorridaAtiva = class(EArgumentException);
+   EAceiteCorridaUsuarioNaoEhMotorista = class(EArgumentException);
+   EAceiteCorridaMotoristaJaPossuiCorridaAtiva = class(EArgumentException);
 
    TDadoEntradaAceiteCorrida = record
       IDDoMotorista: String;
@@ -26,7 +27,8 @@ type
       procedure ValidarContaDeUsuarioEhMotorista(pIDDoUsuario: String);
       procedure ValidarMotoristaComAlgumaCorridaAtiva(pIDDoMotorista: String);
    public
-      constructor Create(pRepositorioCorrida: TRepositorioCorrida; pRepositorioContaDeUsuario: TRepositorioContaDeUsuario); reintroduce;
+      constructor Create(pFabricaRepositorio: TFabricaRepositorio); reintroduce;
+      destructor Destroy; override;
       procedure Executar(pEntradaAceiteDeCorrida: TDadoEntradaAceiteCorrida);
    end;
 
@@ -34,10 +36,17 @@ implementation
 
 { TAceitarCorrida }
 
-constructor TAceitarCorrida.Create(pRepositorioCorrida: TRepositorioCorrida; pRepositorioContaDeUsuario: TRepositorioContaDeUsuario);
+constructor TAceitarCorrida.Create(pFabricaRepositorio: TFabricaRepositorio);
 begin
-   FRepositorioContaUsuario := pRepositorioContaDeUsuario;
-   FRepositorioCorrida      := pRepositorioCorrida;
+   FRepositorioContaUsuario := pFabricaRepositorio.CriarRepositorioContaDeUsuario;
+   FRepositorioCorrida      := pFabricaRepositorio.CriarRepositorioCorrida;
+end;
+
+destructor TAceitarCorrida.Destroy;
+begin
+   FRepositorioCorrida.Destroy;
+   FRepositorioContaUsuario.Destroy;
+   inherited;
 end;
 
 procedure TAceitarCorrida.Executar(pEntradaAceiteDeCorrida: TDadoEntradaAceiteCorrida);
@@ -70,7 +79,7 @@ begin
       lContaDeUsuario := FRepositorioContaUsuario.ObterPorID(lUUID);
       try
          if not lContaDeUsuario.Motorista then
-            raise EContaDeUsuarioNaoEhMotorista.Create('Conta de usuário não pertence a um motorista! Somente motoristas podem aceitar corridas!');
+            raise EAceiteCorridaUsuarioNaoEhMotorista.Create('Conta de usuário não pertence a um motorista! Somente motoristas podem aceitar corridas!');
       finally
          lContaDeUsuario.Destroy;
       end;
@@ -89,14 +98,14 @@ begin
          lListaDeCorridasAtivas := FRepositorioCorrida.ObterListaDeCorridasAtivasDoMotorista(lUUID);
          try
             if lListaDeCorridasAtivas.Count > 0 then
-               raise EMotoristaJaPossuiCorridaAtiva.Create('Motorista possui corridas ativas! Não pode aceitar corridas!');
+               raise EAceiteCorridaMotoristaJaPossuiCorridaAtiva.Create('Motorista possui corridas ativas! Não pode aceitar corridas!');
          finally
             lListaDeCorridasAtivas.Destroy;
          end;
       except
          on E: Exception do
          begin
-            if not (E is ENehumaCorridaEncontrada) then
+            if not (E is ERepositorioCorridaNaoEncontrada) then
                raise;
          end;
       end;

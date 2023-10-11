@@ -4,11 +4,10 @@ interface
 
 uses
    System.SysUtils,
-   ContaDeUsuario.Repositorio,
-   ContaDeUsuario.Repositorio.Fake,
-   InscreverUsuario,
+   Repositorio.Fabrica,
+   Repositorio.Fabrica.Fake,
    Corrida.Repositorio,
-   Corrida.Repositorio.Fake,
+   InscreverUsuario,
    SolicitarCorrida,
    ObterCorrida,
    UUID,
@@ -17,9 +16,8 @@ uses
 type
    [TestFixture]
    TObterCorridaTeste = class
-      FRepositorioCorrida: TRepositorioCorrida;
+      FFabricaRepositorio: TFabricaRepositorio;
       FSolicitarCorrida: TSolicitarCorrida;
-      FRepositorioContaDeUsuario: TRepositorioContaDEUsuario;
       FInscreverUsuario: TInscreverUsuario;
       FObterCorrida: TObterCorrida;
    public
@@ -40,11 +38,10 @@ implementation
 
 procedure TObterCorridaTeste.Inicializar;
 begin
-   FRepositorioCorrida := TRepositorioCorridaFake.Create;
-   FRepositorioContaDeUsuario := TRepositorioContaDeUsuarioFake.Create;
-   FSolicitarCorrida := TSolicitarCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
-   FInscreverUsuario := TInscreverUsuario.Create(FRepositorioContaDeUsuario);
-   FObterCorrida := TObterCorrida.Create(FRepositorioCorrida, FRepositorioContaDeUsuario);
+   FFabricaRepositorio := TFabricaRepositorioFake.Create;
+   FSolicitarCorrida := TSolicitarCorrida.Create(FFabricaRepositorio);
+   FInscreverUsuario := TInscreverUsuario.Create(FFabricaRepositorio);
+   FObterCorrida := TObterCorrida.Create(FFabricaRepositorio);
 end;
 
 procedure TObterCorridaTeste.Finalizar;
@@ -52,8 +49,7 @@ begin
    FObterCorrida.Destroy;
    FInscreverUsuario.Destroy;
    FSolicitarCorrida.Destroy;
-   FRepositorioContaDeUsuario.Destroy;
-   FRepositorioCorrida.Destroy;
+   FFabricaRepositorio.Destroy;
 end;
 
 procedure TObterCorridaTeste.DeveObterCorrida;
@@ -101,7 +97,7 @@ begin
       begin
          FObterCorrida.Executar(lIDDaCorrida)
       end,
-      ECorridaNaoEncontrada,
+      ERepositorioCorridaNaoEncontrada,
       Format('Corrida com ID %s não encontada!', [lIDDaCorrida])
    );
 end;

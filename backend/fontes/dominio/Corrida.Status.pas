@@ -7,7 +7,7 @@ uses
 
 type
    EStatusCorridaInvalido = class(EArgumentException);
-   ETransicaoStatusCorridaInvalido = class(EArgumentException);
+   EStatusCorridaTransicaoInvalida = class(EArgumentException);
    {$SCOPEDENUMS ON}
    TStatusCorrida = (Solicitada, Aceita, Iniciada, Finalizada, Cancelada);
    {$SCOPEDENUMS OFF}
@@ -40,45 +40,45 @@ begin
       TStatusCorrida.Solicitada:
       begin
          case pNovoStatus of
-            TStatusCorrida.Solicitada: raise ETransicaoStatusCorridaInvalido.Create('Corrida já está solicitada. Não pode ser solicitada novamente!');
-            TStatusCorrida.Iniciada: raise ETransicaoStatusCorridaInvalido.Create('Corrida está solicitada. Não pode ser iniciada! Primeiro deve ser aceita por um motorista!');
-            TStatusCorrida.Finalizada: raise ETransicaoStatusCorridaInvalido.Create('Corrida está solicitada. Não pode ser finalizada! Primeiro deve ser aceita e depois iniciada por um motorista!');
+            TStatusCorrida.Solicitada: raise EStatusCorridaTransicaoInvalida.Create('Corrida já está solicitada. Não pode ser solicitada novamente!');
+            TStatusCorrida.Iniciada: raise EStatusCorridaTransicaoInvalida.Create('Corrida está solicitada. Não pode ser iniciada! Primeiro deve ser aceita por um motorista!');
+            TStatusCorrida.Finalizada: raise EStatusCorridaTransicaoInvalida.Create('Corrida está solicitada. Não pode ser finalizada! Primeiro deve ser aceita e depois iniciada por um motorista!');
          end;
       end;
       TStatusCorrida.Aceita:
       begin
          case pNovoStatus of
-            TStatusCorrida.Solicitada: raise ETransicaoStatusCorridaInvalido.Create('Corrida foi aceita por um motorista. Não pode ser solicitada novamente!');
-            TStatusCorrida.Aceita: raise ETransicaoStatusCorridaInvalido.Create('Corrida foi aceita por um motorista. Não pode ser aceita por um motorista novamente!');
-            TStatusCorrida.Finalizada: raise ETransicaoStatusCorridaInvalido.Create('Corrida foi aceita por um motorista. Não pode ser finalizada! Primeiro deve ser iniciada pelo motorista!');
+            TStatusCorrida.Solicitada: raise EStatusCorridaTransicaoInvalida.Create('Corrida foi aceita por um motorista. Não pode ser solicitada novamente!');
+            TStatusCorrida.Aceita: raise EStatusCorridaTransicaoInvalida.Create('Corrida foi aceita por um motorista. Não pode ser aceita por um motorista novamente!');
+            TStatusCorrida.Finalizada: raise EStatusCorridaTransicaoInvalida.Create('Corrida foi aceita por um motorista. Não pode ser finalizada! Primeiro deve ser iniciada pelo motorista!');
          end;
       end;
       TStatusCorrida.Iniciada:
       begin
          case pNovoStatus of
-            TStatusCorrida.Solicitada: raise ETransicaoStatusCorridaInvalido.Create('Corrida já iniciada pelo motorista. Não pode ser solicitada novamente!');
-            TStatusCorrida.Aceita: raise ETransicaoStatusCorridaInvalido.Create('Corrida já iniciada pelo motorista. Não pode ser aceita por um motorista novamente!');
-            TStatusCorrida.Iniciada: raise ETransicaoStatusCorridaInvalido.Create('Corrida já iniciada pelo motorista. Não pode ser iniciada por um motorista novamente!');
+            TStatusCorrida.Solicitada: raise EStatusCorridaTransicaoInvalida.Create('Corrida já iniciada pelo motorista. Não pode ser solicitada novamente!');
+            TStatusCorrida.Aceita: raise EStatusCorridaTransicaoInvalida.Create('Corrida já iniciada pelo motorista. Não pode ser aceita por um motorista novamente!');
+            TStatusCorrida.Iniciada: raise EStatusCorridaTransicaoInvalida.Create('Corrida já iniciada pelo motorista. Não pode ser iniciada por um motorista novamente!');
          end;
       end;
       TStatusCorrida.Finalizada:
       begin
          case pNovoStatus of
-            TStatusCorrida.Solicitada: raise ETransicaoStatusCorridaInvalido.Create('Corrida já finalizada pelo motorista. Não pode ser solicitada novamente!');
-            TStatusCorrida.Aceita: raise ETransicaoStatusCorridaInvalido.Create('Corrida já finalizada pelo motorista. Não pode ser aceita por um motorista novamente!');
-            TStatusCorrida.Iniciada: raise ETransicaoStatusCorridaInvalido.Create('Corrida já finalizada pelo motorista. Não pode ser iniciada por um motorista novamente!');
-            TStatusCorrida.Finalizada: raise ETransicaoStatusCorridaInvalido.Create('Corrida já finalizada pelo motorista. Não pode ser finalizada por um motorista novamente!');
-            TStatusCorrida.Cancelada: raise ETransicaoStatusCorridaInvalido.Create('Corrida já finalizada pelo motorista. Não pode ser cancelada!');
+            TStatusCorrida.Solicitada: raise EStatusCorridaTransicaoInvalida.Create('Corrida já finalizada pelo motorista. Não pode ser solicitada novamente!');
+            TStatusCorrida.Aceita: raise EStatusCorridaTransicaoInvalida.Create('Corrida já finalizada pelo motorista. Não pode ser aceita por um motorista novamente!');
+            TStatusCorrida.Iniciada: raise EStatusCorridaTransicaoInvalida.Create('Corrida já finalizada pelo motorista. Não pode ser iniciada por um motorista novamente!');
+            TStatusCorrida.Finalizada: raise EStatusCorridaTransicaoInvalida.Create('Corrida já finalizada pelo motorista. Não pode ser finalizada por um motorista novamente!');
+            TStatusCorrida.Cancelada: raise EStatusCorridaTransicaoInvalida.Create('Corrida já finalizada pelo motorista. Não pode ser cancelada!');
          end;
       end;
       TStatusCorrida.Cancelada:
       begin
          case pNovoStatus of
-            TStatusCorrida.Solicitada: raise ETransicaoStatusCorridaInvalido.Create('Corrida cancelada. Não pode ser solicitada novamente!');
-            TStatusCorrida.Aceita: raise ETransicaoStatusCorridaInvalido.Create('Corrida cancelada. Não pode ser aceita por um motorista!');
-            TStatusCorrida.Iniciada: raise ETransicaoStatusCorridaInvalido.Create('Corrida cancelada. Não pode ser iniciada por um motorista!');
-            TStatusCorrida.Finalizada: raise ETransicaoStatusCorridaInvalido.Create('Corrida cancelada. Não pode ser finalizada por um motorista!');
-            TStatusCorrida.Cancelada: raise ETransicaoStatusCorridaInvalido.Create('Corrida já cancelada. Não pode ser cancelada novamente!');
+            TStatusCorrida.Solicitada: raise EStatusCorridaTransicaoInvalida.Create('Corrida cancelada. Não pode ser solicitada novamente!');
+            TStatusCorrida.Aceita: raise EStatusCorridaTransicaoInvalida.Create('Corrida cancelada. Não pode ser aceita por um motorista!');
+            TStatusCorrida.Iniciada: raise EStatusCorridaTransicaoInvalida.Create('Corrida cancelada. Não pode ser iniciada por um motorista!');
+            TStatusCorrida.Finalizada: raise EStatusCorridaTransicaoInvalida.Create('Corrida cancelada. Não pode ser finalizada por um motorista!');
+            TStatusCorrida.Cancelada: raise EStatusCorridaTransicaoInvalida.Create('Corrida já cancelada. Não pode ser cancelada novamente!');
          end;
       end;
    end;

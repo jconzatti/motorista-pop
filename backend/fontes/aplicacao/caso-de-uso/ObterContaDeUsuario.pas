@@ -6,6 +6,7 @@ uses
    System.SysUtils,
    ContaDeUsuario,
    ContaDeUsuario.Repositorio,
+   Repositorio.Fabrica,
    UUID;
 
 type
@@ -22,9 +23,10 @@ type
 
    TObterContaDeUsuario = class
    private
-      RepositorioContaDeUsuario: TRepositorioContaDeUsuario;
+      FRepositorioContaDeUsuario: TRepositorioContaDeUsuario;
    public
-      constructor Create(pRepositorioContaUsuario: TRepositorioContaDeUsuario); reintroduce;
+      constructor Create(pFabricaRepositorio: TFabricaRepositorio); reintroduce;
+      destructor Destroy; override;
       function Executar(pID: String): TDadoSaidaObtencaoContaDeUsuario;
    end;
 
@@ -32,10 +34,15 @@ implementation
 
 { TObterContaDeUsuario }
 
-constructor TObterContaDeUsuario.Create(
-  pRepositorioContaUsuario: TRepositorioContaDeUsuario);
+constructor TObterContaDeUsuario.Create(pFabricaRepositorio: TFabricaRepositorio);
 begin
-   RepositorioContaDeUsuario := pRepositorioContaUsuario;
+   FRepositorioContaDeUsuario := pFabricaRepositorio.CriarRepositorioContaDeUsuario;
+end;
+
+destructor TObterContaDeUsuario.Destroy;
+begin
+   FRepositorioContaDeUsuario.Destroy;
+   inherited;
 end;
 
 function TObterContaDeUsuario.Executar(pID: String): TDadoSaidaObtencaoContaDeUsuario;
@@ -45,7 +52,7 @@ var
 begin
    lUUID := TUUID.Create(pID);
    try
-      lContaDeUsuario := RepositorioContaDeUsuario.ObterPorID(lUUID);
+      lContaDeUsuario := FRepositorioContaDeUsuario.ObterPorID(lUUID);
       try
          Result.ID           := lContaDeUsuario.ID;
          Result.Nome         := lContaDeUsuario.Nome;
