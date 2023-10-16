@@ -39,7 +39,7 @@ var lContaDeUsuario: TContaDeUsuario;
 begin
    lEmail := TEmail.Create(Format('john.doe.%d@gmail.com', [Random(100000000)]));
    try
-      lContaDeUsuario := TContaDeUsuario.CriarPassageiro('John Doe', lEmail.Valor, '958.187.055-52');
+      lContaDeUsuario := TContaDeUsuario.CriarPassageiro('John Doe', lEmail.Valor, '958.187.055-52', 'S3nh@F0rte');
       try
          FRepositorioContaDeUsuario.Salvar(lContaDeUsuario);
       finally
@@ -65,7 +65,7 @@ var lContaDeUsuario: TContaDeUsuario;
     lIDDoUsuario: String;
     lID: TUUID;
 begin
-   lContaDeUsuario := TContaDeUsuario.CriarPassageiro('John Doe', Format('john.doe.%d@gmail.com', [Random(100000000)]), '958.187.055-52');
+   lContaDeUsuario := TContaDeUsuario.CriarPassageiro('John Doe', Format('john.doe.%d@gmail.com', [Random(100000000)]), '958.187.055-52', 'S3nh@F0rte');
    try
       FRepositorioContaDeUsuario.Salvar(lContaDeUsuario);
       lIDDoUsuario := lContaDeUsuario.ID;

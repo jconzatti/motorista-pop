@@ -826,6 +826,7 @@ begin
       lJSONPassaeiro.AddPair('cpf', '958.187.055-52');
       lJSONPassaeiro.AddPair('passageiro', TJSONBool.Create(True));
       lJSONPassaeiro.AddPair('motorista', TJSONBool.Create(False));
+      lJSONPassaeiro.AddPair('senha', 'S3nh@F0rte');
       Result := FServidorHTTP.Invocar(mPOST, '/usuario', lParametros, lJSONPassaeiro.ToJSON);
    finally
       lJSONPassaeiro.Destroy;
@@ -846,6 +847,7 @@ begin
       lJSONMotorista.AddPair('passageiro', TJSONBool.Create(False));
       lJSONMotorista.AddPair('motorista', TJSONBool.Create(True));
       lJSONMotorista.AddPair('placaDoCarro', 'XJF1H34');
+      lJSONMotorista.AddPair('senha', 'S3nh@F0rte');
       Result := FServidorHTTP.Invocar(mPOST, '/usuario', lParametros, lJSONMotorista.ToJSON);
    finally
       lJSONMotorista.Destroy;
@@ -872,6 +874,7 @@ begin
    lParametros := TParametroHTTP.Create;
    try
       lParametros.Add('email', pEmail);
+      lParametros.Add('senha', 'S3nh@F0rte');
       Result := FServidorHTTP.Invocar(mPOST, '/login/:email', lParametros, '');
    finally
       lParametros.Destroy;

@@ -8,10 +8,13 @@ uses
    Nome,
    CPF,
    Email,
-   PlacaDeCarro;
+   PlacaDeCarro,
+   Hash.Gerador,
+   Senha;
 
 type
    EContaDeUsuarioPlacaDoCarroInformada = class(EArgumentException);
+   EContaDeUsuarioSenhaInvalida = class(EArgumentException);
 
    TContaDeUsuario = class
    private
@@ -24,32 +27,35 @@ type
       FPlacaDoCarro: TPlacaDeCarro;
       FData: TDateTime;
       FVerificada: Boolean;
-      FCodigoDeVerificacao: TUUID;
-      constructor Create(pID: String;
-                         pNome: String;
-                         pEmail: String;
-                         pCPF: String;
+      FSenha: TSenha;
+      constructor Create(pID: TUUID;
+                         pNome: TNome;
+                         pEmail: TEmail;
+                         pCPF: TCPF;
                          pPassageiro: Boolean;
                          pMotorista: Boolean;
-                         pPlacaDoCarro: String;
+                         pPlacaDoCarro: TPlacaDeCarro;
                          pData: TDateTime;
                          pVerificada: Boolean;
-                         pCodigoDeVerificacao: String); reintroduce;
-    function ObterCodigoDeVerificacao: String;
-    function ObterCPF: String;
-    function ObterEmail: String;
-    function ObterID: String;
-    function ObterNome: String;
-    function ObterPlacaDoCarro: String;
+                         pSenha: TSenha); reintroduce;
+      function ObterCodigoDeVerificacao: String;
+      function ObterCPF: String;
+      function ObterEmail: String;
+      function ObterID: String;
+      function ObterNome: String;
+      function ObterPlacaDoCarro: String;
+      function ObterAlgoritimoDeHashDaSenha: TAlgoritimoHash;
+      function ObterHashDaSenha: String;
    public
-      class function CriarPassageiro(pNome, pEmail, pCPF: String): TContaDeUsuario;
-      class function CriarMotorista(pNome, pEmail, pCPF, pPlacaDoCarro: String): TContaDeUsuario;
+      class function CriarPassageiro(pNome, pEmail, pCPF, pSenha: String): TContaDeUsuario;
+      class function CriarMotorista(pNome, pEmail, pCPF, pPlacaDoCarro, pSenha: String): TContaDeUsuario;
       class function Criar(pNome: String;
                            pEmail: String;
                            pCPF: String;
                            pPassageiro: Boolean;
                            pMotorista: Boolean;
-                           pPlacaDoCarro: String): TContaDeUsuario;
+                           pPlacaDoCarro: String;
+                           pSenha: String): TContaDeUsuario;
       class function Restaurar(pID: String;
                                pNome: String;
                                pEmail: String;
@@ -59,8 +65,11 @@ type
                                pPlacaDoCarro: String;
                                pData: TDateTime;
                                pVerificada: Boolean;
-                               pCodigoDeVerificacao: String): TContaDeUsuario;
+                               pCodigoDeVerificacao: String;
+                               pHashDaSenha: String;
+                               pAlgoritimoHash: TAlgoritimoHash): TContaDeUsuario;
       destructor Destroy; override;
+      procedure ValidarSenha(pSenha: String);
       property ID: String read ObterID;
       property Nome: String read ObterNome;
       property CPF: String read ObterCPF;
@@ -71,40 +80,98 @@ type
       property Data: TDateTime read FData;
       property Verificada: Boolean read FVerificada;
       property CodigoDeVerificacao: String read ObterCodigoDeVerificacao;
+      property HashDaSenha: String read ObterHashDaSenha;
+      property AlgoritimoDeHashDaSenha: TAlgoritimoHash read ObterAlgoritimoDeHashDaSenha;
    end;
 
 implementation
 
 { TContaDeUsuario }
 
-constructor TContaDeUsuario.Create(pID, pNome, pEmail, pCPF: String;
-  pPassageiro, pMotorista: Boolean; pPlacaDoCarro: String; pData: TDateTime;
-  pVerificada: Boolean; pCodigoDeVerificacao: String);
+class function TContaDeUsuario.Criar(pNome, pEmail, pCPF: String; pPassageiro, pMotorista: Boolean; pPlacaDoCarro, pSenha: String): TContaDeUsuario;
+var
+   lPlacaDoCarro : TPlacaDeCarro;
 begin
-   FPassageiro   := pPassageiro;
-   FMotorista    := pMotorista;
-   FData         := pData;
-   FVerificada   := pVerificada;
+   lPlacaDoCarro := nil;
+   if (not pMotorista) and (not pPlacaDoCarro.IsEmpty) then
+      raise EContaDeUsuarioPlacaDoCarroInformada.Create('Informada placa do carro, mas a conta de usuário não pertence a um motorista!');
+   if pMotorista then
+      lPlacaDoCarro := TPlacaDeCarro.Create(pPlacaDoCarro);
+   Result := TContaDeUsuario.Create(TUUID.Create(TUUID.Gerar),
+                                    TNome.Create(pNome),
+                                    TEmail.Create(pEmail),
+                                    TCPF.Create(pCPF),
+                                    pPassageiro,
+                                    pMotorista,
+                                    lPlacaDoCarro,
+                                    Now,
+                                    False,
+                                    TSenha.Criar(TUUID.Gerar, pSenha, TAlgoritimoHash.MD5));
+end;
 
-   FPlacaDoCarro := nil;
-   if FMotorista then
-      FPlacaDoCarro := TPlacaDeCarro.Create(pPlacaDoCarro);
+class function TContaDeUsuario.CriarMotorista(pNome, pEmail, pCPF, pPlacaDoCarro, pSenha: String): TContaDeUsuario;
+begin
+   Result := TContaDeUsuario.Criar(pNome, pEmail, pCPF, False, True, pPlacaDoCarro, pSenha);
+end;
 
-   if not FMotorista then
-      if not pPlacaDoCarro.IsEmpty then
-         raise EContaDeUsuarioPlacaDoCarroInformada.Create('Informada placa do carro, mas a conta de usuário não pertence a um motorista!');
+class function TContaDeUsuario.CriarPassageiro(pNome, pEmail, pCPF, pSenha: String): TContaDeUsuario;
+begin
+   Result := TContaDeUsuario.Criar(pNome, pEmail, pCPF, True, False, '', pSenha);
+end;
 
-   FID                  := TUUID.Create(pID);
-   FNome                := TNome.Create(pNome);
-   FCPF                 := TCPF.Create(pCPF);
-   FEmail               := TEmail.Create(pEmail);
-   FCodigoDeVerificacao := TUUID.Create(pCodigoDeVerificacao);
+class function TContaDeUsuario.Restaurar(pID, pNome, pEmail, pCPF: String;
+  pPassageiro, pMotorista: Boolean; pPlacaDoCarro: String; pData: TDateTime;
+  pVerificada: Boolean; pCodigoDeVerificacao, pHashDaSenha: String;
+  pAlgoritimoHash: TAlgoritimoHash): TContaDeUsuario;
+var
+   lPlacaDoCarro : TPlacaDeCarro;
+begin
+   lPlacaDoCarro := nil;
+   if not pPlacaDoCarro.IsEmpty then
+      lPlacaDoCarro := TPlacaDeCarro.Create(pPlacaDoCarro);
+   Result := TContaDeUsuario.Create(TUUID.Create(pID),
+                                    TNome.Create(pNome),
+                                    TEmail.Create(pEmail),
+                                    TCPF.Create(pCPF),
+                                    pPassageiro,
+                                    pMotorista,
+                                    lPlacaDoCarro,
+                                    pData,
+                                    pVerificada,
+                                    TSenha.Restaurar(pCodigoDeVerificacao, pHashDaSenha, pAlgoritimoHash));
+end;
+
+procedure TContaDeUsuario.ValidarSenha(pSenha: String);
+begin
+   if not FSenha.Validar(pSenha) then
+      raise EContaDeUsuarioSenhaInvalida.Create('Senha inválida!');
+end;
+
+constructor TContaDeUsuario.Create(pID: TUUID;
+                                   pNome: TNome;
+                                   pEmail: TEmail;
+                                   pCPF: TCPF;
+                                   pPassageiro: Boolean;
+                                   pMotorista: Boolean;
+                                   pPlacaDoCarro: TPlacaDeCarro;
+                                   pData: TDateTime;
+                                   pVerificada: Boolean;
+                                   pSenha: TSenha);
+begin
+   FID                  := pID;
+   FNome                := pNome;
+   FEmail               := pEmail;
+   FCPF                 := pCPF;
+   FPassageiro          := pPassageiro;
+   FMotorista           := pMotorista;
+   FPlacaDoCarro        := pPlacaDoCarro;
+   FData                := pData;
+   FVerificada          := pVerificada;
+   FSenha               := pSenha;
 end;
 
 destructor TContaDeUsuario.Destroy;
 begin
-   if Assigned(FCodigoDeVerificacao) then
-      FCodigoDeVerificacao.Destroy;
    if Assigned(FEmail) then
       FEmail.Destroy;
    if Assigned(FCPF) then
@@ -115,32 +182,9 @@ begin
       FID.Destroy;
    if Assigned(FPlacaDoCarro) then
       FPlacaDoCarro.Destroy;
+   if Assigned(FSenha) then
+      FSenha.Destroy;
    inherited;
-end;
-
-class function TContaDeUsuario.Criar(pNome, pEmail, pCPF: String; pPassageiro,
-  pMotorista: Boolean; pPlacaDoCarro: String): TContaDeUsuario;
-begin
-   Result := TContaDeUsuario.Create(TUUID.Gerar, pNome, pEmail, pCPF, pPassageiro, pMotorista, pPlacaDoCarro, Now, False, TUUID.Gerar);
-end;
-
-class function TContaDeUsuario.CriarMotorista(pNome, pEmail, pCPF,
-  pPlacaDoCarro: String): TContaDeUsuario;
-begin
-   Result := TContaDeUsuario.Create(TUUID.Gerar, pNome, pEmail, pCPF, False, True, pPlacaDoCarro, Now, False, TUUID.Gerar);
-end;
-
-class function TContaDeUsuario.CriarPassageiro(pNome, pEmail,
-  pCPF: String): TContaDeUsuario;
-begin
-   Result := TContaDeUsuario.Create(TUUID.Gerar, pNome, pEmail, pCPF, True, False, '', Now, False, TUUID.Gerar);
-end;
-
-class function TContaDeUsuario.Restaurar(pID, pNome, pEmail, pCPF: String;
-  pPassageiro, pMotorista: Boolean; pPlacaDoCarro: String; pData: TDateTime;
-  pVerificada: Boolean; pCodigoDeVerificacao: String): TContaDeUsuario;
-begin
-   Result := TContaDeUsuario.Create(pID, pNome, pEmail, pCPF, pPassageiro, pMotorista, pPlacaDoCarro, pData, pVerificada, pCodigoDeVerificacao);
 end;
 
 function TContaDeUsuario.ObterID: String;
@@ -172,7 +216,17 @@ end;
 
 function TContaDeUsuario.ObterCodigoDeVerificacao: String;
 begin
-   Result := FCodigoDeVerificacao.Valor;
+   Result := FSenha.Prefixo;
+end;
+
+function TContaDeUsuario.ObterHashDaSenha: String;
+begin
+   Result := FSenha.Valor;
+end;
+
+function TContaDeUsuario.ObterAlgoritimoDeHashDaSenha: TAlgoritimoHash;
+begin
+   Result := FSenha.Algoritimo;
 end;
 
 end.

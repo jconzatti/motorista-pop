@@ -160,11 +160,14 @@ end;
 function TControladorMotoristaPOPAPIREST.ExecutarRealizarLogin(
   pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
 var
+   lEntradaRealizacaoLogin : TDadoEntradaRealizacaoLogin;
    lSaidaRealizacaoLogin : TDadoSaidaRealizacaoLogin;
    lJSONSaidaRealizacaoLogin: TJSONValue;
 begin
    try
-      lSaidaRealizacaoLogin     := FRealizarLogin.Executar(pParametros.Items['email']);
+      lEntradaRealizacaoLogin.Email := pParametros.Items['email'];
+      lEntradaRealizacaoLogin.Senha := pParametros.Items['senha'];
+      lSaidaRealizacaoLogin     := FRealizarLogin.Executar(lEntradaRealizacaoLogin);
       lJSONSaidaRealizacaoLogin := FConversorJSON.ConverterParaJSON<TDadoSaidaRealizacaoLogin>(lSaidaRealizacaoLogin);
       Result := TResultadoHTTP.Create(lJSONSaidaRealizacaoLogin);
    except

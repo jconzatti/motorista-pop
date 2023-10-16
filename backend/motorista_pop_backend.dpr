@@ -42,7 +42,9 @@ uses
   FinalizarCorrida in 'fontes\aplicacao\caso-de-uso\FinalizarCorrida.pas',
   CasoDeUso.Fabrica in 'fontes\aplicacao\caso-de-uso\CasoDeUso.Fabrica.pas',
   Repositorio.Fabrica.BancoDeDado in 'fontes\infraestrutura\repositorio\Repositorio.Fabrica.BancoDeDado.pas',
-  Posicao.Repositorio.BancoDeDado in 'fontes\infraestrutura\repositorio\Posicao.Repositorio.BancoDeDado.pas';
+  Posicao.Repositorio.BancoDeDado in 'fontes\infraestrutura\repositorio\Posicao.Repositorio.BancoDeDado.pas',
+  Hash.Gerador in 'fontes\dominio\Hash.Gerador.pas',
+  Senha in 'fontes\dominio\Senha.pas';
 
 var
    lServidorHTTP: TServidorHTTP;

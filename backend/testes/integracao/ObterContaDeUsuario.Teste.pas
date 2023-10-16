@@ -57,6 +57,7 @@ begin
    lEntradaInscricaoUsuario.Passageiro   := False;
    lEntradaInscricaoUsuario.Motorista    := True;
    lEntradaInscricaoUsuario.PlacaDoCarro := 'ZZZ9A88';
+   lEntradaInscricaoUsuario.Senha        := 'S3nh@F0rte';
    lSaidaInscricaoUsuario := FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
 
    lSaidaObtencaoUsuario := FObterContaDeUsuario.Executar(lSaidaInscricaoUsuario.IDDoUsuario);

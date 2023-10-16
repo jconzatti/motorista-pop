@@ -64,6 +64,7 @@ begin
    lEntradaInscricaoUsuario.CPF        := '95818705552';
    lEntradaInscricaoUsuario.Passageiro := True;
    lEntradaInscricaoUsuario.Motorista  := False;
+   lEntradaInscricaoUsuario.Senha      := 'S3nh@F0rte';
    lSaidaInscricaoUsuario := FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
 
    lEntradaSolicitacaoCorrida.IDDoPassageiro := lSaidaInscricaoUsuario.IDDoUsuario;

@@ -89,7 +89,11 @@ uses
   Repositorio.Fabrica in 'fontes\aplicacao\repositorio\Repositorio.Fabrica.pas',
   Repositorio.Fabrica.Fake in 'fontes\infraestrutura\repositorio\Repositorio.Fabrica.Fake.pas',
   Repositorio.Fabrica.BancoDeDado in 'fontes\infraestrutura\repositorio\Repositorio.Fabrica.BancoDeDado.pas',
-  CasoDeUso.Fabrica in 'fontes\aplicacao\caso-de-uso\CasoDeUso.Fabrica.pas';
+  CasoDeUso.Fabrica in 'fontes\aplicacao\caso-de-uso\CasoDeUso.Fabrica.pas',
+  Hash.Gerador in 'fontes\dominio\Hash.Gerador.pas',
+  Hash.Algoritimo.Teste in 'testes\unidade\Hash.Algoritimo.Teste.pas',
+  Senha.Teste in 'testes\unidade\Senha.Teste.pas',
+  Senha in 'fontes\dominio\Senha.pas';
 
 var
   runner : ITestRunner;

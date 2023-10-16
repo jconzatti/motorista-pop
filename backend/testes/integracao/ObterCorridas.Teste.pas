@@ -71,6 +71,7 @@ begin
    lEntradaInscricaoUsuario.CPF        := '95818705552';
    lEntradaInscricaoUsuario.Passageiro := True;
    lEntradaInscricaoUsuario.Motorista  := False;
+   lEntradaInscricaoUsuario.Senha      := 'S3nh@F0rte';
    lSaidaInscricaoUsuario := FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
 
    lEntradaSolicitacaoCorrida.IDDoPassageiro := lSaidaInscricaoUsuario.IDDoUsuario;
@@ -112,6 +113,7 @@ begin
    lEntradaInscricaoPassageiro.CPF        := '95818705552';
    lEntradaInscricaoPassageiro.Passageiro := True;
    lEntradaInscricaoPassageiro.Motorista  := False;
+   lEntradaInscricaoPassageiro.Senha      := 'S3nh@F0rte';
    lSaidaInscricaoPassageiro := FInscreverUsuario.Executar(lEntradaInscricaoPassageiro);
 
    lEntradaSolicitacaoCorrida.IDDoPassageiro := lSaidaInscricaoPassageiro.IDDoUsuario;
@@ -127,6 +129,7 @@ begin
    lEntradaInscricaoMotorista.Passageiro := False;
    lEntradaInscricaoMotorista.Motorista  := True;
    lEntradaInscricaoMotorista.PlacaDoCarro := 'ABC1234';
+   lEntradaInscricaoMotorista.Senha      := 'S3nh@F0rte';
    lSaidaInscricaoMotorista := FInscreverUsuario.Executar(lEntradaInscricaoMotorista);
 
    lEntradaAceiteCorrida.IDDoMotorista := lSaidaInscricaoMotorista.IDDoUsuario;
@@ -163,6 +166,7 @@ begin
    lEntradaInscricaoUsuario.CPF        := '95818705552';
    lEntradaInscricaoUsuario.Passageiro := True;
    lEntradaInscricaoUsuario.Motorista  := False;
+   lEntradaInscricaoUsuario.Senha      := 'S3nh@F0rte';
    lSaidaInscricaoUsuario := FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
 
    lEntradaObtencaoCorridas.IDDoUsuario := lSaidaInscricaoUsuario.IDDoUsuario;

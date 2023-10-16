@@ -11,7 +11,7 @@ uses
 
 type
    [TestFixture]
-   RealizarLoginTeste = class
+   TRealizarLoginTeste = class
    private
       FFabricaRepositorio: TFabricaRepositorio;
       FInscreverUsuario: TInscreverUsuario;
@@ -28,25 +28,26 @@ type
 implementation
 
 
-{ RealizarLoginTeste }
+{ TRealizarLoginTeste }
 
-procedure RealizarLoginTeste.Inicializar;
+procedure TRealizarLoginTeste.Inicializar;
 begin
    FFabricaRepositorio := TFabricaRepositorioFake.Create;
    FInscreverUsuario := TInscreverUsuario.Create(FFabricaRepositorio);
    FRealizarLogin := TRealizarLogin.Create(FFabricaRepositorio);
 end;
 
-procedure RealizarLoginTeste.Finalizar;
+procedure TRealizarLoginTeste.Finalizar;
 begin
    FRealizarLogin.Destroy;
    FInscreverUsuario.Destroy;
    FFabricaRepositorio.Destroy;
 end;
 
-procedure RealizarLoginTeste.DeverRealizarLoginComEmailDoUsuario;
+procedure TRealizarLoginTeste.DeverRealizarLoginComEmailDoUsuario;
 var lEntradaInscricaoUsuario: TDadoEntradaInscricaoContaDeUsuario;
     lSaidaInscricaoUsuario: TDadoSaidaInscricaoContaDeUsuario;
+    lEntradaRealizacaoLogin: TDadoEntradaRealizacaoLogin;
     lSaidaRealizacaoLogin: TDadoSaidaRealizacaoLogin;
 begin
    lEntradaInscricaoUsuario.Nome         := 'John Doe';
@@ -55,12 +56,15 @@ begin
    lEntradaInscricaoUsuario.Passageiro   := False;
    lEntradaInscricaoUsuario.Motorista    := True;
    lEntradaInscricaoUsuario.PlacaDoCarro := 'ZZZ9A88';
+   lEntradaInscricaoUsuario.Senha        := 'S3nh@F0rte';
    lSaidaInscricaoUsuario := FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
 
-   lSaidaRealizacaoLogin := FRealizarLogin.Executar('john.doe.forlogin@mail.com');
+   lEntradaRealizacaoLogin.Email := lEntradaInscricaoUsuario.Email;
+   lEntradaRealizacaoLogin.Senha := lEntradaInscricaoUsuario.Senha;
+   lSaidaRealizacaoLogin := FRealizarLogin.Executar(lEntradaRealizacaoLogin);
    Assert.AreEqual(lSaidaInscricaoUsuario.IDDoUsuario, lSaidaRealizacaoLogin.IDDoUsuario);
 end;
 
 initialization
-   TDUnitX.RegisterTestFixture(RealizarLoginTeste);
+   TDUnitX.RegisterTestFixture(TRealizarLoginTeste);
 end.

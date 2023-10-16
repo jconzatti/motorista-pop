@@ -20,6 +20,7 @@ type
       Passageiro: Boolean;
       Motorista: Boolean;
       PlacaDoCarro: String;
+      Senha: String;
    end;
 
    TDadoSaidaInscricaoContaDeUsuario = record
@@ -63,7 +64,8 @@ begin
                                             pEntrada.CPF,
                                             pEntrada.Passageiro,
                                             pEntrada.Motorista,
-                                            pEntrada.PlacaDoCarro);
+                                            pEntrada.PlacaDoCarro,
+                                            pEntrada.Senha);
    try
       RepositorioContaDeUsuario.Salvar(lContaDeUsuario);
       FGatewayEnviadorEmail.Enviar(lContaDeUsuario.Email,

@@ -57,6 +57,7 @@ begin
    lEntradaInscricaoUsuario.CPF          := '958.187.055-52';
    lEntradaInscricaoUsuario.Passageiro   := True;
    lEntradaInscricaoUsuario.Motorista    := False;
+   lEntradaInscricaoUsuario.Senha        := 'S3nh@F0rte';
    lSaidaInscricaoUsuario := FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
 
    lSaidaObtencaoUsuario := FObterContaDeUsuario.Executar(lSaidaInscricaoUsuario.IDDoUsuario);
@@ -81,6 +82,7 @@ begin
    lEntradaInscricaoUsuario.Passageiro   := False;
    lEntradaInscricaoUsuario.Motorista    := True;
    lEntradaInscricaoUsuario.PlacaDoCarro := 'zzz-9999';
+   lEntradaInscricaoUsuario.Senha        := 'S3nh@F0rte';
    lSaidaInscricaoUsuario := FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
 
    lSaidaObtencaoUsuario := FObterContaDeUsuario.Executar(lSaidaInscricaoUsuario.IDDoUsuario);
@@ -102,6 +104,7 @@ begin
    lEntradaInscricaoUsuario.CPF        := '958.187.055-52';
    lEntradaInscricaoUsuario.Passageiro := True;
    lEntradaInscricaoUsuario.Motorista  := False;
+   lEntradaInscricaoUsuario.Senha      := 'S3nh@F0rte';
    FInscreverUsuario.Executar(lEntradaInscricaoUsuario);
    Assert.WillRaise(
       procedure

@@ -9,7 +9,8 @@ uses
    System.JSON,
    HTTP.Servidor,
    Horse,
-   Horse.Jhonson;
+   Horse.Jhonson,
+   Horse.BasicAuthentication;
 
 type
    TServidorHTTPHorse = class(TServidorHTTP)
@@ -31,6 +32,7 @@ implementation
 constructor TServidorHTTPHorse.Create;
 begin
    THorse.Use(Jhonson);
+   THorse.Use(HorseBasicAuthentication());
 end;
 
 procedure TServidorHTTPHorse.Registrar(pMetodo: TMetodoHTTP; pURL: String;

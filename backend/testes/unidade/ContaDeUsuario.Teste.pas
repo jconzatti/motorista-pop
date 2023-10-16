@@ -7,6 +7,7 @@ uses
    System.DateUtils,
    ContaDeUsuario,
    PlacaDeCarro,
+   Hash.Gerador,
    DUnitX.TestFramework;
 
 type
@@ -32,7 +33,8 @@ var lContaDeUsuario : TContaDeUsuario;
 begin
    lContaDeUsuario := TContaDeUsuario.CriarPassageiro('João Da Silva',
                                                       'joao.silva@mail.com',
-                                                      '761.765.681-53');
+                                                      '761.765.681-53',
+                                                      'S3nh@F0rte');
    try
       Assert.IsNotEmpty(lContaDeUsuario.ID);
       Assert.AreEqual('João Da Silva', lContaDeUsuario.Nome);
@@ -59,7 +61,8 @@ begin
                                '761.765.681-53',
                                True,
                                False,
-                               'ABC1D23');
+                               'ABC1D23',
+                               'S3nh@F0rte');
       end,
       EContaDeUsuarioPlacaDoCarroInformada,
       'Informada placa do carro, mas a conta de usuário não pertence a um motorista!'
@@ -72,7 +75,8 @@ begin
    lContaDeUsuario := TContaDeUsuario.CriarMotorista('João Da Silva',
                                                      'joao.silva@mail.com',
                                                      '761.765.681-53',
-                                                     'ABC1D23');
+                                                     'ABC1D23',
+                                                     'S3nh@F0rte');
    try
       Assert.IsNotEmpty(lContaDeUsuario.ID);
       Assert.AreEqual('João Da Silva', lContaDeUsuario.Nome);
@@ -99,7 +103,8 @@ begin
                                '761.765.681-53',
                                True,
                                True,
-                               '');
+                               '',
+                               'S3nh@F0rte');
       end,
       EPlacaDeCarroInvalida,
       'Placa de carro inválida!'
@@ -118,7 +123,9 @@ begin
                                                 'ABC1D23',
                                                 StrToDateDef('15/09/2023 10:00:00', Date),
                                                 True,
-                                                '14dedb8c74204de58651c49952972a76');
+                                                '14dedb8c74204de58651c49952972a76',
+                                                'S3nh@F0rte',
+                                                TAlgoritimoHash.Nenhum);
    try
       Assert.AreEqual('03dedb8c74204de58651c49952972a65',lContaDeUsuario.ID);
       Assert.AreEqual('João Da Silva', lContaDeUsuario.Nome);

@@ -80,7 +80,9 @@ begin
                                        pContaDeUsuario.PlacaDoCarro,
                                        pContaDeUsuario.Data,
                                        pContaDeUsuario.Verificada,
-                                       pContaDeUsuario.CodigoDeVerificacao)
+                                       pContaDeUsuario.CodigoDeVerificacao,
+                                       pContaDeUsuario.HashDaSenha,
+                                       pContaDeUsuario.AlgoritimoDeHashDaSenha)
 end;
 
 initialization

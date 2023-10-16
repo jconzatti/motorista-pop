@@ -10,6 +10,7 @@ uses
    ContaDeUsuario.Repositorio,
    UUID,
    Email,
+   Hash.Gerador,
    BancoDeDado.Conexao;
 
 type
@@ -87,7 +88,7 @@ function TRepositorioContaDeUsuarioBancoDeDado.ObterPorEmail(pEmail: TEmail): TC
 begin
    Result := Obter('SELECT account_id, name, email, cpf, car_plate, '+
                    'is_passenger, is_driver, date, is_verified, '+
-                   'verification_code FROM account '+
+                   'verification_code, password, algorithm FROM account '+
                    'WHERE email = :email',
                    [pEmail.Valor], [ftString]);
 end;
@@ -96,7 +97,7 @@ function TRepositorioContaDeUsuarioBancoDeDado.ObterPorID(pID: TUUID): TContaDeU
 begin
    Result := Obter('SELECT account_id, name, email, cpf, car_plate, '+
                    'is_passenger, is_driver, date, is_verified, '+
-                   'verification_code FROM account '+
+                   'verification_code, password, algorithm FROM account '+
                    'WHERE account_id = :account_id',
                    [pID.Valor], [ftString]);
 end;
@@ -118,7 +119,9 @@ begin
                                        FConexaoBancoDeDado.DataSet.FieldByName('car_plate').AsString,
                                        FConexaoBancoDeDado.DataSet.FieldByName('date').AsFloat,
                                        FConexaoBancoDeDado.DataSet.FieldByName('is_verified').AsInteger = 1,
-                                       FConexaoBancoDeDado.DataSet.FieldByName('verification_code').AsString);
+                                       FConexaoBancoDeDado.DataSet.FieldByName('verification_code').AsString,
+                                       FConexaoBancoDeDado.DataSet.FieldByName('password').AsString,
+                                       TAlgoritimoHash.Algoritimo(FConexaoBancoDeDado.DataSet.FieldByName('algorithm').AsString));
 end;
 
 end.

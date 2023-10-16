@@ -10,6 +10,13 @@ uses
    Email;
 
 type
+   ERealizarLoginAutenticacaoFalhada = class(EArgumentException);
+
+   TDadoEntradaRealizacaoLogin = record
+      Email: String;
+      Senha: String;
+   end;
+
    TDadoSaidaRealizacaoLogin = record
       IDDoUsuario: String;
    end;
@@ -20,7 +27,7 @@ type
    public
       constructor Create(pFabricaRepositorio: TFabricaRepositorio); reintroduce;
       destructor Destroy; override;
-      function Executar(pEmail: string): TDadoSaidaRealizacaoLogin;
+      function Executar(pEntradaRealizacaoLogin: TDadoEntradaRealizacaoLogin): TDadoSaidaRealizacaoLogin;
    end;
 
 implementation
@@ -38,18 +45,24 @@ begin
    inherited;
 end;
 
-function TRealizarLogin.Executar(pEmail: string): TDadoSaidaRealizacaoLogin;
+function TRealizarLogin.Executar(pEntradaRealizacaoLogin: TDadoEntradaRealizacaoLogin): TDadoSaidaRealizacaoLogin;
 var
    lEmail: TEmail;
    lContaDeUsuario: TContaDeUsuario;
 begin
-   lEmail := TEmail.Create(pEmail);
+   lEmail := TEmail.Create(pEntradaRealizacaoLogin.Email);
    try
-      lContaDeUsuario := FRepositorioContaDeUsuario.ObterPorEmail(lEmail);
       try
-         Result.IDDoUsuario := lContaDeUsuario.ID;
-      finally
-         lContaDeUsuario.Destroy;
+         lContaDeUsuario := FRepositorioContaDeUsuario.ObterPorEmail(lEmail);
+         try
+            lContaDeUsuario.ValidarSenha(pEntradaRealizacaoLogin.Senha);
+            Result.IDDoUsuario := lContaDeUsuario.ID;
+         finally
+            lContaDeUsuario.Destroy;
+         end;
+      except
+         on E: Exception do
+            raise ERealizarLoginAutenticacaoFalhada.Create('Autenticação falhada: ' + E.Message);
       end;
    finally
       lEmail.Destroy;
