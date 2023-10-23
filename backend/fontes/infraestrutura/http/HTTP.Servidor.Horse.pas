@@ -9,20 +9,21 @@ uses
    System.JSON,
    HTTP.Servidor,
    Horse,
-   Horse.Jhonson,
-   Horse.BasicAuthentication;
+   Horse.Jhonson;
 
 type
    TServidorHTTPHorse = class(TServidorHTTP)
    private
+      FRotasSemAutenticacao: TList<String>;
       procedure AoIniciarServidor;
       procedure RegistrarPost(pURL : String; pCallback: TCallbackServidorHTTP);
       procedure RegistrarGet(pURL : String; pCallback: TCallbackServidorHTTP);
       procedure InvocarCallback(Req: THorseRequest; Res: THorseResponse; pCallback: TCallbackServidorHTTP);
    public
       constructor Create;
+      destructor Destroy; override;
       procedure Iniciar(pPorta: Integer); override;
-      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP); override;
+      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP; pAutenticacaoHTTP: TAutenticacaoHTTP = aNenhuma); override;
    end;
 
 implementation
@@ -31,14 +32,22 @@ implementation
 
 constructor TServidorHTTPHorse.Create;
 begin
-   THorse.Use(Jhonson);
-   THorse.Use(HorseBasicAuthentication());
+   inherited;
+   FRotasSemAutenticacao := TList<String>.Create;
+end;
+
+destructor TServidorHTTPHorse.Destroy;
+begin
+   FRotasSemAutenticacao.Destroy;
+   inherited;
 end;
 
 procedure TServidorHTTPHorse.Registrar(pMetodo: TMetodoHTTP; pURL: String;
-  pCallback: TCallbackServidorHTTP);
+  pCallback: TCallbackServidorHTTP; pAutenticacaoHTTP: TAutenticacaoHTTP);
 begin
    inherited;
+   if pAutenticacaoHTTP = aNenhuma then
+      FRotasSemAutenticacao.Add(pURL);
    case pMetodo of
       mGET:  RegistrarGet(pURL, pCallback);
       mPOST: RegistrarPost(pURL, pCallback);
@@ -99,6 +108,7 @@ end;
 procedure TServidorHTTPHorse.Iniciar(pPorta: Integer);
 begin
    inherited;
+   THorse.Use(Jhonson);
    THorse.Listen(pPorta, AoIniciarServidor);
 end;
 

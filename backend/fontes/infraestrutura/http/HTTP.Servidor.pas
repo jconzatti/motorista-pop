@@ -11,6 +11,7 @@ uses
 type
    TMetodoHTTP = (mGET, mPOST);
    TParametroHTTP = TDictionary<String,String>;
+   TAutenticacaoHTTP = (aNenhuma, aBasic, aToken);
 
    TResultadoHTTP = class
    private
@@ -32,7 +33,7 @@ type
    TServidorHTTP = class abstract
    public
       procedure Iniciar(pPorta: Integer); virtual; abstract;
-      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP); virtual; abstract;
+      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP; pAutenticacaoHTTP: TAutenticacaoHTTP = aNenhuma); virtual; abstract;
    end;
 
 implementation

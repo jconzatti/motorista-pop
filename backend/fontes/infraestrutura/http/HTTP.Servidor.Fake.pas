@@ -16,7 +16,7 @@ type
       constructor Create;
       destructor Destroy; override;
       procedure Iniciar(pPorta: Integer); override;
-      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP); override;
+      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP; pAutenticacaoHTTP: TAutenticacaoHTTP = aNenhuma); override;
       function Invocar(pMetodo: TMetodoHTTP; pURL : String; pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
    end;
 
@@ -44,7 +44,7 @@ begin
 end;
 
 procedure TServidorHTTPFake.Registrar(pMetodo: TMetodoHTTP; pURL: String;
-  pCallback: TCallbackServidorHTTP);
+  pCallback: TCallbackServidorHTTP; pAutenticacaoHTTP: TAutenticacaoHTTP);
 begin
    inherited;
    case pMetodo of

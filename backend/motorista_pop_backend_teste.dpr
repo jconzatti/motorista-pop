@@ -93,7 +93,8 @@ uses
   Hash.Gerador in 'fontes\dominio\Hash.Gerador.pas',
   Hash.Algoritimo.Teste in 'testes\unidade\Hash.Algoritimo.Teste.pas',
   Senha.Teste in 'testes\unidade\Senha.Teste.pas',
-  Senha in 'fontes\dominio\Senha.pas';
+  Senha in 'fontes\dominio\Senha.pas',
+  Hash.Gerador.Teste in 'testes\unidade\Hash.Gerador.Teste.pas';
 
 var
   runner : ITestRunner;

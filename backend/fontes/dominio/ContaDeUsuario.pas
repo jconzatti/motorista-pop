@@ -106,7 +106,7 @@ begin
                                     lPlacaDoCarro,
                                     Now,
                                     False,
-                                    TSenha.Criar(TUUID.Gerar, pSenha, TAlgoritimoHash.MD5));
+                                    TSenha.Criar(TUUID.Gerar, pSenha, TAlgoritimoHash.SHA1));
 end;
 
 class function TContaDeUsuario.CriarMotorista(pNome, pEmail, pCPF, pPlacaDoCarro, pSenha: String): TContaDeUsuario;

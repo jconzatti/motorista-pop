@@ -7,7 +7,8 @@ uses
    IdGlobal,
    IdHash,
    IdHashMessageDigest,
-   IdHashSHA;
+   IdHashSHA,
+   IdSSLOpenSSLHeaders;
 
 type
    EAlgoritimoHashInvalido = class(EArgumentException);
@@ -22,10 +23,7 @@ type
    TGeradorHash = class
    private
       FAlgoritimo: TAlgoritimoHash;
-      function GerarHashMD5(pParametro: String): String;
-      function GerarHashSHA1(pParametro: String): String;
-      function GerarHashSHA256(pParametro: String): String;
-      function GerarHashSHA512(pParametro: String): String;
+      function Gerar<H: TIdHash, constructor>(pParametro: String): String;
    public
       constructor Create(pAlgoritimo: TAlgoritimoHash); reintroduce;
       function GerarHash(pParametro: String): String;
@@ -46,32 +44,19 @@ begin
    Result := '';
    case Algoritimo of
       TAlgoritimoHash.Nenhum: Result := pParametro;
-      TAlgoritimoHash.MD5: Result := GerarHashMD5(pParametro);
-      TAlgoritimoHash.SHA1: Result := GerarHashSHA1(pParametro);
-      TAlgoritimoHash.SHA256: Result := GerarHashSHA256(pParametro);
-      TAlgoritimoHash.SHA512: Result := GerarHashSHA512(pParametro);
+      TAlgoritimoHash.MD5: Result := Gerar<TIdHashMessageDigest5>(pParametro);
+      TAlgoritimoHash.SHA1: Result := Gerar<TIdHashSHA1>(pParametro);
+      TAlgoritimoHash.SHA256: Result := Gerar<TIdHashSHA256>(pParametro);
+      TAlgoritimoHash.SHA512: Result := Gerar<TIdHashSHA512>(pParametro);
    end;
 end;
 
-function TGeradorHash.GerarHashMD5(pParametro: String): String;
+function TGeradorHash.Gerar<H>(pParametro: String): String;
+var lHash: H;
 begin
-//   Result := GerarHash(TIdHashMessageDigest5.Create, pParametro);
-end;
-
-function TGeradorHash.GerarHashSHA1(pParametro: String): String;
-begin
-//   Result := GerarHash(TIdHashSHA1.Create, pParametro);
-end;
-
-function TGeradorHash.GerarHashSHA256(pParametro: String): String;
-begin
-//   Result := GerarHash(TIdHashSHA256.Create, pParametro);
-end;
-
-function TGeradorHash.GerarHashSHA512(pParametro: String): String;
-var lHash: TIdHashSHA512;
-begin
-   lHash := TIdHashSHA512.Create;
+   if not IdSSLOpenSSLHeaders.Load then
+      raise ENotSupportedException.Create('Biblioteca da vínculo dinâmico (DLL) OpenSSL não foi carregada!');
+   lHash := H.Create;
    try
       Result := IdGlobal.IndyLowerCase(lHash.HashStringAsHex(pParametro));
    finally
