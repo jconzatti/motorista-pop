@@ -52,6 +52,7 @@ begin
          Assert.AreEqual(lEmail.Valor, lContaDeUsuario.Email);
          Assert.AreEqual('95818705552', lContaDeUsuario.CPF);
          Assert.IsTrue(lContaDeUsuario.Passageiro);
+         Assert.IsNotEmpty(lContaDeUsuario.HashDaSenha);
       finally
          lContaDeUsuario.Destroy;
       end;
@@ -80,6 +81,7 @@ begin
          Assert.AreEqual('John Doe', lContaDeUsuario.Nome);
          Assert.AreEqual('95818705552', lContaDeUsuario.CPF);
          Assert.IsTrue(lContaDeUsuario.Passageiro);
+         Assert.IsNotEmpty(lContaDeUsuario.HashDaSenha);
       finally
          lContaDeUsuario.Destroy;
       end;

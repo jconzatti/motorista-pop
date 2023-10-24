@@ -92,7 +92,7 @@ end;
 procedure TControladorMotoristaPOPAPIREST.RegistrarRotasDaAPI;
 begin
    FServidorHTTP.Registrar(mPOST, '/usuario', ExecutarInscreverUsuario);
-   FServidorHTTP.Registrar(mGET, '/usuario/:id', ExecutarObterContaDeUsuario);
+   FServidorHTTP.Registrar(mGET, '/usuario/:id', ExecutarObterContaDeUsuario, aToken);
    FServidorHTTP.Registrar(mGET, '/usuario/:id/corrida', ExecutarObterCorridasDoUsuario);
    FServidorHTTP.Registrar(mPOST, '/login/:email', ExecutarRealizarLogin);
    FServidorHTTP.Registrar(mGET, '/corrida/:id', ExecutarObterCorrida);

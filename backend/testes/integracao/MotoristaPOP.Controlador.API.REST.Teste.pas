@@ -227,8 +227,7 @@ begin
    try
       Assert.IsTrue(Assigned(lResultado));
       Assert.AreEqual<Integer>(200, lResultado.CodigoDeRespostaHTTP);
-      Assert.IsNotEmpty(lResultado.JSON.ToJSON);
-      Assert.AreEqual(lIDDoUsuario, lResultado.JSON.GetValue<string>('IDDoUsuario'));
+      Assert.IsNotEmpty(lResultado.JSON.GetValue<string>('Token'));
    finally
       lResultado.Destroy;
    end;

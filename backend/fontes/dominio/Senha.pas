@@ -73,7 +73,7 @@ end;
 
 class procedure TSenha.ValidarPoliticaDeSenha(pSenha: String);
 begin
-   if not TRegEx.IsMatch(pSenha, '^(?=.*[a-záéíóúâêîôûãõç])(?=.*[A-ZÁÉÍÓÚÂÊÎÔÛÃÕÇ])(?=.*\d)(?=.*[@#\$%^&+=!\\/\-\*\[\]\{\}\.\;\:\s]).{8,}$') then
+   if not TRegEx.IsMatch(pSenha, '^(?=.*[a-záéíóúâêîôûãõç])(?=.*[A-ZÁÉÍÓÚÂÊÎÔÛÃÕÇ])(?=.*\d)(?=.*[@#\$%^&+=!_\?\\/\-\*\[\]\{\}\.\;\:\s]).{8,}$') then
       raise ESenhaPoliticaInvalida.Create('A senha deve ter no mínimo 8 caracteres, pelo menos uma letra MAIÚSCULA, pelo menos uma letra minúscula, pelo menos um dígito numérico e pelo menos um caractere especial!');
 end;
 

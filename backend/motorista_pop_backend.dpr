@@ -44,7 +44,8 @@ uses
   Repositorio.Fabrica.BancoDeDado in 'fontes\infraestrutura\repositorio\Repositorio.Fabrica.BancoDeDado.pas',
   Posicao.Repositorio.BancoDeDado in 'fontes\infraestrutura\repositorio\Posicao.Repositorio.BancoDeDado.pas',
   Hash.Gerador in 'fontes\dominio\Hash.Gerador.pas',
-  Senha in 'fontes\dominio\Senha.pas';
+  Senha in 'fontes\dominio\Senha.pas',
+  Token.Gerador in 'fontes\dominio\Token.Gerador.pas';
 
 var
    lServidorHTTP: TServidorHTTP;

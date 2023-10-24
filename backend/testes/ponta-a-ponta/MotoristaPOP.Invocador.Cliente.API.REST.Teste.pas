@@ -5,6 +5,7 @@ interface
 uses
    System.SysUtils,
    System.Classes,
+   System.Net.URLClient,
    System.Net.HTTPClient,
    System.JSON,
    DUnitX.TestFramework;
@@ -16,9 +17,9 @@ type
       [Test]
       procedure DeveCriarUmaContaDeUsuario;
       [Test]
-      procedure DeveObterUmaContaDeUsuarioPorID;
-      [Test]
       procedure DeveRealizarLoginComEmailDoUsuario;
+      [Test]
+      procedure DeveObterUmaContaDeUsuarioPorID;
    end;
 
 implementation
@@ -41,6 +42,7 @@ begin
       lJSONPassaeiro.AddPair('cpf', '958.187.055-52');
       lJSONPassaeiro.AddPair('passageiro', TJSONBool.Create(True));
       lJSONPassaeiro.AddPair('motorista', TJSONBool.Create(False));
+      lJSONPassaeiro.AddPair('senha', 'S3nh@F0rte');
       lStream.WriteString(lJSONPassaeiro.ToJSON);
       lStream.Position := 0;
       lHTTPResposta := lHTTPClient.Post('http://localhost:9000/usuario', lStream);
@@ -49,57 +51,6 @@ begin
    finally
       lStream.Destroy;
       lJSONPassaeiro.Destroy;
-      lHTTPClient.Destroy;
-   end;
-end;
-
-procedure TClienteInvocadorMotoristaPOPAPIRESTTeste.DeveObterUmaContaDeUsuarioPorID;
-var lHTTPClient : THTTPClient;
-    lHTTPResposta: IHTTPResponse;
-    lJSONMotoristaIncricao, lJSONMotoristaObtido: TJSONObject;
-    lStream: TStringStream;
-    lJSONResultado: TJSONObject;
-    lIDDoMotorista: string;
-begin
-   lHTTPClient := THTTPClient.Create;
-   lJSONMotoristaIncricao := TJSONObject.Create;
-   try
-      lStream := TStringStream.Create;
-      try
-         lJSONMotoristaIncricao.AddPair('nome', 'John Doe');
-         lJSONMotoristaIncricao.AddPair('email', Format('john.doe.%d@gmail.com', [Random(100000000)]));
-         lJSONMotoristaIncricao.AddPair('cpf', '958.187.055-52');
-         lJSONMotoristaIncricao.AddPair('passageiro', TJSONBool.Create(False));
-         lJSONMotoristaIncricao.AddPair('motorista', TJSONBool.Create(True));
-         lJSONMotoristaIncricao.AddPair('placaDoCarro', 'ABC-5656');
-         lStream.WriteString(lJSONMotoristaIncricao.ToJSON);
-         lStream.Position := 0;
-         lHTTPResposta := lHTTPClient.Post('http://localhost:9000/usuario', lStream);
-         lJSONResultado := TJSONObject(TJSONObject.ParseJSONValue(lHTTPResposta.ContentAsString));
-         try
-            lIDDoMotorista := lJSONResultado.GetValue<string>('IDDoUsuario');
-         finally
-            lJSONResultado.Destroy;
-         end;
-      finally
-         lStream.Destroy;
-      end;
-
-      lHTTPResposta := lHTTPClient.Get(Format('http://localhost:9000/usuario/%s', [lIDDoMotorista]));
-      lJSONMotoristaObtido := TJSONObject(TJSONObject.ParseJSONValue(lHTTPResposta.ContentAsString));
-      try
-         Assert.AreEqual<Integer>(200, lHTTPResposta.GetStatusCode);
-         Assert.AreEqual('John Doe', lJSONMotoristaObtido.GetValue<string>('Nome'));
-         Assert.AreEqual(lJSONMotoristaIncricao.GetValue<string>('email'), lJSONMotoristaObtido.GetValue<string>('Email'));
-         Assert.AreEqual('95818705552', lJSONMotoristaObtido.GetValue<string>('CPF'));
-         Assert.IsFalse(lJSONMotoristaObtido.GetValue<Boolean>('Passageiro'));
-         Assert.IsTrue(lJSONMotoristaObtido.GetValue<Boolean>('Motorista'));
-         Assert.AreEqual('ABC5656', lJSONMotoristaObtido.GetValue<string>('PlacaDoCarro'));
-      finally
-         lJSONMotoristaObtido.Destroy;
-      end;
-   finally
-      lJSONMotoristaIncricao.Destroy;
       lHTTPClient.Destroy;
    end;
 end;
@@ -123,6 +74,7 @@ begin
       lJSONPassageiroIncricao.AddPair('passageiro', TJSONBool.Create(False));
       lJSONPassageiroIncricao.AddPair('motorista', TJSONBool.Create(True));
       lJSONPassageiroIncricao.AddPair('placaDoCarro', 'ABC-5656');
+      lJSONPassageiroIncricao.AddPair('senha', 'S3nh-F0rte');
       lStream.WriteString(lJSONPassageiroIncricao.ToJSON);
       lStream.Position := 0;
       lHTTPResposta := lHTTPClient.Post('http://localhost:9000/usuario', lStream);
@@ -135,17 +87,88 @@ begin
 
       lStream.Clear;
       lStream.Position := 0;
-      lHTTPResposta := lHTTPClient.Post(Format('http://localhost:9000/login/%s', [lEmailDoPassageiro]), lStream);
+      lHTTPResposta := lHTTPClient.Post(Format('http://localhost:9000/login/%s?senha=%s', [lEmailDoPassageiro, 'S3nh-F0rte']), lStream);
       lJSONPassagerioLogin := TJSONObject(TJSONObject.ParseJSONValue(lHTTPResposta.ContentAsString));
       try
          Assert.AreEqual<Integer>(200, lHTTPResposta.GetStatusCode);
-         Assert.AreEqual(lIDDoPassageiro, lJSONPassagerioLogin.GetValue<string>('IDDoUsuario'));
+         Assert.IsNotEmpty(lJSONPassagerioLogin.GetValue<string>('Token'));
       finally
          lJSONPassagerioLogin.Destroy;
       end;
    finally
       lStream.Destroy;
       lJSONPassageiroIncricao.Destroy;
+      lHTTPClient.Destroy;
+   end;
+end;
+
+procedure TClienteInvocadorMotoristaPOPAPIRESTTeste.DeveObterUmaContaDeUsuarioPorID;
+var lHTTPClient : THTTPClient;
+    lHTTPResposta: IHTTPResponse;
+    lJSONMotoristaIncricao: TJSONObject;
+    lJSONMotoristaLogin: TJSONObject;
+    lJSONMotoristaObtido: TJSONObject;
+    lStream: TStringStream;
+    lJSONResultado: TJSONObject;
+    lIDDoMotorista: string;
+    lEmailDoMotorista: String;
+    lToken: String;
+begin
+   lToken := '';
+   lHTTPClient := THTTPClient.Create;
+   lJSONMotoristaIncricao := TJSONObject.Create;
+   try
+      lStream := TStringStream.Create;
+      try
+         lEmailDoMotorista := Format('john.doe.%d@gmail.com', [Random(100000000)]);
+         lJSONMotoristaIncricao.AddPair('nome', 'John Doe');
+         lJSONMotoristaIncricao.AddPair('email', lEmailDoMotorista);
+         lJSONMotoristaIncricao.AddPair('cpf', '958.187.055-52');
+         lJSONMotoristaIncricao.AddPair('passageiro', TJSONBool.Create(False));
+         lJSONMotoristaIncricao.AddPair('motorista', TJSONBool.Create(True));
+         lJSONMotoristaIncricao.AddPair('placaDoCarro', 'ABC-5656');
+         lJSONMotoristaIncricao.AddPair('senha', 'S3nh@F0rte');
+         lStream.WriteString(lJSONMotoristaIncricao.ToJSON);
+         lStream.Position := 0;
+         lHTTPResposta := lHTTPClient.Post('http://localhost:9000/usuario', lStream);
+         lJSONResultado := TJSONObject(TJSONObject.ParseJSONValue(lHTTPResposta.ContentAsString));
+         try
+            lIDDoMotorista := lJSONResultado.GetValue<string>('IDDoUsuario');
+         finally
+            lJSONResultado.Destroy;
+         end;
+
+         lStream.Clear;
+         lStream.Position := 0;
+         lHTTPResposta := lHTTPClient.Post(Format('http://localhost:9000/login/%s?senha=%s', [lEmailDoMotorista, 'S3nh@F0rte']), lStream);
+         if lHTTPResposta.GetStatusCode = 200 then
+         begin
+            lJSONMotoristaLogin := TJSONObject(TJSONObject.ParseJSONValue(lHTTPResposta.ContentAsString));
+            try
+               lToken := lJSONMotoristaLogin.GetValue<string>('Token');
+            finally
+               lJSONMotoristaLogin.Destroy;
+            end;
+         end;
+      finally
+         lStream.Destroy;
+      end;
+
+      lHTTPResposta := lHTTPClient.Get(Format('http://localhost:9000/usuario/%s', [lIDDoMotorista]), nil, [TNameValuePair.Create('Authorization', Format('bearer %s', [lToken]))]);
+      lJSONMotoristaObtido := TJSONObject(TJSONObject.ParseJSONValue(lHTTPResposta.ContentAsString));
+      try
+         Assert.AreEqual<Integer>(200, lHTTPResposta.GetStatusCode);
+         Assert.AreEqual('John Doe', lJSONMotoristaObtido.GetValue<string>('Nome'));
+         Assert.AreEqual(lJSONMotoristaIncricao.GetValue<string>('email'), lJSONMotoristaObtido.GetValue<string>('Email'));
+         Assert.AreEqual('95818705552', lJSONMotoristaObtido.GetValue<string>('CPF'));
+         Assert.IsFalse(lJSONMotoristaObtido.GetValue<Boolean>('Passageiro'));
+         Assert.IsTrue(lJSONMotoristaObtido.GetValue<Boolean>('Motorista'));
+         Assert.AreEqual('ABC5656', lJSONMotoristaObtido.GetValue<string>('PlacaDoCarro'));
+      finally
+         lJSONMotoristaObtido.Destroy;
+      end;
+   finally
+      lJSONMotoristaIncricao.Destroy;
       lHTTPClient.Destroy;
    end;
 end;

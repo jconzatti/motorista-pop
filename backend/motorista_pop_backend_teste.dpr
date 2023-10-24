@@ -94,7 +94,9 @@ uses
   Hash.Algoritimo.Teste in 'testes\unidade\Hash.Algoritimo.Teste.pas',
   Senha.Teste in 'testes\unidade\Senha.Teste.pas',
   Senha in 'fontes\dominio\Senha.pas',
-  Hash.Gerador.Teste in 'testes\unidade\Hash.Gerador.Teste.pas';
+  Hash.Gerador.Teste in 'testes\unidade\Hash.Gerador.Teste.pas',
+  Token.Gerador.Teste in 'testes\unidade\Token.Gerador.Teste.pas',
+  Token.Gerador in 'fontes\dominio\Token.Gerador.pas';
 
 var
   runner : ITestRunner;

@@ -8,8 +8,10 @@ uses
    System.Generics.Collections,
    System.JSON,
    HTTP.Servidor,
+   Token.Gerador,
    Horse,
-   Horse.Jhonson;
+   Horse.Jhonson,
+   Horse.JWT;
 
 type
    TServidorHTTPHorse = class(TServidorHTTP)
@@ -109,6 +111,7 @@ procedure TServidorHTTPHorse.Iniciar(pPorta: Integer);
 begin
    inherited;
    THorse.Use(Jhonson);
+   THorse.Use(HorseJWT(TGeradorToken.Segredo, THorseJWTConfig.New.SkipRoutes(FRotasSemAutenticacao.ToArray)));
    THorse.Listen(pPorta, AoIniciarServidor);
 end;
 

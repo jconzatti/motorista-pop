@@ -7,6 +7,7 @@ uses
    ContaDeUsuario,
    ContaDeUsuario.Repositorio,
    Repositorio.Fabrica,
+   Token.Gerador,
    Email;
 
 type
@@ -18,7 +19,7 @@ type
    end;
 
    TDadoSaidaRealizacaoLogin = record
-      IDDoUsuario: String;
+      Token: String;
    end;
 
    TRealizarLogin = class
@@ -56,7 +57,7 @@ begin
          lContaDeUsuario := FRepositorioContaDeUsuario.ObterPorEmail(lEmail);
          try
             lContaDeUsuario.ValidarSenha(pEntradaRealizacaoLogin.Senha);
-            Result.IDDoUsuario := lContaDeUsuario.ID;
+            Result.Token := TGeradorToken.Gerar(lContaDeUsuario);
          finally
             lContaDeUsuario.Destroy;
          end;

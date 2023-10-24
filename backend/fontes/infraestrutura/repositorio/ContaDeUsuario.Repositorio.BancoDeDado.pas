@@ -49,7 +49,9 @@ begin
                                 '    is_driver,'+
                                 '    date,'+
                                 '    is_verified,'+
-                                '    verification_code'+
+                                '    verification_code,'+
+                                '    password,'+
+                                '    algorithm'+
                                 ') VALUES ('+
                                 '    :account_id,'+
                                 '    :name,'+
@@ -60,7 +62,9 @@ begin
                                 '    :is_driver,'+
                                 '    :date,'+
                                 '    :is_verified,'+
-                                '    :verification_code'+
+                                '    :verification_code,'+
+                                '    :password,'+
+                                '    :algorithm'+
                                 ')',
                                 [pContaDeUsuario.ID,
                                  pContaDeUsuario.Nome,
@@ -71,7 +75,9 @@ begin
                                  Ord(pContaDeUsuario.Motorista),
                                  pContaDeUsuario.Data,
                                  Ord(pContaDeUsuario.Verificada),
-                                 pContaDeUsuario.CodigoDeVerificacao],
+                                 pContaDeUsuario.CodigoDeVerificacao,
+                                 pContaDeUsuario.HashDaSenha,
+                                 pContaDeUsuario.AlgoritimoDeHashDaSenha.Valor],
                                 [ftString,
                                  ftString,
                                  ftString,
@@ -81,6 +87,8 @@ begin
                                  ftInteger,
                                  ftFloat,
                                  ftInteger,
+                                 ftString,
+                                 ftString,
                                  ftString]);
 end;
 

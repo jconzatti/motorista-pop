@@ -62,7 +62,7 @@ begin
    lEntradaRealizacaoLogin.Email := lEntradaInscricaoUsuario.Email;
    lEntradaRealizacaoLogin.Senha := lEntradaInscricaoUsuario.Senha;
    lSaidaRealizacaoLogin := FRealizarLogin.Executar(lEntradaRealizacaoLogin);
-   Assert.AreEqual(lSaidaInscricaoUsuario.IDDoUsuario, lSaidaRealizacaoLogin.IDDoUsuario);
+   Assert.IsNotEmpty(lSaidaRealizacaoLogin.Token);
 end;
 
 initialization
