@@ -11,12 +11,16 @@ uses
    Token.Gerador,
    Horse,
    Horse.Jhonson,
+   Horse.BasicAuthentication,
    Horse.JWT;
 
 type
    TServidorHTTPHorse = class(TServidorHTTP)
    private
-      FRotasSemAutenticacao: TList<String>;
+      FRotasSemAutorizacaoComToken: TList<String>;
+      FRotasSemAutorizacaoBasica: TList<String>;
+      FEmailLogin: String;
+      FSenhaLogin: String;
       procedure AoIniciarServidor;
       procedure RegistrarPost(pURL : String; pCallback: TCallbackServidorHTTP);
       procedure RegistrarGet(pURL : String; pCallback: TCallbackServidorHTTP);
@@ -25,7 +29,7 @@ type
       constructor Create;
       destructor Destroy; override;
       procedure Iniciar(pPorta: Integer); override;
-      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP; pAutenticacaoHTTP: TAutenticacaoHTTP = aNenhuma); override;
+      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP; pAutorizacaoHTTP: TAutorizacaoHTTP = TAutorizacaoHTTP.Nenhuma); override;
    end;
 
 implementation
@@ -35,24 +39,28 @@ implementation
 constructor TServidorHTTPHorse.Create;
 begin
    inherited;
-   FRotasSemAutenticacao := TList<String>.Create;
+   FRotasSemAutorizacaoComToken := TList<String>.Create;
+   FRotasSemAutorizacaoBasica := TList<String>.Create;
 end;
 
 destructor TServidorHTTPHorse.Destroy;
 begin
-   FRotasSemAutenticacao.Destroy;
+   FRotasSemAutorizacaoBasica.Destroy;
+   FRotasSemAutorizacaoComToken.Destroy;
    inherited;
 end;
 
 procedure TServidorHTTPHorse.Registrar(pMetodo: TMetodoHTTP; pURL: String;
-  pCallback: TCallbackServidorHTTP; pAutenticacaoHTTP: TAutenticacaoHTTP);
+  pCallback: TCallbackServidorHTTP; pAutorizacaoHTTP: TAutorizacaoHTTP);
 begin
    inherited;
-   if pAutenticacaoHTTP = aNenhuma then
-      FRotasSemAutenticacao.Add(pURL);
+   if pAutorizacaoHTTP <> TAutorizacaoHTTP.Basica then
+      FRotasSemAutorizacaoBasica.Add(pURL);
+   if pAutorizacaoHTTP <> TAutorizacaoHTTP.Token then
+      FRotasSemAutorizacaoComToken.Add(pURL);
    case pMetodo of
-      mGET:  RegistrarGet(pURL, pCallback);
-      mPOST: RegistrarPost(pURL, pCallback);
+      TMetodoHTTP.GET:  RegistrarGet(pURL, pCallback);
+      TMetodoHTTP.POST: RegistrarPost(pURL, pCallback);
    end;
 end;
 
@@ -95,6 +103,11 @@ begin
          lParametros.Add(lParametro.Key, lParametro.Value);
       for lParametro in Req.Query.ToArray do
          lParametros.Add(lParametro.Key, lParametro.Value);
+      if not FEmailLogin.IsEmpty then
+      begin
+         lParametros.Add('email', FEmailLogin);
+         lParametros.Add('senha', FSenhaLogin);
+      end;
       lResultadoHTTP := pCallback(lParametros, Req.Body);
       try
          Res.Status(lResultadoHTTP.CodigoDeRespostaHTTP);
@@ -102,6 +115,8 @@ begin
       finally
          lResultadoHTTP.Destroy;
       end;
+      FEmailLogin := '';
+      FSenhaLogin := '';
    finally
       lParametros.Destroy;
    end;
@@ -111,7 +126,15 @@ procedure TServidorHTTPHorse.Iniciar(pPorta: Integer);
 begin
    inherited;
    THorse.Use(Jhonson);
-   THorse.Use(HorseJWT(TGeradorToken.Segredo, THorseJWTConfig.New.SkipRoutes(FRotasSemAutenticacao.ToArray)));
+   THorse.Use(HorseBasicAuthentication(
+      function(const AUsername, APassword: string): Boolean
+      begin
+         FEmailLogin := AUsername;
+         FSenhaLogin := APassword;
+         Result := True;
+      end,
+      THorseBasicAuthenticationConfig.New.SkipRoutes(FRotasSemAutorizacaoBasica.ToArray)));
+   THorse.Use(HorseJWT(TGeradorToken.Segredo, THorseJWTConfig.New.SkipRoutes(FRotasSemAutorizacaoComToken.ToArray)));
    THorse.Listen(pPorta, AoIniciarServidor);
 end;
 

@@ -117,7 +117,7 @@ var lResultado: TResultadoHTTP;
 begin
    lParametros := TParametroHTTP.Create;
    try
-      lResultado := FServidorHTTP.Invocar(mGET, '/notfound', lParametros, '');
+      lResultado := FServidorHTTP.Invocar(TMetodoHTTP.GET, '/notfound', lParametros, '');
       try
          Assert.IsTrue(Assigned(lResultado));
          Assert.AreEqual<Integer>(404, lResultado.CodigoDeRespostaHTTP);
@@ -135,7 +135,7 @@ var lResultado: TResultadoHTTP;
 begin
    lParametros := TParametroHTTP.Create;
    try
-      lResultado := FServidorHTTP.Invocar(mPOST, '/usuario', lParametros, '["invalid", "json", "object"]');
+      lResultado := FServidorHTTP.Invocar(TMetodoHTTP.POST, '/usuario', lParametros, '["invalid", "json", "object"]');
       try
          Assert.IsTrue(Assigned(lResultado));
          Assert.AreEqual<Integer>(500, lResultado.CodigoDeRespostaHTTP);
@@ -709,7 +709,7 @@ begin
       lJSONSolicitacaoCorrida.AddPair('IDDoPassageiro', pIDDoPassageiro);
       lJSONSolicitacaoCorrida.AddPair('De', ObterCooredenadasEmJSON(-46,-26));
       lJSONSolicitacaoCorrida.AddPair('Para', ObterCooredenadasEmJSON(-45,-25));
-      Result := FServidorHTTP.Invocar(mPOST, '/corrida/solicitar', lParametros, lJSONSolicitacaoCorrida.ToJSON);
+      Result := FServidorHTTP.Invocar(TMetodoHTTP.POST, '/corrida/solicitar', lParametros, lJSONSolicitacaoCorrida.ToJSON);
    finally
       lJSONSolicitacaoCorrida.Destroy;
       lParametros.Destroy;
@@ -726,7 +726,7 @@ begin
    try
       lJSONAceiteCorrida.AddPair('IDDoMotorista', pIDDoMotorista);
       lParametros.Add('id', pIDDaCorrida);
-      Result := FServidorHTTP.Invocar(mPOST, '/corrida/:id/aceitar', lParametros, lJSONAceiteCorrida.ToJSON);
+      Result := FServidorHTTP.Invocar(TMetodoHTTP.POST, '/corrida/:id/aceitar', lParametros, lJSONAceiteCorrida.ToJSON);
    finally
       lJSONAceiteCorrida.Destroy;
       lParametros.Destroy;
@@ -743,7 +743,7 @@ begin
    try
       lJSONInicioCorrida.AddPair('IDDoMotorista', pIDDoMotorista);
       lParametros.Add('id', pIDDaCorrida);
-      Result := FServidorHTTP.Invocar(mPOST, '/corrida/:id/iniciar', lParametros, lJSONInicioCorrida.ToJSON);
+      Result := FServidorHTTP.Invocar(TMetodoHTTP.POST, '/corrida/:id/iniciar', lParametros, lJSONInicioCorrida.ToJSON);
    finally
       lJSONInicioCorrida.Destroy;
       lParametros.Destroy;
@@ -762,7 +762,7 @@ begin
       lJSONAtualizacaoPosicao.AddPair('Longitude', TJSONNumber.Create(-26));
       lJSONAtualizacaoPosicao.AddPair('Data', DateToISO8601(Now));
       lParametros.Add('id', pIDDaCorrida);
-      Result := FServidorHTTP.Invocar(mPOST, '/corrida/:id/atualizar_posicao', lParametros, lJSONAtualizacaoPosicao.ToJSON);
+      Result := FServidorHTTP.Invocar(TMetodoHTTP.POST, '/corrida/:id/atualizar_posicao', lParametros, lJSONAtualizacaoPosicao.ToJSON);
    finally
       lJSONAtualizacaoPosicao.Destroy;
       lParametros.Destroy;
@@ -779,7 +779,7 @@ begin
    try
       lJSONFinalizacaoCorrida.AddPair('IDDoMotorista', pIDDoMotorista);
       lParametros.Add('id', pIDDaCorrida);
-      Result := FServidorHTTP.Invocar(mPOST, '/corrida/:id/finalizar', lParametros, lJSONFinalizacaoCorrida.ToJSON);
+      Result := FServidorHTTP.Invocar(TMetodoHTTP.POST, '/corrida/:id/finalizar', lParametros, lJSONFinalizacaoCorrida.ToJSON);
    finally
       lJSONFinalizacaoCorrida.Destroy;
       lParametros.Destroy;
@@ -807,7 +807,7 @@ begin
       lParametros.Add('id', pIDDoUsuario);
       if not pListaStatus.IsEmpty then
          lParametros.Add('status', pListaStatus);
-      Result := FServidorHTTP.Invocar(mGET, '/usuario/:id/corrida', lParametros, '');
+      Result := FServidorHTTP.Invocar(TMetodoHTTP.GET, '/usuario/:id/corrida', lParametros, '');
    finally
       lParametros.Destroy;
    end;
@@ -826,7 +826,7 @@ begin
       lJSONPassaeiro.AddPair('passageiro', TJSONBool.Create(True));
       lJSONPassaeiro.AddPair('motorista', TJSONBool.Create(False));
       lJSONPassaeiro.AddPair('senha', 'S3nh@F0rte');
-      Result := FServidorHTTP.Invocar(mPOST, '/usuario', lParametros, lJSONPassaeiro.ToJSON);
+      Result := FServidorHTTP.Invocar(TMetodoHTTP.POST, '/usuario', lParametros, lJSONPassaeiro.ToJSON);
    finally
       lJSONPassaeiro.Destroy;
       lParametros.Destroy;
@@ -847,7 +847,7 @@ begin
       lJSONMotorista.AddPair('motorista', TJSONBool.Create(True));
       lJSONMotorista.AddPair('placaDoCarro', 'XJF1H34');
       lJSONMotorista.AddPair('senha', 'S3nh@F0rte');
-      Result := FServidorHTTP.Invocar(mPOST, '/usuario', lParametros, lJSONMotorista.ToJSON);
+      Result := FServidorHTTP.Invocar(TMetodoHTTP.POST, '/usuario', lParametros, lJSONMotorista.ToJSON);
    finally
       lJSONMotorista.Destroy;
       lParametros.Destroy;
@@ -860,7 +860,7 @@ begin
    lParametros := TParametroHTTP.Create;
    try
       lParametros.Add('id', pIDDoUsuario);
-      Result := FServidorHTTP.Invocar(mGET, '/usuario/:id', lParametros, '');
+      Result := FServidorHTTP.Invocar(TMetodoHTTP.GET, '/usuario/:id', lParametros, '');
    finally
       lParametros.Destroy;
    end;
@@ -874,7 +874,7 @@ begin
    try
       lParametros.Add('email', pEmail);
       lParametros.Add('senha', 'S3nh@F0rte');
-      Result := FServidorHTTP.Invocar(mPOST, '/login/:email', lParametros, '');
+      Result := FServidorHTTP.Invocar(TMetodoHTTP.POST, '/login', lParametros, '');
    finally
       lParametros.Destroy;
    end;
@@ -886,7 +886,7 @@ begin
    lParametros := TParametroHTTP.Create;
    try
       lParametros.Add('id', pIDDaCorrida);
-      Result := FServidorHTTP.Invocar(mGET, '/corrida/:id', lParametros, '');
+      Result := FServidorHTTP.Invocar(TMetodoHTTP.GET, '/corrida/:id', lParametros, '');
    finally
       lParametros.Destroy;
    end;

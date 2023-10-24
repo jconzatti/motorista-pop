@@ -91,16 +91,16 @@ end;
 
 procedure TControladorMotoristaPOPAPIREST.RegistrarRotasDaAPI;
 begin
-   FServidorHTTP.Registrar(mPOST, '/usuario', ExecutarInscreverUsuario);
-   FServidorHTTP.Registrar(mGET, '/usuario/:id', ExecutarObterContaDeUsuario, aToken);
-   FServidorHTTP.Registrar(mGET, '/usuario/:id/corrida', ExecutarObterCorridasDoUsuario);
-   FServidorHTTP.Registrar(mPOST, '/login/:email', ExecutarRealizarLogin);
-   FServidorHTTP.Registrar(mGET, '/corrida/:id', ExecutarObterCorrida);
-   FServidorHTTP.Registrar(mPOST, '/corrida/solicitar', ExecutarSolicitarCorrida);
-   FServidorHTTP.Registrar(mPOST, '/corrida/:id/aceitar', ExecutarAceitarCorrida);
-   FServidorHTTP.Registrar(mPOST, '/corrida/:id/iniciar', ExecutarIniciarCorrida);
-   FServidorHTTP.Registrar(mPOST, '/corrida/:id/atualizar_posicao', ExecutarAtualizarPosicao);
-   FServidorHTTP.Registrar(mPOST, '/corrida/:id/finalizar', ExecutarFinalizarCorrida);
+   FServidorHTTP.Registrar(TMetodoHTTP.POST, '/usuario', ExecutarInscreverUsuario, TAutorizacaoHTTP.Nenhuma);
+   FServidorHTTP.Registrar(TMetodoHTTP.POST, '/login', ExecutarRealizarLogin, TAutorizacaoHTTP.Basica);
+   FServidorHTTP.Registrar(TMetodoHTTP.GET, '/usuario/:id', ExecutarObterContaDeUsuario, TAutorizacaoHTTP.Token);
+   FServidorHTTP.Registrar(TMetodoHTTP.GET, '/usuario/:id/corrida', ExecutarObterCorridasDoUsuario, TAutorizacaoHTTP.Token);
+   FServidorHTTP.Registrar(TMetodoHTTP.GET, '/corrida/:id', ExecutarObterCorrida, TAutorizacaoHTTP.Token);
+   FServidorHTTP.Registrar(TMetodoHTTP.POST, '/corrida/solicitar', ExecutarSolicitarCorrida, TAutorizacaoHTTP.Token);
+   FServidorHTTP.Registrar(TMetodoHTTP.POST, '/corrida/:id/aceitar', ExecutarAceitarCorrida, TAutorizacaoHTTP.Token);
+   FServidorHTTP.Registrar(TMetodoHTTP.POST, '/corrida/:id/iniciar', ExecutarIniciarCorrida, TAutorizacaoHTTP.Token);
+   FServidorHTTP.Registrar(TMetodoHTTP.POST, '/corrida/:id/atualizar_posicao', ExecutarAtualizarPosicao, TAutorizacaoHTTP.Token);
+   FServidorHTTP.Registrar(TMetodoHTTP.POST, '/corrida/:id/finalizar', ExecutarFinalizarCorrida, TAutorizacaoHTTP.Token);
 end;
 
 function TControladorMotoristaPOPAPIREST.ExecutarInscreverUsuario(

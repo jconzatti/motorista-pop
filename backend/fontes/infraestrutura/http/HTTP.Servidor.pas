@@ -9,9 +9,11 @@ uses
    System.JSON;
 
 type
-   TMetodoHTTP = (mGET, mPOST);
+   {$SCOPEDENUMS ON}
+   TMetodoHTTP = (GET, POST);
+   TAutorizacaoHTTP = (Nenhuma, Basica, Token);
+   {$SCOPEDENUMS OFF}
    TParametroHTTP = TDictionary<String,String>;
-   TAutenticacaoHTTP = (aNenhuma, aBasic, aToken);
 
    TResultadoHTTP = class
    private
@@ -33,7 +35,7 @@ type
    TServidorHTTP = class abstract
    public
       procedure Iniciar(pPorta: Integer); virtual; abstract;
-      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP; pAutenticacaoHTTP: TAutenticacaoHTTP = aNenhuma); virtual; abstract;
+      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP; pAutorizacaoHTTP: TAutorizacaoHTTP = TAutorizacaoHTTP.Nenhuma); virtual; abstract;
    end;
 
 implementation

@@ -16,7 +16,7 @@ type
       constructor Create;
       destructor Destroy; override;
       procedure Iniciar(pPorta: Integer); override;
-      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP; pAutenticacaoHTTP: TAutenticacaoHTTP = aNenhuma); override;
+      procedure Registrar(pMetodo: TMetodoHTTP; pURL : String; pCallback: TCallbackServidorHTTP; pAutorizacaoHTTP: TAutorizacaoHTTP = TAutorizacaoHTTP.Nenhuma); override;
       function Invocar(pMetodo: TMetodoHTTP; pURL : String; pParametros: TParametroHTTP; pConteudo: String): TResultadoHTTP;
    end;
 
@@ -44,12 +44,12 @@ begin
 end;
 
 procedure TServidorHTTPFake.Registrar(pMetodo: TMetodoHTTP; pURL: String;
-  pCallback: TCallbackServidorHTTP; pAutenticacaoHTTP: TAutenticacaoHTTP);
+  pCallback: TCallbackServidorHTTP; pAutorizacaoHTTP: TAutorizacaoHTTP);
 begin
    inherited;
    case pMetodo of
-      mGET:  FRegistoRotaGET.AddOrSetValue(pURL.ToLower, pCallback);
-      mPOST: FRegistoRotaPost.AddOrSetValue(pURL.ToLower, pCallback);
+      TMetodoHTTP.GET:  FRegistoRotaGET.AddOrSetValue(pURL.ToLower, pCallback);
+      TMetodoHTTP.POST: FRegistoRotaPost.AddOrSetValue(pURL.ToLower, pCallback);
    end;
 end;
 
@@ -58,8 +58,8 @@ var lCallback: TCallbackServidorHTTP;
 begin
    lCallback := nil;
    case pMetodo of
-      mGET: FRegistoRotaGET.TryGetValue(pURL.ToLower, lCallback);
-      mPOST: FRegistoRotaPost.TryGetValue(pURL.ToLower, lCallback);
+      TMetodoHTTP.GET: FRegistoRotaGET.TryGetValue(pURL.ToLower, lCallback);
+      TMetodoHTTP.POST: FRegistoRotaPost.TryGetValue(pURL.ToLower, lCallback);
    end;
    if Assigned(lCallback) then
       Result := lCallback(pParametros, pConteudo)

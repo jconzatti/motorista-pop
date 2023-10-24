@@ -7,6 +7,7 @@ uses
    System.Classes,
    System.Net.URLClient,
    System.Net.HTTPClient,
+   System.NetEncoding,
    System.JSON,
    DUnitX.TestFramework;
 
@@ -20,6 +21,8 @@ type
       procedure DeveRealizarLoginComEmailDoUsuario;
       [Test]
       procedure DeveObterUmaContaDeUsuarioPorID;
+      [Test]
+      procedure PassageiroDeveSolicitarUmaCorrida;
    end;
 
 implementation
@@ -60,7 +63,7 @@ var lHTTPClient : THTTPClient;
     lHTTPResposta: IHTTPResponse;
     lJSONPassageiroIncricao, lJSONPassagerioLogin: TJSONObject;
     lStream: TStringStream;
-    lEmailDoPassageiro, lIDDoPassageiro: string;
+    lEmailDoPassageiro, lIDDoPassageiro, lEmailESenhaBase64: string;
     lJSONResultado: TJSONValue;
 begin
    lHTTPClient := THTTPClient.Create;
@@ -71,9 +74,8 @@ begin
       lJSONPassageiroIncricao.AddPair('nome', 'John Doe');
       lJSONPassageiroIncricao.AddPair('email', lEmailDoPassageiro);
       lJSONPassageiroIncricao.AddPair('cpf', '958.187.055-52');
-      lJSONPassageiroIncricao.AddPair('passageiro', TJSONBool.Create(False));
-      lJSONPassageiroIncricao.AddPair('motorista', TJSONBool.Create(True));
-      lJSONPassageiroIncricao.AddPair('placaDoCarro', 'ABC-5656');
+      lJSONPassageiroIncricao.AddPair('passageiro', TJSONBool.Create(True));
+      lJSONPassageiroIncricao.AddPair('motorista', TJSONBool.Create(False));
       lJSONPassageiroIncricao.AddPair('senha', 'S3nh-F0rte');
       lStream.WriteString(lJSONPassageiroIncricao.ToJSON);
       lStream.Position := 0;
@@ -87,7 +89,8 @@ begin
 
       lStream.Clear;
       lStream.Position := 0;
-      lHTTPResposta := lHTTPClient.Post(Format('http://localhost:9000/login/%s?senha=%s', [lEmailDoPassageiro, 'S3nh-F0rte']), lStream);
+      lEmailESenhaBase64 := TBase64Encoding.Base64.Encode(lEmailDoPassageiro+':S3nh-F0rte');
+      lHTTPResposta := lHTTPClient.Post('http://localhost:9000/login', lStream, nil, [TNameValuePair.Create('Authorization', Format('basic %s', [lEmailESenhaBase64]))]);
       lJSONPassagerioLogin := TJSONObject(TJSONObject.ParseJSONValue(lHTTPResposta.ContentAsString));
       try
          Assert.AreEqual<Integer>(200, lHTTPResposta.GetStatusCode);
@@ -112,7 +115,7 @@ var lHTTPClient : THTTPClient;
     lJSONResultado: TJSONObject;
     lIDDoMotorista: string;
     lEmailDoMotorista: String;
-    lToken: String;
+    lToken, lEmailESenhaBase64: String;
 begin
    lToken := '';
    lHTTPClient := THTTPClient.Create;
@@ -140,7 +143,8 @@ begin
 
          lStream.Clear;
          lStream.Position := 0;
-         lHTTPResposta := lHTTPClient.Post(Format('http://localhost:9000/login/%s?senha=%s', [lEmailDoMotorista, 'S3nh@F0rte']), lStream);
+         lEmailESenhaBase64 := TBase64Encoding.Base64.Encode(lEmailDoMotorista+':S3nh@F0rte');
+         lHTTPResposta := lHTTPClient.Post('http://localhost:9000/login', lStream, nil, [TNameValuePair.Create('Authorization', Format('basic %s', [lEmailESenhaBase64]))]);
          if lHTTPResposta.GetStatusCode = 200 then
          begin
             lJSONMotoristaLogin := TJSONObject(TJSONObject.ParseJSONValue(lHTTPResposta.ContentAsString));
@@ -169,6 +173,80 @@ begin
       end;
    finally
       lJSONMotoristaIncricao.Destroy;
+      lHTTPClient.Destroy;
+   end;
+end;
+
+procedure TClienteInvocadorMotoristaPOPAPIRESTTeste.PassageiroDeveSolicitarUmaCorrida;
+var lHTTPClient : THTTPClient;
+    lHTTPResposta: IHTTPResponse;
+    lJSONPassageiroIncricao, lJSONPassagerioLogin,
+    lJSONSolicitacaoCorrida, lJSONCoordenadaOrigem,
+    lJSONCoordenadaDestino, lJSONCorridaSolicitada: TJSONObject;
+    lStream: TStringStream;
+    lEmailDoPassageiro, lIDDoPassageiro, lEmailESenhaBase64, lToken: string;
+    lJSONResultado: TJSONValue;
+begin
+   lHTTPClient := THTTPClient.Create;
+   lJSONPassageiroIncricao := TJSONObject.Create;
+   lStream := TStringStream.Create;
+   try
+      lEmailDoPassageiro := Format('john.doe.%d@gmail.com', [Random(100000000)]);
+      lJSONPassageiroIncricao.AddPair('nome', 'John Doe');
+      lJSONPassageiroIncricao.AddPair('email', lEmailDoPassageiro);
+      lJSONPassageiroIncricao.AddPair('cpf', '958.187.055-52');
+      lJSONPassageiroIncricao.AddPair('passageiro', TJSONBool.Create(True));
+      lJSONPassageiroIncricao.AddPair('motorista', TJSONBool.Create(False));
+      lJSONPassageiroIncricao.AddPair('senha', 'S3nh-F0rte');
+      lStream.WriteString(lJSONPassageiroIncricao.ToJSON);
+      lStream.Position := 0;
+      lHTTPResposta := lHTTPClient.Post('http://localhost:9000/usuario', lStream);
+      lJSONResultado := TJSONObject.ParseJSONValue(lHTTPResposta.ContentAsString);
+      try
+         lIDDoPassageiro := lJSONResultado.GetValue<string>('IDDoUsuario');
+      finally
+         lJSONResultado.Destroy;
+      end;
+
+      lStream.Clear;
+      lStream.Position := 0;
+      lEmailESenhaBase64 := TBase64Encoding.Base64.Encode(lEmailDoPassageiro+':S3nh-F0rte');
+      lHTTPResposta := lHTTPClient.Post('http://localhost:9000/login', lStream, nil, [TNameValuePair.Create('Authorization', Format('basic %s', [lEmailESenhaBase64]))]);
+      lJSONPassagerioLogin := TJSONObject(TJSONObject.ParseJSONValue(lHTTPResposta.ContentAsString));
+      try
+         lToken := lJSONPassagerioLogin.GetValue<string>('Token');
+      finally
+         lJSONPassagerioLogin.Destroy;
+      end;
+
+      lJSONSolicitacaoCorrida := TJSONObject.Create;
+      try
+         lJSONSolicitacaoCorrida.AddPair('IDDoPassageiro', lIDDoPassageiro);
+         lJSONCoordenadaOrigem := TJSONObject.Create;
+         lJSONCoordenadaOrigem.AddPair('Latitude', TJSONNumber.Create(-46));
+         lJSONCoordenadaOrigem.AddPair('Longitude', TJSONNumber.Create(-26));
+         lJSONSolicitacaoCorrida.AddPair('De', lJSONCoordenadaOrigem);
+         lJSONCoordenadaDestino := TJSONObject.Create;
+         lJSONCoordenadaDestino.AddPair('Latitude', TJSONNumber.Create(-45));
+         lJSONCoordenadaDestino.AddPair('Longitude', TJSONNumber.Create(-25));
+         lJSONSolicitacaoCorrida.AddPair('Para', lJSONCoordenadaDestino);
+         lStream.Clear;
+         lStream.WriteString(lJSONSolicitacaoCorrida.ToJSON);
+         lStream.Position := 0;
+         lHTTPResposta := lHTTPClient.Post('http://localhost:9000/corrida/solicitar', lStream, nil, [TNameValuePair.Create('Authorization', Format('bearer %s', [lToken]))]);
+         lJSONCorridaSolicitada := TJSONObject(TJSONObject.ParseJSONValue(lHTTPResposta.ContentAsString));
+         try
+            Assert.AreEqual<Integer>(200, lHTTPResposta.GetStatusCode);
+            Assert.IsNotEmpty(lJSONCorridaSolicitada.GetValue<string>('IDDaCorrida'));
+         finally
+            lJSONCorridaSolicitada.Destroy;
+         end;
+      finally
+         lJSONSolicitacaoCorrida.Destroy;
+      end;
+   finally
+      lStream.Destroy;
+      lJSONPassageiroIncricao.Destroy;
       lHTTPClient.Destroy;
    end;
 end;
