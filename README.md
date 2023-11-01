@@ -1,9 +1,14 @@
 # Motorista Pop
  Aplicativo para transporte de passageiro, para fins de estudos do curso de Clean Arch e Clean Code de branas.io, partindo de técnicas de refatoração de código e TDD, com aplicação de Padrões de Projetos e princípios do SOLID.
+ 
  Ao longo das oito aulas construí este projeto para solicitar corridas de carro (semelhante a 99, inDrive, Uber) em que aplicamos e aprendemos várias técnicas e conceitos de código e arquitetura limpas.
+ 
  Dessa maneira, aplicamos Arquitetura Hexagonal e DDD com as ideias da Clean Arch. Cada caso de uso (conceito do Clean Arch) do projeto foi implementado iniciando pelo teste (aplicação do TDD). Assim que o caso de uso era implementado, já tínhamos o teste pronto e por consequência a segurança de refatorá-lo. Ao refatoroar o caso de uso aplicávamos conceitos de DDD. Logo, o caso de uso torna-se um orquestrador de objetos do domínio: Agregados (formado por Entidades e Objetos de Valor) e Serviços de Domínio. Assim, toda a regra de negócio (domínio ou coração do software) é orquestrada pelos casos de uso do software.
+ 
  O caso de uso precisa obter determinados Agregados de recursos externos: de um banco de dados ou de uma API externa. Uma boa arquitetura limpa não deve depender diretamente desses recurso externos. Nesse ponto aprendemos a Inversão de Dependência: passamos a depender de uma abstração para o banco de dados (Repositório ou Modelo de Tabela ou Objeto de Acesso a Dados) e para API externa (Gateway).
+ 
  Como o caso de uso orquestra o coração do software, podemos garantir a invariância e somos capazes de proteger o estado interno dos objetos de domínio que são persistidos consistentemente. Com a consistência garantida podemos usar CQRS para a leitura dos dados o que torna eficiente o consumo de informações para geração de relatórios ou extração de dados.
+ 
  Por fim, vimos alguns conceitos relacionados a Micro Serviços. Partindo de Contextos Delimitados (do DDD) para separar o software em diferentes serviços e através do uso de filas (com RabbitMQ) aprendemos conceitos de um Arquitetura Baseada em Eventos. Com essa abordagem o caso de uso pode publicar eventos na fila que serão consumidos por outros serviços, bem como o serviço pode consumir eventos da fila, disparando, por consequência, a execução de um ou mais casos de uso. Isso torna cada Micro Serviço independente e assíncrono.
 
  Eu, um bom e velho Delpheiro implementei o projeto com nome Motorista POP em Delphi. Para tanto, no backend, para desenvolver a API REST JSON, usei o Horse com três Middlewares: Jhonson, Basic Auth e JWT. O frontend é desenvolvido inicialmente com Framework VCL, no entanto pretendo ampliar a gama de frontend para o Mobile e Web, usando não apenas o Delphi mas também outras linguagens. Para aplicar o TDD usei o DUnitx e Codecoverage para Delphi.
